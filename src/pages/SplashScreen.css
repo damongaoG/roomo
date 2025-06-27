@@ -5,7 +5,7 @@
   overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   background-color: #ffffff;
 }
 
@@ -28,7 +28,7 @@
 .background-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 /* Logo container styles */
@@ -40,6 +40,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 11rem;
+  margin-left: 1rem;
 }
 
 .logo-container.visible {

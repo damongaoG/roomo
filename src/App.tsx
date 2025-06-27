@@ -40,6 +40,7 @@ import "@ionic/react/css/palettes/dark.system.css";
 
 /* Theme variables */
 import "./theme/variables.css";
+import React from "react";
 
 setupIonicReact();
 
