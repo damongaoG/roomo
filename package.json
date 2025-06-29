@@ -10,7 +10,7 @@
     "test.e2e": "cypress run",
     "test.unit": "vitest",
     "lint": "eslint"
-  },
+    },
   "dependencies": {
     "@capacitor/android": "7.4.0",
     "@capacitor/app": "7.0.1",
