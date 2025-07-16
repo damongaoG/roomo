@@ -49,10 +49,120 @@
 }
 
 .logo-container img {
-  max-width: 200px;
-  max-height: 200px;
+  max-width: 80px;
+  max-height: 80px;
   width: auto;
   height: auto;
+}
+
+/* Text content styles */
+.text-content {
+  position: absolute;
+  z-index: 2;
+  text-align: center;
+  width: 100%;
+  bottom: 15%;
+}
+
+/* App title styles */
+.app-title {
+  margin: 0 0 0.5rem 0;
+  letter-spacing: 2px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease-out;
+
+  color: #000;
+  font-family: "Yorkmade", sans-serif;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%; /* 32px */
+}
+
+.app-title.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* App subtitle styles */
+.app-subtitle {
+  margin: 0 0 1.5rem 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease-out;
+
+  color: #000;
+  font-family: "SF Pro", sans-serif;
+  font-size: 26px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%; /* 31.2px */
+  letter-spacing: -0.78px;
+}
+
+.app-subtitle.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* App tagline styles */
+.app-tagline {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease-out;
+}
+
+.app-tagline.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Gradient text styles */
+.tagline-starts {
+  margin-right: 0.3rem;
+
+  font-family: "SF Pro", sans-serif;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 590;
+  line-height: 120%; /* 43.2px */
+  letter-spacing: -0.18px;
+  opacity: 0.8;
+  background: linear-gradient(
+    90deg,
+    #00a6ff 1.71%,
+    #ea00ff 39.97%,
+    #f09 68.15%,
+    #ff6f61 93.83%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tagline-now {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  font-family: "SF Pro", sans-serif;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 590;
+  line-height: 120%; /* 43.2px */
+  letter-spacing: -0.18px;
+  opacity: 0.8;
+  background: linear-gradient(
+    90deg,
+    #00a6ff 1.71%,
+    #ea00ff 39.97%,
+    #f09 68.15%,
+    #ff6f61 93.83%
+  );
+  background-clip: text;
 }
 
 /* Login button container styles */
@@ -65,7 +175,7 @@
   opacity: 0;
   transition: opacity 1s ease-in-out;
   width: 80%;
-  max-width: 300px;
+  max-width: 350px;
 }
 
 .login-button-container.visible {
@@ -73,24 +183,32 @@
 }
 
 .login-button {
-  --background: #ffffff;
-  --background-activated: #f4f4f4;
-  --background-hover: #f4f4f4;
-  --color: #333333;
-  --border-radius: 25px;
+  --background: #333333;
+  --background-activated: #222222;
+  --background-hover: #222222;
+  --color: #ffffff;
+  --border-radius: 30px;
   --padding-top: 16px;
   --padding-bottom: 16px;
   font-weight: 600;
   font-size: 16px;
   text-transform: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-button ion-icon {
+  margin-left: 0.5rem;
+  font-size: 1.2rem;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .logo-container img {
-    max-width: 150px;
-    max-height: 150px;
+    max-width: 70px;
+    max-height: 70px;
   }
 
   .login-button-container {
@@ -101,8 +219,8 @@
 
 @media (max-width: 480px) {
   .logo-container img {
-    max-width: 120px;
-    max-height: 120px;
+    max-width: 60px;
+    max-height: 60px;
   }
 
   .login-button-container {
@@ -113,6 +231,5 @@
   .login-button {
     --padding-top: 14px;
     --padding-bottom: 14px;
-    font-size: 14px;
   }
 }
