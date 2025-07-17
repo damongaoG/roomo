@@ -186,17 +186,21 @@
   --background: #333333;
   --background-activated: #222222;
   --background-hover: #222222;
-  --color: #ffffff;
   --border-radius: 30px;
   --padding-top: 16px;
   --padding-bottom: 16px;
-  font-weight: 600;
-  font-size: 16px;
   text-transform: none;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
+
+  color: var(--Main-White, #FBFBFB);
+  font-family: "SF Pro", sans-serif;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 510;
+  line-height: 100%; /* 15px */
+  letter-spacing: -0.075px;
 }
 
 .login-button ion-icon {
@@ -224,7 +228,7 @@
   }
 
   .login-button-container {
-    bottom: 30px;
+    bottom: 40px;
     width: 90%;
   }
 

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { IonContent, IonPage, IonButton } from "@ionic/react";
-import { useAuth } from "../contexts/AuthContext";
+import React, {useEffect, useState} from "react";
+import {IonButton, IonContent, IonPage} from "@ionic/react";
+import {useAuth} from "../contexts/AuthContext";
 import "./SplashScreen.css";
 
 const SplashScreen: React.FC = () => {
@@ -94,7 +94,9 @@ const SplashScreen: React.FC = () => {
           >
             <IonButton expand="block" onClick={login} className="login-button">
               Let's get started
-              <img src="/assets/images/icons/Arrow.svg" alt="Right Arrow" />
+              <img
+                  style={{marginLeft: "8px"}}
+                  src="/assets/images/icons/Arrow.svg" alt="Right Arrow"/>
             </IonButton>
           </div>
         </div>
