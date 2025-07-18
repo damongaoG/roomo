@@ -64,6 +64,7 @@
     height: 32px;
     position: absolute;
     bottom: 65px;
+    object-fit: contain;
 }
 
 .feature-text {
