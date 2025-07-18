@@ -1,0 +1,112 @@
+.onboarding-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 32px 24px;
+    background-color: #fbfbfb;
+}
+
+/* Title styling */
+.onboarding-title {
+    font-family: "yorkmade", serif;
+    font-size: 48px;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin-bottom: 60px;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+}
+
+.onboarding-title.visible {
+    opacity: 1;
+}
+
+/* Features list */
+.features-list {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 80px;
+}
+
+/* Feature item */
+.feature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-in-out;
+}
+
+.feature-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.feature-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 16px;
+    flex-shrink: 0;
+}
+
+.feature-text {
+    font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+/* Button container */
+.onboarding-button-container {
+    width: 100%;
+    max-width: 400px;
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+}
+
+.onboarding-button-container.visible {
+    opacity: 1;
+}
+
+/* Button styling */
+.onboarding-button {
+    --background: #1a1a1a;
+    --background-hover: #000000;
+    --background-activated: #000000;
+    --color: #fbfbfb;
+    --border-radius: 30px;
+    height: 56px;
+    font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .onboarding-title {
+        font-size: 40px;
+        margin-bottom: 48px;
+    }
+
+    .feature-text {
+        font-size: 16px;
+    }
+
+    .feature-item {
+        margin-bottom: 24px;
+    }
+
+    .onboarding-button-container {
+        margin-bottom: 32px;
+    }
+} 

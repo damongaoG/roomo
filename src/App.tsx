@@ -4,6 +4,7 @@ import {Redirect, Route} from "react-router-dom";
 import Menu from "./components/Menu";
 import Page from "./pages/Page";
 import SplashScreen from "./pages/SplashScreen";
+import OnboardingScreen from "./pages/OnboardingScreen";
 import {AuthProvider, useAuth} from "./contexts/AuthContext";
 
 /* Core CSS required for Ionic components to work properly */
@@ -39,11 +40,16 @@ import React from "react";
 setupIonicReact();
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const {isAuthenticated, hasCompletedOnboarding} = useAuth();
 
   // Show splash screen if not authenticated
   if (!isAuthenticated) {
     return <SplashScreen />;
+  }
+
+  // Show onboarding screen if authenticated
+  if (!hasCompletedOnboarding) {
+    return <OnboardingScreen/>;
   }
 
   // Show main app if authenticated

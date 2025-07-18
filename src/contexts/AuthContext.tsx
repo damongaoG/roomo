@@ -1,9 +1,11 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, {createContext, ReactNode, useContext, useState} from "react";
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  hasCompletedOnboarding: boolean;
   login: () => void;
   logout: () => void;
+  completeOnboarding: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,6 +24,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
 
   const login = () => {
     setIsAuthenticated(true);
@@ -29,10 +32,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     setIsAuthenticated(false);
+    setHasCompletedOnboarding(false);
+  };
+
+  const completeOnboarding = () => {
+    setHasCompletedOnboarding(true);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+      <AuthContext.Provider
+          value={{
+            isAuthenticated,
+            hasCompletedOnboarding,
+            login,
+            logout,
+            completeOnboarding,
+          }}
+      >
       {children}
     </AuthContext.Provider>
   );
