@@ -59,66 +59,75 @@
 
 /* Title */
 .login-title {
+  width: 100%;
+  text-align: left;
   font-family: 'yorkmade', serif;
-  font-size: 36px;
-  font-weight: 400;
-  color: #1a1a1a;
   margin: 0 0 16px 0;
+
+  color: var(--Main-Black, #000);
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%; /* 32px */
 }
 
 /* Heading */
 .login-heading {
-  font-family:
-    'SF Pro Display',
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
-  font-size: 24px;
-  font-weight: 600;
-  color: #1a1a1a;
   margin: 0 0 8px 0;
+  width: 100%;
+  text-align: left;
+
+  color: var(--Main-Black, #000);
+  font-family: 'SF Pro', sans-serif;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%; /* 32px */
+  letter-spacing: -0.16px;
 }
 
 /* Subheading */
 .login-subheading {
-  font-family:
-    'SF Pro Display',
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  color: #666;
   margin: 0 0 16px 0;
+  width: 100%;
+  text-align: left;
+
+  color: var(--Main-Black, #000);
+  font-family: 'SF Pro', sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 590;
+  line-height: 120%; /* 16.8px */
+  letter-spacing: -0.07px;
 }
 
 /* Verification text */
 .login-verification-text {
-  font-family:
-    'SF Pro Display',
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  color: #999;
   margin: 0 0 24px 0;
-  line-height: 1.5;
+  width: 100%;
+  text-align: left;
+
+  color: #a2a2a2;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%;
+  letter-spacing: -0.07px;
 }
 
 /* Login buttons container */
 .login-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 12px;
   margin-bottom: 16px;
   width: 100%;
-  max-width: 360px;
 }
 
 /* Social buttons */
 .social-button {
-  --background: #ffffff;
+  --background: #fbfbfb;
   --background-hover: #f8f8f8;
   --background-activated: #f0f0f0;
   --color: #1a1a1a;
@@ -126,7 +135,6 @@
   --border-width: 1px;
   --border-style: solid;
   --border-color: #e0e0e0;
-  height: 48px;
   font-family:
     'SF Pro Display',
     -apple-system,
@@ -137,6 +145,10 @@
   text-transform: none;
   letter-spacing: 0;
   --box-shadow: none;
+
+  width: 173px;
+  height: 47px;
+  flex-shrink: 0;
 }
 
 .social-button-content {
@@ -151,51 +163,8 @@
   flex-shrink: 0;
 }
 
-/* Specific button styles */
-.facebook-button {
-  --background: #1877f2;
-  --background-hover: #166fe5;
-  --background-activated: #1564d0;
-  --color: #ffffff;
-  --border-color: #1877f2;
-}
-
-.facebook-button .social-icon path {
-  fill: #ffffff;
-}
-
-.email-button {
-  --background: #ffffff;
-  --color: #1a1a1a;
-}
-
-.apple-button {
-  --background: #000000;
-  --background-hover: #1a1a1a;
-  --background-activated: #333333;
-  --color: #ffffff;
-  --border-color: #000000;
-}
-
-.apple-button .social-icon path {
-  fill: #ffffff;
-}
-
-.google-button {
-  --background: #ffffff;
-  --color: #1a1a1a;
-}
-
 /* Terms text */
 .terms-text {
-  font-family:
-    'SF Pro Display',
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  color: #999;
   margin: 0;
   position: absolute;
   bottom: 20px;
@@ -203,12 +172,27 @@
   transform: translateX(-50%);
   width: 100%;
   padding: 0 32px;
+
+  color: #a2a2a2;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%; /* 13px */
+  letter-spacing: -0.065px;
 }
 
 .terms-link {
-  color: #1a1a1a;
   text-decoration: underline;
   cursor: pointer;
+
+  color: var(--Main-Black, #000);
+  font-family: 'SF Pro', sans-serif;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 510;
+  line-height: 100%;
+  letter-spacing: -0.065px;
 }
 
 /* Blur effect for background */
@@ -225,10 +209,6 @@
 
   .login-title {
     font-size: 32px;
-  }
-
-  .login-heading {
-    font-size: 20px;
   }
 
   .login-subheading {
