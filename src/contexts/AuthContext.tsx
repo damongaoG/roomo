@@ -4,8 +4,8 @@ import React, {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+} from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -21,7 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
@@ -38,8 +38,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Check onboarding status from localStorage
   useEffect(() => {
-    const onboardingCompleted = localStorage.getItem("onboarding_completed");
-    if (onboardingCompleted === "true") {
+    const onboardingCompleted = localStorage.getItem('onboarding_completed');
+    if (onboardingCompleted === 'true') {
       setHasCompletedOnboarding(true);
     }
   }, []);
@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLocalAuthenticated(false);
 
     // Clear onboarding status when logging out
-    localStorage.removeItem("onboarding_completed");
+    localStorage.removeItem('onboarding_completed');
     setHasCompletedOnboarding(false);
 
     // Logout from Auth0
@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const completeOnboarding = () => {
     setHasCompletedOnboarding(true);
-    localStorage.setItem("onboarding_completed", "true");
+    localStorage.setItem('onboarding_completed', 'true');
   };
 
   return (

@@ -1,4 +1,3 @@
-
 # 📱 Running Ionic App with Capacitor
 
 This guide will help you run the Ionic project on **iOS** and **Android** platforms using **Capacitor**.
@@ -9,11 +8,11 @@ This guide will help you run the Ionic project on **iOS** and **Android** platfo
 
 Make sure you have the following installed:
 
-- Node.js & npm  
-- Ionic CLI  
-- Capacitor (`@capacitor/core`)  
-- iOS/macOS: Xcode  
-- Android: Android Studio, Java SDK, Android SDK  
+- Node.js & npm
+- Ionic CLI
+- Capacitor (`@capacitor/core`)
+- iOS/macOS: Xcode
+- Android: Android Studio, Java SDK, Android SDK
 
 ---
 

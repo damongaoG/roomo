@@ -59,7 +59,7 @@
 
 /* Title */
 .login-title {
-  font-family: "yorkmade", serif;
+  font-family: 'yorkmade', serif;
   font-size: 36px;
   font-weight: 400;
   color: #1a1a1a;
@@ -68,7 +68,11 @@
 
 /* Heading */
 .login-heading {
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: 24px;
   font-weight: 600;
   color: #1a1a1a;
@@ -77,7 +81,11 @@
 
 /* Subheading */
 .login-subheading {
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: 16px;
   font-weight: 400;
   color: #666;
@@ -86,7 +94,11 @@
 
 /* Verification text */
 .login-verification-text {
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: 14px;
   font-weight: 400;
   color: #999;
@@ -115,7 +127,11 @@
   --border-style: solid;
   --border-color: #e0e0e0;
   height: 48px;
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: 16px;
   font-weight: 500;
   text-transform: none;
@@ -172,7 +188,11 @@
 
 /* Terms text */
 .terms-text {
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: 12px;
   font-weight: 400;
   color: #999;

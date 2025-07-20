@@ -1,14 +1,14 @@
-import React from "react";
+import React from 'react';
 import {
   IonButton,
   IonContent,
   IonIcon,
   IonModal,
   IonPage,
-} from "@ionic/react";
-import { close } from "ionicons/icons";
-import { useAuth0 } from "@auth0/auth0-react";
-import "./LoginModal.css";
+} from '@ionic/react';
+import { close } from 'ionicons/icons';
+import { useAuth0 } from '@auth0/auth0-react';
+import './LoginModal.css';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -29,7 +29,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
       await loginWithRedirect({
         authorizationParams: {
           connection: connection,
-          screen_hint: "signup",
+          screen_hint: 'signup',
         },
       });
     } catch (error) {
@@ -42,11 +42,11 @@ const LoginModal: React.FC<LoginModalProps> = ({
     try {
       await loginWithRedirect({
         authorizationParams: {
-          screen_hint: "signup",
+          screen_hint: 'signup',
         },
       });
     } catch (error) {
-      console.error("Email login error:", error);
+      console.error('Email login error:', error);
     }
   };
 
@@ -103,7 +103,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
                 <IonButton
                   expand="block"
                   className="social-button facebook-button"
-                  onClick={() => handleSocialLogin("facebook")}
+                  onClick={() => handleSocialLogin('facebook')}
                 >
                   <div className="social-button-content">
                     <img
@@ -129,7 +129,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
                 <IonButton
                   expand="block"
                   className="social-button apple-button"
-                  onClick={() => handleSocialLogin("apple")}
+                  onClick={() => handleSocialLogin('apple')}
                 >
                   <div className="social-button-content">
                     <img
@@ -144,7 +144,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
                 <IonButton
                   expand="block"
                   className="social-button google-button"
-                  onClick={() => handleSocialLogin("google-oauth2")}
+                  onClick={() => handleSocialLogin('google-oauth2')}
                 >
                   <div className="social-button-content">
                     <img
@@ -158,7 +158,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
 
               {/* Terms text */}
               <p className="terms-text">
-                By continuing you agree to Roomo's{" "}
+                By continuing you agree to Roomo's{' '}
                 <span className="terms-link">Terms of Use</span>.
               </p>
             </div>

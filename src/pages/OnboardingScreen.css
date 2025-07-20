@@ -10,7 +10,7 @@
 
 /* Title styling */
 .onboarding-title {
-  font-family: "yorkmade", serif;
+  font-family: 'yorkmade', serif;
   font-size: 48px;
   font-weight: 400;
   color: #1a1a1a;
@@ -44,7 +44,7 @@
   position: relative;
 
   border-radius: 12px;
-  background: var(--Chat-Gray, #F3F4F6);
+  background: var(--Chat-Gray, #f3f4f6);
   backdrop-filter: blur(7px);
 
   height: 80px;
@@ -85,7 +85,11 @@
 }
 
 .feature-text {
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: 18px;
   font-weight: 400;
   line-height: 1.4;
@@ -119,7 +123,11 @@
   --color: #fbfbfb;
   --border-radius: 30px;
   height: 56px;
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: 16px;
   font-weight: 500;
   text-transform: none;

@@ -73,7 +73,7 @@
   transition: all 0.8s ease-out;
 
   color: #000;
-  font-family: "Yorkmade", sans-serif;
+  font-family: 'Yorkmade', sans-serif;
   font-size: 32px;
   font-style: normal;
   font-weight: 400;
@@ -93,7 +93,7 @@
   transition: all 0.8s ease-out;
 
   color: #000;
-  font-family: "SF Pro", sans-serif;
+  font-family: 'SF Pro', sans-serif;
   font-size: 26px;
   font-style: normal;
   font-weight: 400;
@@ -125,7 +125,7 @@
 .tagline-starts {
   margin-right: 0.3rem;
 
-  font-family: "SF Pro", sans-serif;
+  font-family: 'SF Pro', sans-serif;
   font-size: 36px;
   font-style: normal;
   font-weight: 590;
@@ -148,7 +148,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
-  font-family: "SF Pro", sans-serif;
+  font-family: 'SF Pro', sans-serif;
   font-size: 36px;
   font-style: normal;
   font-weight: 590;
@@ -194,8 +194,8 @@
   align-items: center;
   justify-content: center;
 
-  color: var(--Main-White, #FBFBFB);
-  font-family: "SF Pro", sans-serif;
+  color: var(--Main-White, #fbfbfb);
+  font-family: 'SF Pro', sans-serif;
   font-size: 15px;
   font-style: normal;
   font-weight: 510;

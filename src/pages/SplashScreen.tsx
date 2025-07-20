@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
-import {IonButton, IonContent, IonPage} from "@ionic/react";
-import {useAuth} from "../contexts/AuthContext";
-import "./SplashScreen.css";
+import React, { useEffect, useState } from 'react';
+import { IonButton, IonContent, IonPage } from '@ionic/react';
+import { useAuth } from '../contexts/AuthContext';
+import './SplashScreen.css';
 
 const SplashScreen: React.FC = () => {
   const [showLogo, setShowLogo] = useState(false);
@@ -56,7 +56,7 @@ const SplashScreen: React.FC = () => {
         <div className="splash-container">
           {/* Background image */}
           <div
-            className={`background-image ${showBackground ? "visible" : ""}`}
+            className={`background-image ${showBackground ? 'visible' : ''}`}
           >
             <img
               src="/assets/images/backgrounds/background-1.png"
@@ -65,22 +65,22 @@ const SplashScreen: React.FC = () => {
           </div>
 
           {/* Logo - always visible after initial fade in */}
-          <div className={`logo-container ${showLogo ? "visible" : ""}`}>
+          <div className={`logo-container ${showLogo ? 'visible' : ''}`}>
             <img src="/assets/images/logos/jenny-logo.png" alt="Jenny Logo" />
           </div>
 
           {/* Text content container */}
           <div className="text-content">
             {/* App title */}
-            <h1 className={`app-title ${showTitle ? "visible" : ""}`}>ROOMO</h1>
+            <h1 className={`app-title ${showTitle ? 'visible' : ''}`}>ROOMO</h1>
 
             {/* Subtitle */}
-            <h2 className={`app-subtitle ${showSubtitle ? "visible" : ""}`}>
+            <h2 className={`app-subtitle ${showSubtitle ? 'visible' : ''}`}>
               Finding Compatible Roommates
             </h2>
 
             {/* Tagline with gradient */}
-            <div className={`app-tagline ${showTagline ? "visible" : ""}`}>
+            <div className={`app-tagline ${showTagline ? 'visible' : ''}`}>
               <span className="tagline-starts">Starts</span>
               <span className="tagline-now">Now</span>
             </div>
@@ -89,14 +89,16 @@ const SplashScreen: React.FC = () => {
           {/* Login button */}
           <div
             className={`login-button-container ${
-              showLoginButton ? "visible" : ""
+              showLoginButton ? 'visible' : ''
             }`}
           >
             <IonButton expand="block" onClick={login} className="login-button">
               Let's get started
               <img
-                  style={{marginLeft: "8px"}}
-                  src="/assets/images/icons/Arrow.svg" alt="Right Arrow"/>
+                style={{ marginLeft: '8px' }}
+                src="/assets/images/icons/Arrow.svg"
+                alt="Right Arrow"
+              />
             </IonButton>
           </div>
         </div>

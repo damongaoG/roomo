@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
-import {IonButton, IonContent, IonPage} from "@ionic/react";
-import {useAuth} from "../contexts/AuthContext";
-import LoginModal from "../components/LoginModal";
-import "./OnboardingScreen.css";
+import React, { useEffect, useState } from 'react';
+import { IonButton, IonContent, IonPage } from '@ionic/react';
+import { useAuth } from '../contexts/AuthContext';
+import LoginModal from '../components/LoginModal';
+import './OnboardingScreen.css';
 
 // Interface for feature items
 interface FeatureItem {
@@ -23,7 +23,7 @@ const OnboardingScreen: React.FC = () => {
   const [showButton, setShowButton] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const {completeOnboarding} = useAuth();
+  const { completeOnboarding } = useAuth();
 
   // Reset animations when step changes
   useEffect(() => {
@@ -66,47 +66,47 @@ const OnboardingScreen: React.FC = () => {
 
   const featuresStep1: FeatureItem[] = [
     {
-      text: "No top spots, just fair visibility for all",
+      text: 'No top spots, just fair visibility for all',
       show: showFeature1,
-      icon: "/assets/images/icons/tick_circle.svg",
-      altText: "Check",
+      icon: '/assets/images/icons/tick_circle.svg',
+      altText: 'Check',
     },
     {
-      text: "Every user is verified to avoid scams",
+      text: 'Every user is verified to avoid scams',
       show: showFeature2,
-      icon: "/assets/images/icons/tick_circle.svg",
-      altText: "Check",
+      icon: '/assets/images/icons/tick_circle.svg',
+      altText: 'Check',
     },
     {
-      text: "Message all users without paid walls",
+      text: 'Message all users without paid walls',
       show: showFeature3,
-      icon: "/assets/images/icons/tick_circle.svg",
-      altText: "Check",
+      icon: '/assets/images/icons/tick_circle.svg',
+      altText: 'Check',
     },
   ];
 
   const featuresStep2: FeatureItem[] = [
     {
-      text: "Jenny follow ups",
+      text: 'Jenny follow ups',
       show: showFeature1,
-      icon: "/assets/images/icons/tick_circle.svg",
-      altText: "Check",
-      leftIcon: "/assets/images/logos/jenny-logo.png",
-      leftAltText: "Jenny",
+      icon: '/assets/images/icons/tick_circle.svg',
+      altText: 'Check',
+      leftIcon: '/assets/images/logos/jenny-logo.png',
+      leftAltText: 'Jenny',
     },
     {
-      text: "Your very own Jenny companion",
+      text: 'Your very own Jenny companion',
       show: showFeature2,
-      icon: "/assets/images/icons/tick_circle.svg",
-      altText: "Check",
-      leftIcon: "/assets/images/logos/jenny-logo.png",
-      leftAltText: "Jenny",
+      icon: '/assets/images/icons/tick_circle.svg',
+      altText: 'Check',
+      leftIcon: '/assets/images/logos/jenny-logo.png',
+      leftAltText: 'Jenny',
     },
     {
-      text: "No hidden fees or paid walls",
+      text: 'No hidden fees or paid walls',
       show: showFeature3,
-      icon: "/assets/images/icons/tick_circle.svg",
-      altText: "Check",
+      icon: '/assets/images/icons/tick_circle.svg',
+      altText: 'Check',
     },
   ];
 
@@ -144,9 +144,11 @@ const OnboardingScreen: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
-        <div className={`onboarding-container ${showLoginModal ? "blurred" : ""}`}>
+        <div
+          className={`onboarding-container ${showLoginModal ? 'blurred' : ''}`}
+        >
           {/* App title */}
-          <h1 className={`onboarding-title ${showTitle ? "visible" : ""}`}>
+          <h1 className={`onboarding-title ${showTitle ? 'visible' : ''}`}>
             ROOMO
           </h1>
 
@@ -155,7 +157,7 @@ const OnboardingScreen: React.FC = () => {
             {currentFeatures.map((feature, index) => (
               <div
                 key={`${currentStep}-${index}`}
-                className={`feature-item ${feature.show ? "visible" : ""} ${isTransitioning ? "fading-out" : ""}`}
+                className={`feature-item ${feature.show ? 'visible' : ''} ${isTransitioning ? 'fading-out' : ''}`}
               >
                 {/* Left icon for Jenny features */}
                 {feature.leftIcon && (
@@ -178,8 +180,8 @@ const OnboardingScreen: React.FC = () => {
           {/* Next button */}
           <div
             className={`onboarding-button-container ${
-              showButton ? "visible" : ""
-            } ${isTransitioning ? "fading-out" : ""}`}
+              showButton ? 'visible' : ''
+            } ${isTransitioning ? 'fading-out' : ''}`}
           >
             <IonButton
               expand="block"
@@ -189,7 +191,7 @@ const OnboardingScreen: React.FC = () => {
             >
               Next
               <img
-                style={{marginLeft: "8px"}}
+                style={{ marginLeft: '8px' }}
                 src="/assets/images/icons/Arrow.svg"
                 alt="Right Arrow"
               />
