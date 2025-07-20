@@ -1,8 +1,15 @@
-import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
-import {useAuth0} from "@auth0/auth0-react";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  isLocalAuthenticated: boolean;
   hasCompletedOnboarding: boolean;
   login: () => void;
   logout: () => void;
@@ -23,44 +30,52 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
-  const {isAuthenticated: auth0IsAuthenticated, loginWithRedirect, logout: auth0Logout} = useAuth0();
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const { isAuthenticated: auth0IsAuthenticated, logout: auth0Logout } =
+    useAuth0();
+  const [isLocalAuthenticated, setIsLocalAuthenticated] = useState(false);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
 
   // Check onboarding status from localStorage
   useEffect(() => {
-    const onboardingCompleted = localStorage.getItem('onboarding_completed');
-    if (onboardingCompleted === 'true') {
+    const onboardingCompleted = localStorage.getItem("onboarding_completed");
+    if (onboardingCompleted === "true") {
       setHasCompletedOnboarding(true);
     }
   }, []);
 
   const login = () => {
-    loginWithRedirect();
+    setIsLocalAuthenticated(true);
   };
 
   const logout = () => {
+    // Clear local authentication state
+    setIsLocalAuthenticated(false);
+
     // Clear onboarding status when logging out
-    localStorage.removeItem('onboarding_completed');
+    localStorage.removeItem("onboarding_completed");
     setHasCompletedOnboarding(false);
 
     // Logout from Auth0
-    auth0Logout({
-      logoutParams: {
-        returnTo: window.location.origin
-      }
-    });
+    if (auth0IsAuthenticated) {
+      auth0Logout({
+        logoutParams: {
+          returnTo: window.location.origin,
+        },
+      });
+    }
   };
 
   const completeOnboarding = () => {
     setHasCompletedOnboarding(true);
-    localStorage.setItem('onboarding_completed', 'true');
+    localStorage.setItem("onboarding_completed", "true");
   };
 
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated: auth0IsAuthenticated,
+        isLocalAuthenticated,
         hasCompletedOnboarding,
         login,
         logout,

@@ -1,11 +1,16 @@
-import {IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact,} from "@ionic/react";
-import {IonReactRouter} from "@ionic/react-router";
-import {Redirect, Route} from "react-router-dom";
+import {
+  IonApp,
+  IonRouterOutlet,
+  IonSplitPane,
+  setupIonicReact,
+} from "@ionic/react";
+import { IonReactRouter } from "@ionic/react-router";
+import { Redirect, Route } from "react-router-dom";
 import Menu from "./components/Menu";
 import Page from "./pages/Page";
 import SplashScreen from "./pages/SplashScreen";
 import OnboardingScreen from "./pages/OnboardingScreen";
-import {AuthProvider, useAuth} from "./contexts/AuthContext";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -40,19 +45,19 @@ import React from "react";
 setupIonicReact();
 
 const AppContent: React.FC = () => {
-  const {isAuthenticated, hasCompletedOnboarding} = useAuth();
+  const { isLocalAuthenticated, hasCompletedOnboarding } = useAuth();
 
-  // Show splash screen if not authenticated
-  if (!isAuthenticated) {
+  // Show splash screen if not locally authenticated
+  if (!isLocalAuthenticated) {
     return <SplashScreen />;
   }
 
-  // Show onboarding screen if authenticated
+  // Show onboarding screen
   if (!hasCompletedOnboarding) {
-    return <OnboardingScreen/>;
+    return <OnboardingScreen />;
   }
 
-  // Show main app if authenticated
+  // Show main app
   return (
     <IonReactRouter>
       <IonSplitPane contentId="main">
