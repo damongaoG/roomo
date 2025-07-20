@@ -64,7 +64,7 @@
   font-family: 'yorkmade', serif;
   margin: 0 0 16px 0;
 
-  color: var(--Main-Black, #000);
+  color: #000;
   font-size: 32px;
   font-style: normal;
   font-weight: 400;
@@ -77,7 +77,7 @@
   width: 100%;
   text-align: left;
 
-  color: var(--Main-Black, #000);
+  color: #000;
   font-family: 'SF Pro', sans-serif;
   font-size: 32px;
   font-style: normal;
@@ -92,7 +92,7 @@
   width: 100%;
   text-align: left;
 
-  color: var(--Main-Black, #000);
+  color: #000;
   font-family: 'SF Pro', sans-serif;
   font-size: 14px;
   font-style: normal;
@@ -186,7 +186,7 @@
   text-decoration: underline;
   cursor: pointer;
 
-  color: var(--Main-Black, #000);
+  color: #000;
   font-family: 'SF Pro', sans-serif;
   font-size: 13px;
   font-style: normal;
