@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {IonButton, IonContent, IonPage} from "@ionic/react";
 import {useAuth} from "../contexts/AuthContext";
+import LoginModal from "../components/LoginModal";
 import "./OnboardingScreen.css";
 
 // Interface for feature items
@@ -21,6 +22,7 @@ const OnboardingScreen: React.FC = () => {
   const [showFeature3, setShowFeature3] = useState(false);
   const [showButton, setShowButton] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const {completeOnboarding} = useAuth();
 
   // Reset animations when step changes
@@ -128,15 +130,21 @@ const OnboardingScreen: React.FC = () => {
         setIsTransitioning(false);
       }, 500);
     } else {
-      // Complete onboarding
-      completeOnboarding();
+      // Show login modal
+      setShowLoginModal(true);
     }
+  };
+
+  // Handle successful login
+  const handleLoginSuccess = () => {
+    setShowLoginModal(false);
+    completeOnboarding();
   };
 
   return (
     <IonPage>
       <IonContent fullscreen>
-        <div className="onboarding-container">
+        <div className={`onboarding-container ${showLoginModal ? "blurred" : ""}`}>
           {/* App title */}
           <h1 className={`onboarding-title ${showTitle ? "visible" : ""}`}>
             ROOMO
@@ -188,6 +196,13 @@ const OnboardingScreen: React.FC = () => {
             </IonButton>
           </div>
         </div>
+
+        {/* Login Modal */}
+        <LoginModal
+          isOpen={showLoginModal}
+          onDismiss={() => setShowLoginModal(false)}
+          onLoginSuccess={handleLoginSuccess}
+        />
       </IonContent>
     </IonPage>
   );

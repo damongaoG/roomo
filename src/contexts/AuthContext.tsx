@@ -1,4 +1,5 @@
-import React, {createContext, ReactNode, useContext, useState} from "react";
+import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
+import {useAuth0} from "@auth0/auth0-react";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -22,33 +23,50 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
+  const {isAuthenticated: auth0IsAuthenticated, loginWithRedirect, logout: auth0Logout} = useAuth0();
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
 
+  // Check onboarding status from localStorage
+  useEffect(() => {
+    const onboardingCompleted = localStorage.getItem('onboarding_completed');
+    if (onboardingCompleted === 'true') {
+      setHasCompletedOnboarding(true);
+    }
+  }, []);
+
   const login = () => {
-    setIsAuthenticated(true);
+    loginWithRedirect();
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
+    // Clear onboarding status when logging out
+    localStorage.removeItem('onboarding_completed');
     setHasCompletedOnboarding(false);
+
+    // Logout from Auth0
+    auth0Logout({
+      logoutParams: {
+        returnTo: window.location.origin
+      }
+    });
   };
 
   const completeOnboarding = () => {
     setHasCompletedOnboarding(true);
+    localStorage.setItem('onboarding_completed', 'true');
   };
 
   return (
-      <AuthContext.Provider
-          value={{
-            isAuthenticated,
-            hasCompletedOnboarding,
-            login,
-            logout,
-            completeOnboarding,
-          }}
-      >
+    <AuthContext.Provider
+      value={{
+        isAuthenticated: auth0IsAuthenticated,
+        hasCompletedOnboarding,
+        login,
+        logout,
+        completeOnboarding,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
