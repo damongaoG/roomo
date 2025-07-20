@@ -6,8 +6,8 @@ import {
   IonModal,
   IonPage,
 } from "@ionic/react";
-import {close} from "ionicons/icons";
-import {useAuth0} from "@auth0/auth0-react";
+import { close } from "ionicons/icons";
+import { useAuth0 } from "@auth0/auth0-react";
 import "./LoginModal.css";
 
 interface LoginModalProps {
@@ -17,11 +17,11 @@ interface LoginModalProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({
-                                                 isOpen,
-                                                 onDismiss,
-                                                 onLoginSuccess,
-                                               }) => {
-  const {loginWithRedirect, isAuthenticated} = useAuth0();
+  isOpen,
+  onDismiss,
+  onLoginSuccess,
+}) => {
+  const { loginWithRedirect, isAuthenticated } = useAuth0();
 
   // Handle social login
   const handleSocialLogin = async (connection: string) => {
@@ -29,7 +29,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
       await loginWithRedirect({
         authorizationParams: {
           connection: connection,
-          screen_hint: 'signup',
+          screen_hint: "signup",
         },
       });
     } catch (error) {
@@ -42,11 +42,11 @@ const LoginModal: React.FC<LoginModalProps> = ({
     try {
       await loginWithRedirect({
         authorizationParams: {
-          screen_hint: 'signup',
+          screen_hint: "signup",
         },
       });
     } catch (error) {
-      console.error('Email login error:', error);
+      console.error("Email login error:", error);
     }
   };
 
@@ -58,7 +58,13 @@ const LoginModal: React.FC<LoginModalProps> = ({
   }, [isAuthenticated, onLoginSuccess]);
 
   return (
-    <IonModal isOpen={isOpen} onDidDismiss={onDismiss} className="login-modal">
+    <IonModal
+      isOpen={isOpen}
+      onDidDismiss={onDismiss}
+      className="login-modal"
+      breakpoints={[0, 1]}
+      initialBreakpoint={1}
+    >
       <IonPage>
         <IonContent fullscreen>
           <div className="login-modal-container">
@@ -68,7 +74,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
               className="close-button"
               onClick={onDismiss}
             >
-              <IonIcon slot="icon-only" icon={close}/>
+              <IonIcon slot="icon-only" icon={close} />
             </IonButton>
 
             {/* Content */}
@@ -86,7 +92,8 @@ const LoginModal: React.FC<LoginModalProps> = ({
 
               {/* Verification text */}
               <p className="login-verification-text">
-                For verification and safety we require you to<br/>
+                For verification and safety we require you to
+                <br />
                 signup/login with one of the below options.
               </p>
 
@@ -96,12 +103,14 @@ const LoginModal: React.FC<LoginModalProps> = ({
                 <IonButton
                   expand="block"
                   className="social-button facebook-button"
-                  onClick={() => handleSocialLogin('facebook')}
+                  onClick={() => handleSocialLogin("facebook")}
                 >
                   <div className="social-button-content">
                     <img
                       className="social-icon"
-                      src="/assets/images/icons/facebook_instance.svg" alt=""/>
+                      src="/assets/images/icons/facebook_instance.svg"
+                      alt=""
+                    />
                   </div>
                 </IonButton>
 
@@ -120,12 +129,14 @@ const LoginModal: React.FC<LoginModalProps> = ({
                 <IonButton
                   expand="block"
                   className="social-button apple-button"
-                  onClick={() => handleSocialLogin('apple')}
+                  onClick={() => handleSocialLogin("apple")}
                 >
                   <div className="social-button-content">
                     <img
                       className="social-icon"
-                      src="/assets/images/icons/apple_vector.svg" alt=""/>
+                      src="/assets/images/icons/apple_vector.svg"
+                      alt=""
+                    />
                   </div>
                 </IonButton>
 
@@ -133,12 +144,14 @@ const LoginModal: React.FC<LoginModalProps> = ({
                 <IonButton
                   expand="block"
                   className="social-button google-button"
-                  onClick={() => handleSocialLogin('google-oauth2')}
+                  onClick={() => handleSocialLogin("google-oauth2")}
                 >
                   <div className="social-button-content">
                     <img
                       className="social-icon"
-                      src="/assets/images/icons/google_vector.svg" alt=""/>
+                      src="/assets/images/icons/google_vector.svg"
+                      alt=""
+                    />
                   </div>
                 </IonButton>
               </div>
