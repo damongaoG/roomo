@@ -8,6 +8,8 @@ import {
 } from '@ionic/react';
 import { close } from 'ionicons/icons';
 import { useAuth0 } from '@auth0/auth0-react';
+import { Browser } from '@capacitor/browser';
+import { Capacitor } from '@capacitor/core';
 import './LoginModal.css';
 
 interface LoginModalProps {
@@ -26,12 +28,30 @@ const LoginModal: React.FC<LoginModalProps> = ({
   // Handle social login
   const handleSocialLogin = async (connection: string) => {
     try {
-      await loginWithRedirect({
-        authorizationParams: {
-          connection: connection,
-          screen_hint: 'signup',
-        },
-      });
+      if (Capacitor.isNativePlatform()) {
+        // Use Capacitor Browser plugin for mobile platforms
+        await loginWithRedirect({
+          authorizationParams: {
+            connection: connection,
+            screen_hint: 'signup',
+          },
+          async openUrl(url) {
+            // Redirect using Capacitor's Browser plugin
+            await Browser.open({
+              url,
+              windowName: '_self',
+            });
+          },
+        });
+      } else {
+        // Use standard web redirect for web platforms
+        await loginWithRedirect({
+          authorizationParams: {
+            connection: connection,
+            screen_hint: 'signup',
+          },
+        });
+      }
     } catch (error) {
       console.error(`${connection} login error:`, error);
     }
@@ -40,11 +60,28 @@ const LoginModal: React.FC<LoginModalProps> = ({
   // Handle email login
   const handleEmailLogin = async () => {
     try {
-      await loginWithRedirect({
-        authorizationParams: {
-          screen_hint: 'signup',
-        },
-      });
+      if (Capacitor.isNativePlatform()) {
+        // Use Capacitor Browser plugin for mobile platforms
+        await loginWithRedirect({
+          authorizationParams: {
+            screen_hint: 'signup',
+          },
+          async openUrl(url) {
+            // Redirect using Capacitor's Browser plugin
+            await Browser.open({
+              url,
+              windowName: '_self',
+            });
+          },
+        });
+      } else {
+        // Use standard web redirect for web platforms
+        await loginWithRedirect({
+          authorizationParams: {
+            screen_hint: 'signup',
+          },
+        });
+      }
     } catch (error) {
       console.error('Email login error:', error);
     }
