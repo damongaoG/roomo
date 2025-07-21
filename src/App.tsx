@@ -6,6 +6,9 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import { App as CapacitorApp } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
 import Menu from './components/Menu';
 import Page from './pages/Page';
 import SplashScreen from './pages/SplashScreen';
@@ -40,12 +43,44 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 setupIonicReact();
 
 const AppContent: React.FC = () => {
   const { isLocalAuthenticated, hasCompletedOnboarding } = useAuth();
+  const { handleRedirectCallback } = useAuth0();
+
+  // Handle deep links for Auth0 callbacks on mobile
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      CapacitorApp.addListener('appUrlOpen', async event => {
+        // Check if the URL is an Auth0 callback
+        if (event.url && event.url.includes('auth0callback')) {
+          try {
+            // Extract the callback parameters from the URL
+            const url = new URL(event.url);
+            const searchParams = url.searchParams;
+
+            // Create a callback URL that Auth0 can process
+            const callbackUrl = `${window.location.origin}${url.pathname}?${searchParams.toString()}`;
+
+            // Handle the Auth0 callback
+            await handleRedirectCallback(callbackUrl);
+          } catch (error) {
+            console.error('Error handling Auth0 callback:', error);
+          }
+        }
+      });
+    }
+
+    // Cleanup listener on unmount
+    return () => {
+      if (Capacitor.isNativePlatform()) {
+        CapacitorApp.removeAllListeners();
+      }
+    };
+  }, [handleRedirectCallback]);
 
   // Show splash screen if not locally authenticated
   if (!isLocalAuthenticated) {

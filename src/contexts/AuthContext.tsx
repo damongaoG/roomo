@@ -31,8 +31,11 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { isAuthenticated: auth0IsAuthenticated, logout: auth0Logout } =
-    useAuth0();
+  const {
+    isAuthenticated: auth0IsAuthenticated,
+    logout: auth0Logout,
+    isLoading: auth0IsLoading,
+  } = useAuth0();
   const [isLocalAuthenticated, setIsLocalAuthenticated] = useState(false);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
 
@@ -43,6 +46,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setHasCompletedOnboarding(true);
     }
   }, []);
+
+  // Watch Auth0 authentication state
+  useEffect(() => {
+    if (!auth0IsLoading && auth0IsAuthenticated) {
+      setIsLocalAuthenticated(true);
+    }
+  }, [auth0IsAuthenticated, auth0IsLoading]);
 
   const login = () => {
     setIsLocalAuthenticated(true);

@@ -21,21 +21,42 @@ Make sure you have the following installed:
 This app uses Auth0 for authentication. To set it up:
 
 1. **Set Allowed Callbacks:**
-   - In your Auth0 Application settings, add to Allowed Callback URLs:
+   - In your Auth0 Application settings, add to **Allowed Callback URLs**:
      ```
      http://localhost:5173
      http://localhost:8100
      capacitor://localhost
-     com.yourcompany.roomo://auth0callback
+     com.roomo.app://auth0callback
      ```
 
-2. **Create .env file:**
+2. **Set Allowed Logout URLs:**
+   - In your Auth0 Application settings, add to **Allowed Logout URLs**:
+     ```
+     http://localhost:5173
+     http://localhost:8100
+     capacitor://localhost
+     com.roomo.app://auth0callback
+     ```
+
+3. **Set Allowed Web Origins:**
+   - In your Auth0 Application settings, add to **Allowed Web Origins**:
+     ```
+     http://localhost:5173
+     http://localhost:8100
+     capacitor://localhost
+     com.roomo.app
+     ```
+
+4. **Create .env file:**
    Create a `.env` file in the root directory with:
+
    ```env
    VITE_AUTH0_DOMAIN=your-auth0-domain.auth0.com
    VITE_AUTH0_CLIENT_ID=your-auth0-client-id
    VITE_AUTH0_REDIRECT_URI=http://localhost:5173
    ```
+
+   **Note:** The mobile app will automatically use `com.roomo.app://auth0callback` as the redirect URI when running on iOS/Android devices.
 
 ---
 
