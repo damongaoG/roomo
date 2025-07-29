@@ -1,0 +1,227 @@
+/* ROOMO Page Styles - Exact replica of uploaded UI design */
+
+.roomo-page {
+  --background: #f8f8f8;
+  padding: 0;
+  margin: 0;
+}
+
+/* ROOMO Brand Header */
+.roomo-brand {
+  text-align: center;
+  padding: 40px 20px 60px;
+  background: #f8f8f8;
+
+  color: #000;
+  font-family: 'yorkmade', serif;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%; /* 32px */
+}
+
+.roomo-brand h1 {
+  margin: 0;
+  letter-spacing: -1px;
+
+  color: #000;
+  font-family: 'yorkmade', serif;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%; /* 32px */
+}
+
+/* Chat Interface */
+.chat-interface {
+  padding: 0 16px 40px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.jenny-chat {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  max-width: 100%;
+}
+
+/* Jenny Avatar */
+.jenny-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.jenny-avatar img {
+  object-fit: contain;
+}
+
+.avatar-label {
+  font-size: 10px;
+  color: #666666;
+  text-align: center;
+  margin-top: 4px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* Chat Bubble */
+.chat-bubble {
+  border-radius: 20px;
+  padding: 16px 20px;
+  margin-top: 8px;
+  max-width: 280px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.2);
+
+  border: 1px solid #278eff;
+  background: #278eff;
+}
+
+.chat-bubble::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 12px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 8px 8px 8px 0;
+  border-color: transparent #278eff transparent transparent;
+
+  fill: #278eff;
+  stroke-width: 1px;
+  stroke: #278eff;
+}
+
+.chat-bubble span {
+  display: block;
+
+  color: #fbfbfb;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 184%; /* 29.44px */
+  letter-spacing: -0.08px;
+}
+
+/* Main Question */
+.main-question {
+  padding: 0 20px 60px;
+  text-align: left;
+}
+
+.main-question span {
+  margin: 0;
+
+  color: #000;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%; /* 28px */
+  letter-spacing: -0.14px;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: absolute;
+  bottom: 38px;
+  width: 100%;
+  padding: 1rem;
+}
+
+.choice-button {
+  --color: #A2A2A2;
+  --background:  #FBFBFB;
+  --background-hover: #f0f0f0;
+  --background-activated: #e8e8e8;
+  --border-radius: 12px;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  text-transform: none;
+  margin: 0;
+  height: auto;
+  min-height: 54px;
+
+  border-radius: 52px;
+  border: 1px solid #F3F4F6;
+
+  font-family: "SF Pro", sans-serif;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 510;
+  line-height: 100%; /* 15px */
+  letter-spacing: -0.075px;
+}
+
+.choice-button:hover {
+  --background: #f0f0f0;
+}
+
+.choice-button:active {
+  --background: #e8e8e8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .roomo-brand {
+    padding: 30px 20px 40px;
+  }
+
+  .roomo-brand h1 {
+    font-size: 40px;
+  }
+
+  .chat-bubble {
+    max-width: calc(100vw - 100px);
+  }
+
+  .main-question {
+    padding: 0 20px 40px;
+  }
+
+  .main-question h2 {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-question h2 {
+    font-size: 20px;
+  }
+
+  .chat-bubble {
+    max-width: calc(100vw - 80px);
+  }
+}
+
+/* Override Ionic default styles */
+.roomo-page ion-content {
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+.roomo-page ion-toolbar {
+  --background: #f8f8f8;
+  --border-width: 0;
+  --min-height: 56px;
+}
+
+.roomo-page ion-header {
+  box-shadow: none;
+}
+
+.roomo-page ion-header::after {
+  display: none;
+}
