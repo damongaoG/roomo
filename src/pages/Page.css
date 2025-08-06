@@ -138,8 +138,8 @@
 }
 
 .choice-button {
-  --color: #A2A2A2;
-  --background:  #FBFBFB;
+  --color: #a2a2a2;
+  --background: #fbfbfb;
   --background-hover: #f0f0f0;
   --background-activated: #e8e8e8;
   --border-radius: 12px;
@@ -153,9 +153,9 @@
   min-height: 54px;
 
   border-radius: 52px;
-  border: 1px solid #F3F4F6;
+  border: 1px solid #f3f4f6;
 
-  font-family: "SF Pro", sans-serif;
+  font-family: 'SF Pro', sans-serif;
   font-size: 15px;
   font-style: normal;
   font-weight: 510;

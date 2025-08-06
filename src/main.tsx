@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { Capacitor } from '@capacitor/core';
+import { SecureTokenCache } from './utils/secureStorage';
 import App from './App';
 
 const container = document.getElementById('root');
@@ -24,6 +25,9 @@ const getRedirectUri = (): string => {
 
 const auth0RedirectUri = getRedirectUri();
 
+// Create token cache
+const secureCache = new SecureTokenCache();
+
 root.render(
   <React.StrictMode>
     <Auth0Provider
@@ -33,7 +37,8 @@ root.render(
         redirect_uri: auth0RedirectUri,
         scope: 'openid profile email',
       }}
-      cacheLocation="localstorage"
+      cache={secureCache}
+      cacheLocation={undefined}
       useRefreshTokens={true}
     >
       <App />
