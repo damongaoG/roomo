@@ -6,10 +6,49 @@ import {
   IonPage,
   IonToolbar,
   IonButton,
+  IonToast,
 } from '@ionic/react';
 import './Page.css';
+import React, { useState } from 'react';
+import { useApiService } from '../service/api';
 
 const Page: React.FC = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toast, setToast] = useState<{
+    isOpen: boolean;
+    message: string;
+    color: 'success' | 'danger';
+  }>({ isOpen: false, message: '', color: 'success' });
+
+  const { setUserRole } = useApiService();
+
+  const handleRoleSelection = async (role: 'looker' | 'lister') => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const result = await setUserRole(role);
+
+      if (result.success && result.data) {
+        console.log('Role set successfully:', result.data);
+      } else {
+        setToast({
+          isOpen: true,
+          message: result.error || 'Failed to set role',
+          color: 'danger',
+        });
+      }
+    } catch (error) {
+      setToast({
+        isOpen: true,
+        message: 'An unexpected error occurred',
+        color: 'danger',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <IonPage>
       <IonContent fullscreen className="roomo-page">
@@ -44,19 +83,27 @@ const Page: React.FC = () => {
           <IonButton
             fill="clear"
             className="choice-button"
-            onClick={() => console.log('Looking for room')}
+            onClick={() => handleRoleSelection('looker')}
           >
-            I'm looking for a room
+            {isSubmitting ? 'Setting...' : "I'm looking for a room"}
           </IonButton>
 
           <IonButton
             fill="clear"
             className="choice-button"
-            onClick={() => console.log('Listing a room')}
+            onClick={() => handleRoleSelection('lister')}
           >
-            I'm listing a room
+            {isSubmitting ? 'Setting...' : "I'm listing a room"}
           </IonButton>
         </div>
+
+        <IonToast
+          isOpen={toast.isOpen}
+          onDidDismiss={() => setToast({ ...toast, isOpen: false })}
+          message={toast.message}
+          duration={3000}
+          color={toast.color}
+        />
       </IonContent>
     </IonPage>
   );
