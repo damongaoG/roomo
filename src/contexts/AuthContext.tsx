@@ -1,15 +1,16 @@
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createContext, ReactNode, useContext, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import {
+  useAppDispatch,
+  useAppSelector,
+  setAuthenticated,
+  login as loginAction,
+  logout as logoutAction,
+  completeOnboarding as completeOnboardingAction,
+} from '../store';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  isLocalAuthenticated: boolean;
   hasCompletedOnboarding: boolean;
   login: () => void;
   logout: () => void;
@@ -31,40 +32,26 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const {
-    isAuthenticated: auth0IsAuthenticated,
-    logout: auth0Logout,
-    isLoading: auth0IsLoading,
-  } = useAuth0();
-  const [isLocalAuthenticated, setIsLocalAuthenticated] = useState(false);
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
+  const { isAuthenticated: auth0IsAuthenticated, logout: auth0Logout } =
+    useAuth0();
 
-  // Check onboarding status from localStorage
-  useEffect(() => {
-    const onboardingCompleted = localStorage.getItem('onboarding_completed');
-    if (onboardingCompleted === 'true') {
-      setHasCompletedOnboarding(true);
-    }
-  }, []);
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, hasCompletedOnboarding } = useAppSelector(
+    state => state.auth
+  );
 
   // Watch Auth0 authentication state
   useEffect(() => {
-    if (!auth0IsLoading && auth0IsAuthenticated) {
-      setIsLocalAuthenticated(true);
-    }
-  }, [auth0IsAuthenticated, auth0IsLoading]);
+    dispatch(setAuthenticated(auth0IsAuthenticated));
+  }, [auth0IsAuthenticated, dispatch]);
 
   const login = () => {
-    setIsLocalAuthenticated(true);
+    dispatch(loginAction());
   };
 
   const logout = () => {
-    // Clear local authentication state
-    setIsLocalAuthenticated(false);
-
-    // Clear onboarding status when logging out
-    localStorage.removeItem('onboarding_completed');
-    setHasCompletedOnboarding(false);
+    // Clear all authentication state via Redux
+    dispatch(logoutAction());
 
     // Logout from Auth0
     if (auth0IsAuthenticated) {
@@ -77,15 +64,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const completeOnboarding = () => {
-    setHasCompletedOnboarding(true);
-    localStorage.setItem('onboarding_completed', 'true');
+    dispatch(completeOnboardingAction());
   };
 
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated: auth0IsAuthenticated,
-        isLocalAuthenticated,
+        isAuthenticated,
         hasCompletedOnboarding,
         login,
         logout,

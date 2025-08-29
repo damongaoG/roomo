@@ -49,7 +49,7 @@ import React, { useEffect } from 'react';
 setupIonicReact();
 
 const AppContent: React.FC = () => {
-  const { isLocalAuthenticated, hasCompletedOnboarding } = useAuth();
+  const { isAuthenticated, hasCompletedOnboarding } = useAuth();
   const { handleRedirectCallback } = useAuth0();
 
   // Handle deep links for Auth0 callbacks on mobile
@@ -76,8 +76,8 @@ const AppContent: React.FC = () => {
     };
   }, [handleRedirectCallback]);
 
-  // Show splash screen if not locally authenticated
-  if (!isLocalAuthenticated) {
+  // Show splash screen if not authenticated
+  if (!isAuthenticated) {
     return <SplashScreen />;
   }
 

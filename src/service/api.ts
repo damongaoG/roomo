@@ -16,14 +16,14 @@ export interface ApiResponse<T = any> {
 }
 
 export const useApiService = () => {
-  const { getAccessToken } = useTokenManager();
+  const { getIdToken } = useTokenManager();
 
   const makeRequest = async <T>(
     endPoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> => {
     try {
-      const token = await getAccessToken();
+      const token = await getIdToken();
 
       const response = await fetch(`${API_BASE_URL}${endPoint}`, {
         headers: {
