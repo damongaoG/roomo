@@ -19,9 +19,6 @@ const authSlice = createSlice({
     setAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload;
-    },
     login: state => {
       state.isAuthenticated = true;
     },
@@ -32,17 +29,10 @@ const authSlice = createSlice({
     completeOnboarding: state => {
       state.hasCompletedOnboarding = true;
     },
-    resetAuth: () => initialState,
   },
 });
 
-export const {
-  setAuthenticated,
-  setLoading,
-  login,
-  logout,
-  completeOnboarding,
-  resetAuth,
-} = authSlice.actions;
+export const { setAuthenticated, login, logout, completeOnboarding } =
+  authSlice.actions;
 
 export default authSlice.reducer;
