@@ -7,7 +7,9 @@ import {
   login as loginAction,
   logout as logoutAction,
   completeOnboarding as completeOnboardingAction,
+  setUserInfo,
 } from '../store';
+import { useApiService } from '../service/api';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -40,10 +42,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     state => state.auth
   );
 
+  const { getUserInfo } = useApiService();
+
   // Watch Auth0 authentication state
   useEffect(() => {
     dispatch(setAuthenticated(auth0IsAuthenticated));
   }, [auth0IsAuthenticated, dispatch]);
+
+  // When authenticated (login or refresh), fetch user profile and store in Redux
+  useEffect(() => {
+    const maybeFetchUserInfo = async () => {
+      if (!auth0IsAuthenticated) return;
+      const res = await getUserInfo();
+      if (res.success && res.data) {
+        const { name, email, role } = res.data;
+        if (name && email && role) {
+          dispatch(setUserInfo({ name, email, role }));
+        }
+      }
+    };
+    maybeFetchUserInfo();
+  }, [auth0IsAuthenticated]);
 
   const login = () => {
     dispatch(loginAction());

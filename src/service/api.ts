@@ -16,6 +16,18 @@ export interface ApiResponse<T = any> {
   error?: string;
 }
 
+export interface UserInfoResponse {
+  id: number;
+  auth0UserId: string;
+  email: string;
+  name: string;
+  pictureUrl?: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+  lastLoginAt?: string;
+}
+
 export const useApiService = () => {
   const { getIdToken, secureLogout } = useTokenManager();
   const history = useHistory();
@@ -78,7 +90,14 @@ export const useApiService = () => {
     });
   };
 
+  const getUserInfo = async (): Promise<ApiResponse<UserInfoResponse>> => {
+    return makeRequest<UserInfoResponse>('/api/auth/user-info', {
+      method: 'GET',
+    });
+  };
+
   return {
     setUserRole,
+    getUserInfo,
   };
 };
