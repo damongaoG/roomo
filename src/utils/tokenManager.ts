@@ -1,6 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { Capacitor } from '@capacitor/core';
 import { secureStorage } from './secureStorage';
+import { useAppDispatch, logout as logoutAction } from '../store';
 
 export class TokenManager {
   static async getIdToken(): Promise<string | null> {
@@ -59,6 +60,7 @@ export class TokenManager {
 export const useTokenManager = () => {
   const { getIdTokenClaims, getAccessTokenSilently, logout, isAuthenticated } =
     useAuth0();
+  const dispatch = useAppDispatch();
 
   const getIdToken = async (): Promise<string | null> => {
     try {
@@ -118,6 +120,9 @@ export const useTokenManager = () => {
     try {
       // Clear secure storage first
       await secureStorage.clearTokens();
+
+      // Update Redux auth state
+      dispatch(logoutAction());
 
       // Logout from Auth0
       logout({
