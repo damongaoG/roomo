@@ -123,24 +123,6 @@
   padding: 0 24px;
 }
 
-.budget-range::part(bar) {
-  background: #a2a2a2;
-  height: 12px;
-  border-radius: 20px;
-}
-
-.budget-range::part(bar-active) {
-  background: #a2a2a2;
-}
-
-.budget-range::part(knob) {
-  width: 20px;
-  height: 20px;
-  background: #fff;
-  border: 1px solid #dcdcdc;
-  box-shadow: none;
-}
-
 .range-labels {
   display: flex;
   justify-content: space-between;
@@ -186,4 +168,13 @@
 
 .next-button.enabled {
   color: #000000;
+}
+
+ion-range {
+  --bar-background: #a2a2a2;
+  --bar-background-active: #000;
+  --bar-height: 11px;
+  --bar-border-radius: 8px;
+  --knob-size: 21px;
+  --pin-color: #fff;
 }
