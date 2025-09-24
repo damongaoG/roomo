@@ -7,6 +7,7 @@ interface AuthState {
   name?: string;
   email?: string;
   role?: string;
+  registrationStep?: string;
 }
 
 const initialState: AuthState = {
@@ -16,6 +17,7 @@ const initialState: AuthState = {
   name: undefined,
   email: undefined,
   role: undefined,
+  registrationStep: undefined,
 };
 
 const authSlice = createSlice({
@@ -34,17 +36,24 @@ const authSlice = createSlice({
       state.name = undefined;
       state.email = undefined;
       state.role = undefined;
+      state.registrationStep = undefined;
     },
     completeOnboarding: state => {
       state.hasCompletedOnboarding = true;
     },
     setUserInfo: (
       state,
-      action: PayloadAction<{ name: string; email: string; role: string }>
+      action: PayloadAction<{
+        name: string;
+        email: string;
+        role: string;
+        registrationStep?: string;
+      }>
     ) => {
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.role = action.payload.role;
+      state.registrationStep = action.payload.registrationStep;
     },
   },
 });

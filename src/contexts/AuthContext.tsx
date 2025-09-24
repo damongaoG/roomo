@@ -55,9 +55,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (!auth0IsAuthenticated) return;
       const res = await getUserInfo();
       if (res.success && res.data) {
-        const { name, email, role } = res.data;
+        const { name, email, role, registrationStep } = res.data;
         if (name && email && role) {
-          dispatch(setUserInfo({ name, email, role }));
+          dispatch(setUserInfo({ name, email, role, registrationStep }));
         }
       }
     };

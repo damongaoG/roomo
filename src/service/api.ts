@@ -26,6 +26,7 @@ export interface UserInfoResponse {
   createdAt: string;
   updatedAt: string;
   lastLoginAt?: string;
+  registrationStep?: string;
 }
 
 export const useApiService = () => {
