@@ -15,6 +15,9 @@ import Page from './pages/Page';
 import SplashScreen from './pages/SplashScreen';
 import OnboardingScreen from './pages/OnboardingScreen';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import LookerRegistration from './pages/LookerRegistration';
+import { useAppSelector } from './store';
+import { selectLookerNeedsRegistration } from './store';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -51,6 +54,9 @@ setupIonicReact();
 const AppContent: React.FC = () => {
   const { isAuthenticated, hasCompletedOnboarding } = useAuth();
   const { handleRedirectCallback } = useAuth0();
+  const lookerNeedsRegistration = useAppSelector(state =>
+    selectLookerNeedsRegistration(state.auth)
+  );
 
   // Handle deep links for Auth0 callbacks on mobile
   useEffect(() => {
@@ -79,6 +85,11 @@ const AppContent: React.FC = () => {
   // Show splash screen if not authenticated
   if (!isAuthenticated) {
     return <SplashScreen />;
+  }
+
+  // LOOKER with empty registrationStep: force show LookerRegistration page
+  if (lookerNeedsRegistration) {
+    return <LookerRegistration />;
   }
 
   // Show onboarding screen

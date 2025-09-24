@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface AuthState {
+export interface AuthState {
   isAuthenticated: boolean;
   hasCompletedOnboarding: boolean;
   isLoading: boolean;
@@ -67,3 +67,12 @@ export const {
 } = authSlice.actions;
 
 export default authSlice.reducer;
+
+export const selectLookerNeedsRegistration = (
+  sliceState: AuthState
+): boolean => {
+  const normalizedRole = sliceState.role
+    ? sliceState.role.toLowerCase()
+    : undefined;
+  return normalizedRole === 'looker' && sliceState.registrationStep === '';
+};
