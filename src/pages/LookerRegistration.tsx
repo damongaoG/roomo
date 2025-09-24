@@ -9,13 +9,12 @@ import {
 } from '@ionic/react';
 import { arrowForward, chevronBack } from 'ionicons/icons';
 import './LookerRegistration.css';
+import { formatAUD, parseAUDInput, clampNumber } from '../utils/currency';
 
 const RANGE_MIN = 0;
 const RANGE_MAX = 2000;
 
-const clamp = (value: number, min: number, max: number) => {
-  return Math.min(max, Math.max(min, value));
-};
+// Numeric clamping is provided by clampNumber util
 
 const LookerRegistration: React.FC = () => {
   const [budgetRange, setBudgetRange] = useState<{
@@ -23,8 +22,8 @@ const LookerRegistration: React.FC = () => {
     upper: number;
   }>({ lower: RANGE_MIN, upper: RANGE_MAX });
   const [touched, setTouched] = useState(false);
-  const [lowerText, setLowerText] = useState(String(RANGE_MIN));
-  const [upperText, setUpperText] = useState(String(RANGE_MAX));
+  const [lowerText, setLowerText] = useState(formatAUD(RANGE_MIN));
+  const [upperText, setUpperText] = useState(formatAUD(RANGE_MAX));
 
   const isNextEnabled = useMemo(
     () => touched && budgetRange.upper > budgetRange.lower,
@@ -50,26 +49,24 @@ const LookerRegistration: React.FC = () => {
   }, []);
 
   const commitLower = useCallback(() => {
-    const parsed = Number(lowerText);
-    const next = Number.isFinite(parsed) ? Math.floor(parsed) : RANGE_MIN;
-    const clamped = clamp(next, RANGE_MIN, budgetRange.upper);
+    const parsed = parseAUDInput(lowerText);
+    const clamped = clampNumber(parsed, RANGE_MIN, budgetRange.upper);
     setBudgetRange(prev => ({ ...prev, lower: clamped }));
-    setLowerText(String(clamped));
+    setLowerText(formatAUD(clamped));
   }, [lowerText, budgetRange.upper]);
 
   const commitUpper = useCallback(() => {
-    const parsed = Number(upperText);
-    const next = Number.isFinite(parsed) ? Math.floor(parsed) : RANGE_MAX;
-    const clamped = clamp(next, budgetRange.lower, RANGE_MAX);
+    const parsed = parseAUDInput(upperText);
+    const clamped = clampNumber(parsed, budgetRange.lower, RANGE_MAX);
     setBudgetRange(prev => ({ ...prev, upper: clamped }));
-    setUpperText(String(clamped));
+    setUpperText(formatAUD(clamped));
   }, [upperText, budgetRange.lower]);
 
   const handleRangeInput = useCallback((e: CustomEvent) => {
     const next = e.detail.value as { lower: number; upper: number };
     setBudgetRange(next);
-    setLowerText(String(next.lower));
-    setUpperText(String(next.upper));
+    setLowerText(formatAUD(next.lower));
+    setUpperText(formatAUD(next.upper));
   }, []);
 
   const handleNext = () => {
@@ -127,7 +124,7 @@ const LookerRegistration: React.FC = () => {
             <div className="pill">
               <IonInput
                 aria-label="Minimum"
-                inputmode="numeric"
+                inputmode="decimal"
                 type="text"
                 value={lowerText}
                 onIonInput={handleLowerInput}
@@ -139,7 +136,7 @@ const LookerRegistration: React.FC = () => {
             <div className="pill">
               <IonInput
                 aria-label="Maximum"
-                inputmode="numeric"
+                inputmode="decimal"
                 type="text"
                 value={upperText}
                 onIonInput={handleUpperInput}
