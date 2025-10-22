@@ -1,0 +1,58 @@
+.subheading {
+  padding: 16px 20px 8px 20px;
+  margin-top: 6rem;
+}
+
+.subheading span {
+  color: #000;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.08px;
+}
+
+.locations-section {
+  padding: 6px 16px 0 16px;
+}
+
+.locations-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 16px;
+}
+
+.location-pill {
+  --background: #fbfbfb;
+  --background-hover: #fbfbfb;
+  --background-activated: #fbfbfb;
+  --border-radius: 24px;
+  --border-color: #eff1f0;
+  --border-style: solid;
+  --border-width: 1px;
+  --padding-start: 18px;
+  --padding-end: 18px;
+  --color: #000;
+  height: 44px;
+  text-transform: none;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.09px;
+}
+
+.location-pill.selected {
+  --background: #000;
+  --color: #fbfbfb;
+}
+
+/* Keyboard focus visibility for accessibility */
+.location-pill:focus-visible {
+  outline: 2px solid #278eff;
+  outline-offset: 2px;
+}
+
+/* Ensure focus ring appears on the native button inside ion-button */
+ion-button.location-pill::part(native):focus-visible {
+  outline: 2px solid #278eff;
+  outline-offset: 2px;
+}
