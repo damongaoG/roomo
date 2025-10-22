@@ -128,10 +128,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 18px 8px 0 8px;
+  gap: 12px;
 }
 
 .pill {
-  width: 138px;
+  width: calc((100% - 12px) / 2);
+  max-width: 180px;
   background: #fbfbfb;
   color: #000;
   border: 1px solid #eff1f0;
@@ -146,7 +148,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 24px;
+  bottom: calc(24px + env(safe-area-inset-bottom));
   padding: 0 16px;
 }
 
@@ -155,10 +157,12 @@
   --background-hover: #fbfbfb;
   --background-activated: #fbfbfb;
   --border-radius: 52px;
+  --border-color: #eff1f0;
+  --border-width: 1px;
+  --border-style: solid;
   --padding-start: 20px;
   --padding-end: 20px;
-  border: 1px solid #eff1f0;
-  color: #a2a2a2;
+  --color: #a2a2a2;
   height: 47px;
   text-transform: none;
   font-family: 'SF Pro', sans-serif;
@@ -168,7 +172,8 @@
 }
 
 .next-button.enabled {
-  color: #000000;
+  --color: #fbfbfb;
+  --background: #000;
 }
 
 ion-range {

@@ -16,6 +16,7 @@ import SplashScreen from './pages/SplashScreen';
 import OnboardingScreen from './pages/OnboardingScreen';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import LookerRegistration from './pages/LookerRegistration';
+import LookerMoveInArea from './pages/LookerMoveInArea';
 import { useAppSelector } from './store';
 import { selectLookerNeedsRegistration } from './store';
 
@@ -60,6 +61,7 @@ const AppContent: React.FC = () => {
 
   // Handle deep links for Auth0 callbacks on mobile
   useEffect(() => {
+    let remove: (() => void) | undefined;
     if (Capacitor.isNativePlatform()) {
       CapacitorApp.addListener('appUrlOpen', async ({ url }) => {
         // Check if the URL is an Auth0 callback
@@ -71,13 +73,15 @@ const AppContent: React.FC = () => {
         }
         // Close the browser after handling the callback
         await Browser.close();
+      }).then(handle => {
+        remove = () => handle.remove();
       });
     }
 
     // Cleanup listener on unmount
     return () => {
-      if (Capacitor.isNativePlatform()) {
-        CapacitorApp.removeAllListeners();
+      if (remove) {
+        remove();
       }
     };
   }, [handleRedirectCallback]);
@@ -89,7 +93,24 @@ const AppContent: React.FC = () => {
 
   // LOOKER with empty registrationStep: force show LookerRegistration page
   if (lookerNeedsRegistration) {
-    return <LookerRegistration />;
+    return (
+      <IonReactRouter>
+        <IonSplitPane contentId="main">
+          <Menu />
+          <IonRouterOutlet id="main">
+            <Route path="/looker/registration" exact={true}>
+              <LookerRegistration />
+            </Route>
+            <Route path="/looker/move-in-area" exact={true}>
+              <LookerMoveInArea />
+            </Route>
+            <Route path="/" exact={true}>
+              <Redirect to="/looker/registration" />
+            </Route>
+          </IonRouterOutlet>
+        </IonSplitPane>
+      </IonReactRouter>
+    );
   }
 
   // Show onboarding screen
@@ -103,6 +124,9 @@ const AppContent: React.FC = () => {
       <IonSplitPane contentId="main">
         <Menu />
         <IonRouterOutlet id="main">
+          <Route path="/looker/move-in-area" exact={true}>
+            <LookerMoveInArea />
+          </Route>
           <Route path="/" exact={true}>
             <Redirect to="/folder/Inbox" />
           </Route>

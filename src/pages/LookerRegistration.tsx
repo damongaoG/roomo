@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   IonPage,
   IonContent,
@@ -10,6 +10,9 @@ import {
 import { arrowForward, chevronBack } from 'ionicons/icons';
 import './LookerRegistration.css';
 import { formatAUD, parseAUDInput, clampNumber } from '../utils/currency';
+import { useAppDispatch } from '../store';
+import { setBudgetRange as setRegistrationBudgetRange } from '../store/slices/registrationSlice';
+import { useHistory } from 'react-router-dom';
 
 const RANGE_MIN = 0;
 const RANGE_MAX = 2000;
@@ -17,60 +20,89 @@ const RANGE_MAX = 2000;
 // Numeric clamping is provided by clampNumber util
 
 const LookerRegistration: React.FC = () => {
-  const [budgetRange, setBudgetRange] = useState<{
-    lower: number;
-    upper: number;
-  }>({ lower: RANGE_MIN, upper: RANGE_MAX });
+  const dispatch = useAppDispatch();
+  const history = useHistory();
+
+  const [weeklyBudget, setWeeklyBudget] = useState<{
+    minBudgetPerWeek: number;
+    maxBudgetPerWeek: number;
+  }>({ minBudgetPerWeek: RANGE_MIN, maxBudgetPerWeek: RANGE_MAX });
   const [touched, setTouched] = useState(false);
-  const [lowerText, setLowerText] = useState(formatAUD(RANGE_MIN));
-  const [upperText, setUpperText] = useState(formatAUD(RANGE_MAX));
+  const [minBudgetText, setMinBudgetText] = useState(formatAUD(RANGE_MIN));
+  const [maxBudgetText, setMaxBudgetText] = useState(formatAUD(RANGE_MAX));
 
-  const isNextEnabled = useMemo(
-    () => touched && budgetRange.upper > budgetRange.lower,
-    [touched, budgetRange]
-  );
+  const isNextEnabled =
+    touched && weeklyBudget.maxBudgetPerWeek > weeklyBudget.minBudgetPerWeek;
 
-  const handleLowerInput = useCallback((e: CustomEvent) => {
+  const handleMinInput = useCallback((e: any) => {
     const raw = (
-      e as CustomEvent<{ value: string | number | null | undefined }>
-    ).detail.value;
+      e as CustomEvent<{ value?: string | number | null | undefined }>
+    ).detail?.value;
     const text = raw == null ? '' : String(raw);
-    setLowerText(text);
+    setMinBudgetText(text);
     setTouched(true);
   }, []);
 
-  const handleUpperInput = useCallback((e: CustomEvent) => {
+  const handleMaxInput = useCallback((e: any) => {
     const raw = (
-      e as CustomEvent<{ value: string | number | null | undefined }>
-    ).detail.value;
+      e as CustomEvent<{ value?: string | number | null | undefined }>
+    ).detail?.value;
     const text = raw == null ? '' : String(raw);
-    setUpperText(text);
+    setMaxBudgetText(text);
     setTouched(true);
   }, []);
 
-  const commitLower = useCallback(() => {
-    const parsed = parseAUDInput(lowerText);
-    const clamped = clampNumber(parsed, RANGE_MIN, budgetRange.upper);
-    setBudgetRange(prev => ({ ...prev, lower: clamped }));
-    setLowerText(formatAUD(clamped));
-  }, [lowerText, budgetRange.upper]);
+  const commitMin = useCallback(() => {
+    const parsed = parseAUDInput(minBudgetText);
+    const clamped = clampNumber(
+      parsed,
+      RANGE_MIN,
+      weeklyBudget.maxBudgetPerWeek
+    );
+    setWeeklyBudget(prev => ({ ...prev, minBudgetPerWeek: clamped }));
+    setMinBudgetText(formatAUD(clamped));
+  }, [minBudgetText, weeklyBudget.maxBudgetPerWeek]);
 
-  const commitUpper = useCallback(() => {
-    const parsed = parseAUDInput(upperText);
-    const clamped = clampNumber(parsed, budgetRange.lower, RANGE_MAX);
-    setBudgetRange(prev => ({ ...prev, upper: clamped }));
-    setUpperText(formatAUD(clamped));
-  }, [upperText, budgetRange.lower]);
+  const commitMax = useCallback(() => {
+    const parsed = parseAUDInput(maxBudgetText);
+    const clamped = clampNumber(
+      parsed,
+      weeklyBudget.minBudgetPerWeek,
+      RANGE_MAX
+    );
+    setWeeklyBudget(prev => ({ ...prev, maxBudgetPerWeek: clamped }));
+    setMaxBudgetText(formatAUD(clamped));
+  }, [maxBudgetText, weeklyBudget.minBudgetPerWeek]);
 
-  const handleRangeInput = useCallback((e: CustomEvent) => {
-    const next = e.detail.value as { lower: number; upper: number };
-    setBudgetRange(next);
-    setLowerText(formatAUD(next.lower));
-    setUpperText(formatAUD(next.upper));
+  const handleRangeInput = useCallback((e: any) => {
+    const value = (
+      e as CustomEvent<{ value: number | { lower: number; upper: number } }>
+    ).detail.value;
+    if (
+      value &&
+      typeof value === 'object' &&
+      'lower' in value &&
+      'upper' in value
+    ) {
+      const next = value as { lower: number; upper: number };
+      setWeeklyBudget({
+        minBudgetPerWeek: next.lower,
+        maxBudgetPerWeek: next.upper,
+      });
+      setMinBudgetText(formatAUD(next.lower));
+      setMaxBudgetText(formatAUD(next.upper));
+    }
   }, []);
 
   const handleNext = () => {
     if (!isNextEnabled) return;
+    dispatch(
+      setRegistrationBudgetRange({
+        minBudgetPerWeek: weeklyBudget.minBudgetPerWeek,
+        maxBudgetPerWeek: weeklyBudget.maxBudgetPerWeek,
+      })
+    );
+    history.push('/looker/move-in-area');
   };
 
   return (
@@ -82,7 +114,7 @@ const LookerRegistration: React.FC = () => {
             aria-label="Back"
             className="back-btn"
             fill="clear"
-            onClick={() => window.history.back()}
+            onClick={() => history.goBack()}
           >
             <IonIcon icon={chevronBack} />
           </IonButton>
@@ -115,7 +147,10 @@ const LookerRegistration: React.FC = () => {
             max={RANGE_MAX}
             step={10}
             dualKnobs={true}
-            value={budgetRange}
+            value={{
+              lower: weeklyBudget.minBudgetPerWeek,
+              upper: weeklyBudget.maxBudgetPerWeek,
+            }}
             onIonInput={handleRangeInput}
             onIonChange={() => setTouched(true)}
           />
@@ -126,10 +161,11 @@ const LookerRegistration: React.FC = () => {
                 aria-label="Minimum"
                 inputmode="decimal"
                 type="text"
-                value={lowerText}
-                onIonInput={handleLowerInput}
-                onIonChange={commitLower}
-                onIonBlur={commitLower}
+                value={minBudgetText}
+                onIonInput={handleMinInput}
+                onIonChange={commitMin}
+                onIonBlur={commitMin}
+                debounce={150}
                 placeholder="Minimum"
               />
             </div>
@@ -138,10 +174,11 @@ const LookerRegistration: React.FC = () => {
                 aria-label="Maximum"
                 inputmode="decimal"
                 type="text"
-                value={upperText}
-                onIonInput={handleUpperInput}
-                onIonChange={commitUpper}
-                onIonBlur={commitUpper}
+                value={maxBudgetText}
+                onIonInput={handleMaxInput}
+                onIonChange={commitMax}
+                onIonBlur={commitMax}
+                debounce={150}
                 placeholder="Maximum"
               />
             </div>
@@ -152,7 +189,7 @@ const LookerRegistration: React.FC = () => {
         <div className="bottom-actions">
           <IonButton
             expand="block"
-            fill="clear"
+            fill="solid"
             className={`next-button${isNextEnabled ? ' enabled' : ''}`}
             disabled={!isNextEnabled}
             onClick={handleNext}
