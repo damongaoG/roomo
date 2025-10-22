@@ -1,11 +1,31 @@
+.looker-scope,
+:root {
+  /* Scoped custom properties (unique prefix to avoid conflicts) */
+  --looker-focus-ring-color: #278eff;
+  --looker-focus-ring: 2px solid var(--looker-focus-ring-color);
+  --looker-pill-fg: #000;
+  --looker-pill-bg: #fbfbfb;
+  --looker-pill-border-color: #eff1f0;
+  --looker-pill-fg-selected: #fbfbfb;
+  --looker-pill-bg-selected: #000;
+}
+
 .subheading {
   padding: 16px 20px 8px 20px;
   margin-top: 6rem;
 }
 
 .subheading span {
-  color: #000;
-  font-family: 'SF Pro', sans-serif;
+  color: var(--looker-pill-fg);
+  font-family:
+    'SF Pro',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
   font-size: 16px;
   font-weight: 400;
   letter-spacing: -0.08px;
@@ -22,37 +42,58 @@
 }
 
 .location-pill {
-  --background: #fbfbfb;
-  --background-hover: #fbfbfb;
-  --background-activated: #fbfbfb;
+  --background: var(--looker-pill-bg);
+  --background-hover: var(--looker-pill-bg);
+  --background-activated: var(--looker-pill-bg);
   --border-radius: 24px;
-  --border-color: #eff1f0;
+  --border-color: var(--looker-pill-border-color);
   --border-style: solid;
   --border-width: 1px;
   --padding-start: 18px;
   --padding-end: 18px;
-  --color: #000;
-  height: 44px;
+  --color: var(--looker-pill-fg);
+  min-height: 44px;
   text-transform: none;
-  font-family: 'SF Pro', sans-serif;
+  font-family:
+    'SF Pro',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
   font-size: 18px;
   font-weight: 500;
   letter-spacing: -0.09px;
 }
 
 .location-pill.selected {
-  --background: #000;
-  --color: #fbfbfb;
+  --background: var(--looker-pill-bg-selected);
+  --color: var(--looker-pill-fg-selected);
 }
 
 /* Keyboard focus visibility for accessibility */
 .location-pill:focus-visible {
-  outline: 2px solid #278eff;
+  outline: var(--looker-focus-ring);
   outline-offset: 2px;
 }
 
 /* Ensure focus ring appears on the native button inside ion-button */
 ion-button.location-pill::part(native):focus-visible {
-  outline: 2px solid #278eff;
+  outline: var(--looker-focus-ring);
   outline-offset: 2px;
+}
+
+/* Safari/edge fallback: show outline when descendants receive focus */
+ion-button.location-pill:focus-within::part(native) {
+  outline: var(--looker-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Long label safety (no visual change unless width is constrained elsewhere) */
+ion-button.location-pill::part(native) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

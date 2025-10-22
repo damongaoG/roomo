@@ -4,6 +4,8 @@ import { arrowForward, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import './LookerRegistration.css';
 import './LookerMoveInArea.css';
+import { useAppDispatch } from '../store';
+import { setSuburb } from '../store/slices/registrationSlice';
 
 const LOCATIONS = [
   'All of Melbourne',
@@ -22,6 +24,7 @@ type Location = (typeof LOCATIONS)[number];
 
 const LookerMoveInArea: React.FC = () => {
   const history = useHistory();
+  const dispatch = useAppDispatch();
   const [selected, setSelected] = useState<Location | null>(null);
 
   const handleSelect = useCallback((loc: Location) => {
@@ -36,14 +39,9 @@ const LookerMoveInArea: React.FC = () => {
 
   const handleNext = useCallback(() => {
     if (!isNextEnabled) return;
-    // Placeholder for navigation to the next step
-    // e.g., history.push('/looker/next-step');
-    // For now, log selection in development only
-    if (import.meta.env.DEV) {
-      // eslint-disable-next-line no-console
-      console.log('Selected move-in area:', selected);
-    }
-  }, [isNextEnabled, selected]);
+    dispatch(setSuburb(selected as string));
+    history.push('/looker/move-in-date');
+  }, [dispatch, history, isNextEnabled, selected]);
 
   return (
     <IonPage>

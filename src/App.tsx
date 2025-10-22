@@ -17,6 +17,7 @@ import OnboardingScreen from './pages/OnboardingScreen';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import LookerRegistration from './pages/LookerRegistration';
 import LookerMoveInArea from './pages/LookerMoveInArea';
+import LookerMoveInDate from './pages/LookerMoveInDate';
 import { useAppSelector } from './store';
 import { selectLookerNeedsRegistration } from './store';
 
@@ -104,6 +105,9 @@ const AppContent: React.FC = () => {
             <Route path="/looker/move-in-area" exact={true}>
               <LookerMoveInArea />
             </Route>
+            <Route path="/looker/move-in-date" exact={true}>
+              <LookerMoveInDate />
+            </Route>
             <Route path="/" exact={true}>
               <Redirect to="/looker/registration" />
             </Route>
@@ -126,6 +130,9 @@ const AppContent: React.FC = () => {
         <IonRouterOutlet id="main">
           <Route path="/looker/move-in-area" exact={true}>
             <LookerMoveInArea />
+          </Route>
+          <Route path="/looker/move-in-date" exact={true}>
+            <LookerMoveInDate />
           </Route>
           <Route path="/" exact={true}>
             <Redirect to="/folder/Inbox" />
