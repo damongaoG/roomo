@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   IonButton,
   IonContent,
   IonIcon,
   IonModal,
   IonPage,
+  IonInput,
+  IonToast,
 } from '@ionic/react';
 import { close } from 'ionicons/icons';
-import { useAuth0 } from '@auth0/auth0-react';
-import { Browser } from '@capacitor/browser';
-import { Capacitor } from '@capacitor/core';
+import { supabase } from '../service/supabaseClient';
 import './LoginModal.css';
 
 interface LoginModalProps {
@@ -23,76 +23,68 @@ const LoginModal: React.FC<LoginModalProps> = ({
   onDismiss,
   onLoginSuccess,
 }) => {
-  const { loginWithRedirect, isAuthenticated } = useAuth0();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState<{
+    isOpen: boolean;
+    message: string;
+    color: 'success' | 'danger';
+  }>({ isOpen: false, message: '', color: 'success' });
 
-  // Handle social login
-  const handleSocialLogin = async (connection: string) => {
+  const handleSignUp = async () => {
+    if (loading) return;
+    setLoading(true);
     try {
-      if (Capacitor.isNativePlatform()) {
-        // Use Capacitor Browser plugin for mobile platforms
-        await loginWithRedirect({
-          authorizationParams: {
-            connection: connection,
-            screen_hint: 'signup',
-          },
-          async openUrl(url) {
-            // Redirect using Capacitor's Browser plugin
-            await Browser.open({
-              url,
-              windowName: '_self',
-            });
-          },
-        });
-      } else {
-        // Use standard web redirect for web platforms
-        await loginWithRedirect({
-          authorizationParams: {
-            connection: connection,
-            screen_hint: 'signup',
-          },
-        });
-      }
-    } catch (error) {
-      console.error(`${connection} login error:`, error);
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) throw error;
+      const hasSession = !!data.session;
+      setToast({
+        isOpen: true,
+        message: hasSession
+          ? 'Signed up successfully'
+          : 'Signed up successfully, please verify your email to login',
+        color: 'success',
+      });
+      if (hasSession && onLoginSuccess) onLoginSuccess();
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Sign up failed';
+      setToast({ isOpen: true, message, color: 'danger' });
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Handle email login
-  const handleEmailLogin = async () => {
+  const handleSignIn = async () => {
+    if (loading) return;
+    setLoading(true);
     try {
-      if (Capacitor.isNativePlatform()) {
-        // Use Capacitor Browser plugin for mobile platforms
-        await loginWithRedirect({
-          authorizationParams: {
-            screen_hint: 'signup',
-          },
-          async openUrl(url) {
-            // Redirect using Capacitor's Browser plugin
-            await Browser.open({
-              url,
-              windowName: '_self',
-            });
-          },
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      if (data.session) {
+        setToast({
+          isOpen: true,
+          message: 'Signed in successfully',
+          color: 'success',
         });
+        if (onLoginSuccess) onLoginSuccess();
       } else {
-        // Use standard web redirect for web platforms
-        await loginWithRedirect({
-          authorizationParams: {
-            screen_hint: 'signup',
-          },
+        setToast({
+          isOpen: true,
+          message: 'Please verify your email to login',
+          color: 'danger',
         });
       }
-    } catch (error) {
-      console.error('Email login error:', error);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Sign in failed';
+      setToast({ isOpen: true, message, color: 'danger' });
+    } finally {
+      setLoading(false);
     }
   };
-
-  // Check if authenticated and call success callback
-  React.useEffect(() => {
-    if (isAuthenticated && onLoginSuccess) {
-      onLoginSuccess();
-    }
-  }, [isAuthenticated, onLoginSuccess]);
 
   return (
     <IonModal
@@ -134,61 +126,42 @@ const LoginModal: React.FC<LoginModalProps> = ({
                 signup/login with one of the below options.
               </p>
 
-              {/* Login buttons */}
+              {/* Email & Password */}
               <div className="login-buttons">
-                {/* Facebook */}
-                <IonButton
-                  expand="block"
-                  className="social-button facebook-button"
-                  onClick={() => handleSocialLogin('facebook')}
-                >
-                  <div className="social-button-content">
-                    <img
-                      className="social-icon"
-                      src="/assets/images/icons/facebook_instance.svg"
-                      alt=""
-                    />
-                  </div>
-                </IonButton>
-
-                {/* Email */}
+                <div style={{ width: '100%', marginBottom: 12 }}>
+                  <IonInput
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onIonChange={e => setEmail(e.detail.value || '')}
+                  />
+                </div>
+                <div style={{ width: '100%', marginBottom: 12 }}>
+                  <IonInput
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onIonChange={e => setPassword(e.detail.value || '')}
+                  />
+                </div>
                 <IonButton
                   expand="block"
                   className="social-button email-button"
-                  onClick={handleEmailLogin}
+                  onClick={handleSignIn}
+                  disabled={loading}
                 >
                   <div className="social-button-content">
-                    <span>Email</span>
+                    <span>{loading ? 'Loading...' : 'Login'}</span>
                   </div>
                 </IonButton>
-
-                {/* Apple */}
                 <IonButton
                   expand="block"
-                  className="social-button apple-button"
-                  onClick={() => handleSocialLogin('apple')}
+                  className="social-button facebook-button"
+                  onClick={handleSignUp}
+                  disabled={loading}
                 >
                   <div className="social-button-content">
-                    <img
-                      className="social-icon"
-                      src="/assets/images/icons/apple_vector.svg"
-                      alt=""
-                    />
-                  </div>
-                </IonButton>
-
-                {/* Google */}
-                <IonButton
-                  expand="block"
-                  className="social-button google-button"
-                  onClick={() => handleSocialLogin('google-oauth2')}
-                >
-                  <div className="social-button-content">
-                    <img
-                      className="social-icon"
-                      src="/assets/images/icons/google_vector.svg"
-                      alt=""
-                    />
+                    <span>{loading ? 'Loading...' : 'Sign up'}</span>
                   </div>
                 </IonButton>
               </div>
@@ -202,6 +175,13 @@ const LoginModal: React.FC<LoginModalProps> = ({
           </div>
         </IonContent>
       </IonPage>
+      <IonToast
+        isOpen={toast.isOpen}
+        onDidDismiss={() => setToast({ ...toast, isOpen: false })}
+        message={toast.message}
+        duration={2500}
+        color={toast.color}
+      />
     </IonModal>
   );
 };

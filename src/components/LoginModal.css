@@ -119,7 +119,7 @@
 /* Login buttons container */
 .login-buttons {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   grid-gap: 12px;
   margin-bottom: 16px;
   width: 100%;
@@ -146,7 +146,7 @@
   letter-spacing: 0;
   --box-shadow: none;
 
-  width: 173px;
+  width: 100%;
   height: 47px;
   flex-shrink: 0;
 }
@@ -222,5 +222,11 @@
   .social-button {
     height: 44px;
     font-size: 15px;
+  }
+}
+
+@media (max-width: 400px) {
+  .login-buttons {
+    grid-template-columns: 1fr;
   }
 }

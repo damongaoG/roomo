@@ -1,16 +1,16 @@
-import { useTokenManager } from '../utils/tokenManager';
 import { useHistory } from 'react-router';
+import { supabase } from './supabaseClient';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export interface SetUserRoleResponse<T = any> {
+export interface SetUserRoleResponse<T = unknown> {
   success: boolean;
   message: string;
   userId: string;
   role: string;
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -30,7 +30,6 @@ export interface UserInfoResponse {
 }
 
 export const useApiService = () => {
-  const { getIdToken, secureLogout } = useTokenManager();
   const history = useHistory();
 
   const makeRequest = async <T>(
@@ -38,12 +37,13 @@ export const useApiService = () => {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> => {
     try {
-      const token = await getIdToken();
+      const sessionResult = await supabase.auth.getSession();
+      const accessToken = sessionResult.data.session?.access_token;
 
       const response = await fetch(`${API_BASE_URL}${endPoint}`, {
         headers: {
           'Content-Type': 'application/json',
-          ...(token && { Authorization: `Bearer ${token}` }),
+          ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
           ...options.headers,
         },
         ...options,
@@ -52,13 +52,13 @@ export const useApiService = () => {
       // Global 401 handling: log out and route to login entry
       if (response.status === 401) {
         try {
-          await secureLogout();
-        } catch (e) {
+          await supabase.auth.signOut();
+        } catch {
           // fall through to local navigation if logout fails
         }
         try {
           history.replace('/');
-        } catch (e) {
+        } catch {
           // no-op: navigation best-effort
         }
         return {
@@ -71,8 +71,8 @@ export const useApiService = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      return { success: true, data };
+      const json = (await response.json()) as T;
+      return { success: true, data: json };
     } catch (error) {
       console.error('API request failed:', error);
       return {
@@ -91,14 +91,7 @@ export const useApiService = () => {
     });
   };
 
-  const getUserInfo = async (): Promise<ApiResponse<UserInfoResponse>> => {
-    return makeRequest<UserInfoResponse>('/api/auth/user-info', {
-      method: 'GET',
-    });
-  };
-
   return {
     setUserRole,
-    getUserInfo,
   };
 };

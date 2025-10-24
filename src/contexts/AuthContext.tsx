@@ -1,22 +1,17 @@
-import React, { createContext, ReactNode, useContext, useEffect } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
-import {
-  useAppDispatch,
-  useAppSelector,
-  setAuthenticated,
-  login as loginAction,
-  logout as logoutAction,
-  completeOnboarding as completeOnboardingAction,
-  setUserInfo,
-} from '../store';
-import { useApiService } from '../service/api';
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import { supabase, hasStoredSession } from '../service/supabaseClient';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  hasCompletedOnboarding: boolean;
   login: () => void;
   logout: () => void;
-  completeOnboarding: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,66 +29,46 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { isAuthenticated: auth0IsAuthenticated, logout: auth0Logout } =
-    useAuth0();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const dispatch = useAppDispatch();
-  const { isAuthenticated, hasCompletedOnboarding } = useAppSelector(
-    state => state.auth
-  );
-
-  const { getUserInfo } = useApiService();
-
-  // Watch Auth0 authentication state
+  // Initialize auth & onboarding
   useEffect(() => {
-    dispatch(setAuthenticated(auth0IsAuthenticated));
-  }, [auth0IsAuthenticated, dispatch]);
-
-  // When authenticated (login or refresh), fetch user profile and store in Redux
-  useEffect(() => {
-    const maybeFetchUserInfo = async () => {
-      if (!auth0IsAuthenticated) return;
-      const res = await getUserInfo();
-      if (res.success && res.data) {
-        const { name, email, role, registrationStep } = res.data;
-        if (name && email && role) {
-          dispatch(setUserInfo({ name, email, role, registrationStep }));
-        }
-      }
+    const init = async () => {
+      const exists = await hasStoredSession();
+      setIsAuthenticated(exists);
     };
-    maybeFetchUserInfo();
-  }, [auth0IsAuthenticated]);
+    init();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (_event: AuthChangeEvent, session: Session | null) => {
+        setIsAuthenticated(!!session);
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  // Profile fetching happens in onAuthStateChange when session is present
 
   const login = () => {
-    dispatch(loginAction());
+    setIsAuthenticated(true);
   };
 
-  const logout = () => {
-    // Clear all authentication state via Redux
-    dispatch(logoutAction());
-
-    // Logout from Auth0
-    if (auth0IsAuthenticated) {
-      auth0Logout({
-        logoutParams: {
-          returnTo: window.location.origin,
-        },
-      });
-    }
-  };
-
-  const completeOnboarding = () => {
-    dispatch(completeOnboardingAction());
+  const logout = async () => {
+    setIsAuthenticated(false);
+    try {
+      await supabase.auth.signOut();
+    } catch {}
   };
 
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
-        hasCompletedOnboarding,
         login,
         logout,
-        completeOnboarding,
       }}
     >
       {children}

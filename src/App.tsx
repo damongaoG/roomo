@@ -3,23 +3,21 @@ import {
   IonRouterOutlet,
   IonSplitPane,
   setupIonicReact,
+  IonLoading,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
-import { App as CapacitorApp } from '@capacitor/app';
-import { Browser } from '@capacitor/browser';
-import { Capacitor } from '@capacitor/core';
 import Menu from './components/Menu';
-import Page from './pages/Page';
-import SplashScreen from './pages/SplashScreen';
-import OnboardingScreen from './pages/OnboardingScreen';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import LookerRegistration from './pages/LookerRegistration';
-import LookerMoveInArea from './pages/LookerMoveInArea';
-import LookerMoveInDate from './pages/LookerMoveInDate';
-import { useAppSelector } from './store';
-import { selectLookerNeedsRegistration } from './store';
+import React, { Suspense } from 'react';
+
+const SplashScreen = React.lazy(() => import('./pages/SplashScreen'));
+const OnboardingScreen = React.lazy(() => import('./pages/OnboardingScreen'));
+const LookerRegistration = React.lazy(
+  () => import('./pages/LookerRegistration')
+);
+const LookerMoveInArea = React.lazy(() => import('./pages/LookerMoveInArea'));
+const LookerMoveInDate = React.lazy(() => import('./pages/LookerMoveInDate'));
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -49,97 +47,57 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import React, { useEffect } from 'react';
 
 setupIonicReact();
 
-const AppContent: React.FC = () => {
-  const { isAuthenticated, hasCompletedOnboarding } = useAuth();
-  const { handleRedirectCallback } = useAuth0();
-  const lookerNeedsRegistration = useAppSelector(state =>
-    selectLookerNeedsRegistration(state.auth)
+const RootRedirect: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? (
+    <Redirect to="/looker/registration" />
+  ) : (
+    <Redirect to="/splash" />
   );
+};
 
-  // Handle deep links for Auth0 callbacks on mobile
-  useEffect(() => {
-    let remove: (() => void) | undefined;
-    if (Capacitor.isNativePlatform()) {
-      CapacitorApp.addListener('appUrlOpen', async ({ url }) => {
-        // Check if the URL is an Auth0 callback
-        if (
-          url.includes('state') &&
-          (url.includes('code') || url.includes('error'))
-        ) {
-          await handleRedirectCallback(url);
-        }
-        // Close the browser after handling the callback
-        await Browser.close();
-      }).then(handle => {
-        remove = () => handle.remove();
-      });
-    }
-
-    // Cleanup listener on unmount
-    return () => {
-      if (remove) {
-        remove();
-      }
-    };
-  }, [handleRedirectCallback]);
-
-  // Show splash screen if not authenticated
-  if (!isAuthenticated) {
-    return <SplashScreen />;
-  }
-
-  // LOOKER with empty registrationStep: force show LookerRegistration page
-  if (lookerNeedsRegistration) {
-    return (
-      <IonReactRouter>
-        <IonSplitPane contentId="main">
-          <Menu />
-          <IonRouterOutlet id="main">
-            <Route path="/looker/registration" exact={true}>
-              <LookerRegistration />
-            </Route>
-            <Route path="/looker/move-in-area" exact={true}>
-              <LookerMoveInArea />
-            </Route>
-            <Route path="/looker/move-in-date" exact={true}>
-              <LookerMoveInDate />
-            </Route>
-            <Route path="/" exact={true}>
-              <Redirect to="/looker/registration" />
-            </Route>
-          </IonRouterOutlet>
-        </IonSplitPane>
-      </IonReactRouter>
-    );
-  }
-
-  // Show onboarding screen
-  if (!hasCompletedOnboarding) {
-    return <OnboardingScreen />;
-  }
-
-  // Show main app
+const AppContent: React.FC = () => {
   return (
     <IonReactRouter>
       <IonSplitPane contentId="main">
         <Menu />
         <IonRouterOutlet id="main">
-          <Route path="/looker/move-in-area" exact={true}>
-            <LookerMoveInArea />
-          </Route>
-          <Route path="/looker/move-in-date" exact={true}>
-            <LookerMoveInDate />
-          </Route>
-          <Route path="/" exact={true}>
-            <Redirect to="/folder/Inbox" />
-          </Route>
-          <Route path="/folder/:name" exact={true}>
-            <Page />
-          </Route>
+          <Suspense fallback={<IonLoading isOpen message="Loading..." />}>
+            {/* Entry decides by auth state */}
+            <Route path="/" exact={true} render={() => <RootRedirect />} />
+
+            {/* Splash and Onboarding */}
+            <Route path="/splash" exact={true} component={SplashScreen} />
+            <Route
+              path="/onboarding"
+              exact={true}
+              component={OnboardingScreen}
+            />
+
+            {/* Looker registration flow */}
+            <Route
+              path="/looker/registration"
+              exact={true}
+              component={LookerRegistration}
+            />
+            <Route
+              path="/looker/move-in-area"
+              exact={true}
+              component={LookerMoveInArea}
+            />
+            <Route
+              path="/looker/move-in-date"
+              exact={true}
+              component={LookerMoveInDate}
+            />
+
+            {/*<Route path="/folder/:name" exact={true}>*/}
+            {/*  <Page />*/}
+            {/*</Route>*/}
+          </Suspense>
         </IonRouterOutlet>
       </IonSplitPane>
     </IonReactRouter>

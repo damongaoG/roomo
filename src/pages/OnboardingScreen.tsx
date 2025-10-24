@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonButton, IonContent, IonPage } from '@ionic/react';
-import { useAuth } from '../contexts/AuthContext';
+import { IonButton, IonContent, IonPage, useIonRouter } from '@ionic/react';
 import LoginModal from '../components/LoginModal';
 import './OnboardingScreen.css';
 
@@ -23,7 +22,7 @@ const OnboardingScreen: React.FC = () => {
   const [showButton, setShowButton] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const { completeOnboarding } = useAuth();
+  const router = useIonRouter();
 
   // Reset animations when step changes
   useEffect(() => {
@@ -138,7 +137,8 @@ const OnboardingScreen: React.FC = () => {
   // Handle successful login
   const handleLoginSuccess = () => {
     setShowLoginModal(false);
-    completeOnboarding();
+    // Navigate to the registration flow after successful login
+    router.push('/looker/registration', 'root', 'replace');
   };
 
   return (

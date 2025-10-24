@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonButton, IonContent, IonPage } from '@ionic/react';
-import { useAuth } from '../contexts/AuthContext';
+import { IonButton, IonContent, IonPage, useIonRouter } from '@ionic/react';
 import './SplashScreen.css';
 
 const SplashScreen: React.FC = () => {
@@ -10,7 +9,7 @@ const SplashScreen: React.FC = () => {
   const [showSubtitle, setShowSubtitle] = useState(false);
   const [showTagline, setShowTagline] = useState(false);
   const [showLoginButton, setShowLoginButton] = useState(false);
-  const { login } = useAuth();
+  const router = useIonRouter();
 
   useEffect(() => {
     // Start logo fade in immediately
@@ -61,12 +60,17 @@ const SplashScreen: React.FC = () => {
             <img
               src="/assets/images/backgrounds/background-1.png"
               alt="Background"
+              decoding="async"
             />
           </div>
 
           {/* Logo - always visible after initial fade in */}
           <div className={`logo-container ${showLogo ? 'visible' : ''}`}>
-            <img src="/assets/images/logos/jenny-logo.png" alt="Jenny Logo" />
+            <img
+              src="/assets/images/logos/jenny-logo.png"
+              alt="Jenny Logo"
+              decoding="async"
+            />
           </div>
 
           {/* Text content container */}
@@ -92,12 +96,18 @@ const SplashScreen: React.FC = () => {
               showLoginButton ? 'visible' : ''
             }`}
           >
-            <IonButton expand="block" onClick={login} className="login-button">
+            <IonButton
+              expand="block"
+              onClick={() => router.push('/onboarding', 'root', 'replace')}
+              className="login-button"
+            >
               Let's get started
               <img
                 style={{ marginLeft: '8px' }}
                 src="/assets/images/icons/Arrow.svg"
                 alt="Right Arrow"
+                decoding="async"
+                loading="lazy"
               />
             </IonButton>
           </div>

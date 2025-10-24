@@ -1,11 +1,9 @@
 import { Preferences } from '@capacitor/preferences';
-import { ICache } from '@auth0/auth0-react';
-import { an } from 'vitest/dist/reporters-5f784f42';
 
-export class SecureTokenCache implements ICache {
+export class SecureTokenCache {
   private readonly keyPrefix = 'auth0_secure_';
 
-  async set<T = any>(key: string, entry: T): Promise<void> {
+  async set<T = unknown>(key: string, entry: T): Promise<void> {
     try {
       const value = typeof entry === 'string' ? entry : JSON.stringify(entry);
       await Preferences.set({
@@ -18,7 +16,7 @@ export class SecureTokenCache implements ICache {
     }
   }
 
-  async get<T = any>(key: string): Promise<T | undefined> {
+  async get<T = unknown>(key: string): Promise<T | undefined> {
     try {
       const result = await Preferences.get({
         key: this.keyPrefix + key,

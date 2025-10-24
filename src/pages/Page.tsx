@@ -1,13 +1,4 @@
-import {
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonMenuButton,
-  IonPage,
-  IonToolbar,
-  IonButton,
-  IonToast,
-} from '@ionic/react';
+import { IonContent, IonPage, IonButton, IonToast } from '@ionic/react';
 import './Page.css';
 import React, { useState } from 'react';
 import { useApiService } from '../service/api';
@@ -40,6 +31,7 @@ const Page: React.FC = () => {
         });
       }
     } catch (error) {
+      console.error('Error setting role:', error);
       setToast({
         isOpen: true,
         message: 'An unexpected error occurred',
