@@ -3,13 +3,14 @@ import {
   IonRouterOutlet,
   IonSplitPane,
   setupIonicReact,
-  IonLoading,
+  IonSpinner,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, useLocation } from 'react-router-dom';
 import Menu from './components/Menu';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
+import { loadingController } from '@ionic/core';
 
 const SplashScreen = React.lazy(() => import('./pages/SplashScreen'));
 const OnboardingScreen = React.lazy(() => import('./pages/OnboardingScreen'));
@@ -59,13 +60,35 @@ const RootRedirect: React.FC = () => {
   );
 };
 
+const RouteChangeDismissor: React.FC = () => {
+  const location = useLocation();
+  useEffect(() => {
+    loadingController.dismiss().catch(() => {});
+  }, [location.pathname]);
+  return null;
+};
+
 const AppContent: React.FC = () => {
   return (
     <IonReactRouter>
+      <RouteChangeDismissor />
       <IonSplitPane contentId="main">
         <Menu />
         <IonRouterOutlet id="main">
-          <Suspense fallback={<IonLoading isOpen message="Loading..." />}>
+          <Suspense
+            fallback={
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                }}
+              >
+                <IonSpinner name="crescent" />
+              </div>
+            }
+          >
             {/* Entry decides by auth state */}
             <Route path="/" exact={true} render={() => <RootRedirect />} />
 

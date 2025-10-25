@@ -7,6 +7,8 @@ import {
   IonPage,
   IonInput,
   IonToast,
+  IonSpinner,
+  useIonLoading,
 } from '@ionic/react';
 import { close } from 'ionicons/icons';
 import { supabase } from '../service/supabaseClient';
@@ -31,11 +33,17 @@ const LoginModal: React.FC<LoginModalProps> = ({
     message: string;
     color: 'success' | 'danger';
   }>({ isOpen: false, message: '', color: 'success' });
+  const [present, dismiss] = useIonLoading();
 
   const handleSignUp = async () => {
     if (loading) return;
     setLoading(true);
     try {
+      await present({
+        message: 'Signing up...',
+        duration: 10000,
+        keyboardClose: true,
+      });
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
       const hasSession = !!data.session;
@@ -51,6 +59,11 @@ const LoginModal: React.FC<LoginModalProps> = ({
       const message = e instanceof Error ? e.message : 'Sign up failed';
       setToast({ isOpen: true, message, color: 'danger' });
     } finally {
+      try {
+        await dismiss();
+      } catch {
+        console.log('dismiss error');
+      }
       setLoading(false);
     }
   };
@@ -59,6 +72,11 @@ const LoginModal: React.FC<LoginModalProps> = ({
     if (loading) return;
     setLoading(true);
     try {
+      await present({
+        message: 'Signing in...',
+        duration: 10000,
+        keyboardClose: true,
+      });
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -82,6 +100,11 @@ const LoginModal: React.FC<LoginModalProps> = ({
       const message = e instanceof Error ? e.message : 'Sign in failed';
       setToast({ isOpen: true, message, color: 'danger' });
     } finally {
+      try {
+        await dismiss();
+      } catch {
+        console.log('dismiss error');
+      }
       setLoading(false);
     }
   };
@@ -133,6 +156,9 @@ const LoginModal: React.FC<LoginModalProps> = ({
                     type="email"
                     placeholder="Email"
                     value={email}
+                    autocomplete="email"
+                    inputmode="email"
+                    autocapitalize="off"
                     onIonChange={e => setEmail(e.detail.value || '')}
                   />
                 </div>
@@ -141,6 +167,8 @@ const LoginModal: React.FC<LoginModalProps> = ({
                     type="password"
                     placeholder="Password"
                     value={password}
+                    autocomplete="current-password"
+                    autocapitalize="off"
                     onIonChange={e => setPassword(e.detail.value || '')}
                   />
                 </div>
@@ -151,7 +179,13 @@ const LoginModal: React.FC<LoginModalProps> = ({
                   disabled={loading}
                 >
                   <div className="social-button-content">
-                    <span>{loading ? 'Loading...' : 'Login'}</span>
+                    {loading && (
+                      <IonSpinner
+                        name="crescent"
+                        style={{ width: 16, height: 16, marginRight: 8 }}
+                      />
+                    )}
+                    <span>Login</span>
                   </div>
                 </IonButton>
                 <IonButton
@@ -161,7 +195,13 @@ const LoginModal: React.FC<LoginModalProps> = ({
                   disabled={loading}
                 >
                   <div className="social-button-content">
-                    <span>{loading ? 'Loading...' : 'Sign up'}</span>
+                    {loading && (
+                      <IonSpinner
+                        name="crescent"
+                        style={{ width: 16, height: 16, marginRight: 8 }}
+                      />
+                    )}
+                    <span>Sign up</span>
                   </div>
                 </IonButton>
               </div>
