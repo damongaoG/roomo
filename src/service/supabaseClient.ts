@@ -65,6 +65,12 @@ const storage: AsyncStorage = Capacitor.isNativePlatform()
 export const AUTH_STORAGE_KEY = 'roomo.supabase.auth';
 const hasSupabaseConfig = Boolean(supabaseUrl) && Boolean(supabaseAnonKey);
 
+export const getSupabaseConfigStatus = () => ({
+  hasSupabaseConfig,
+  supabaseUrlPresent: Boolean(supabaseUrl),
+  supabaseAnonKeyPresent: Boolean(supabaseAnonKey),
+});
+
 type SupabaseAuthLike = {
   onAuthStateChange: (
     callback: (event: AuthChangeEvent, session: Session | null) => void
@@ -84,8 +90,24 @@ type SupabaseAuthLike = {
   }>;
 };
 
+type PostgrestQueryResult = {
+  data: unknown;
+  error: { message: string } | null;
+  count: number | null;
+};
+
+type PostgrestFilterBuilder = {
+  select: (
+    columns?: string,
+    options?: { count?: 'exact' | 'planned' | 'estimated'; head?: boolean }
+  ) => PostgrestFilterBuilder;
+  eq: (column: string, value: unknown) => PostgrestFilterBuilder;
+  limit: (count: number) => Promise<PostgrestQueryResult>;
+};
+
 export type SupabaseClientLike = {
   auth: SupabaseAuthLike;
+  from: (table: string) => PostgrestFilterBuilder;
 };
 
 const createStubAuth = (): SupabaseAuthLike => {
@@ -116,6 +138,17 @@ const createStubAuth = (): SupabaseAuthLike => {
   };
 };
 
+const createStubFrom = (): ((table: string) => PostgrestFilterBuilder) => {
+  return () => {
+    const builder: PostgrestFilterBuilder = {
+      select: () => builder,
+      eq: () => builder,
+      limit: async () => ({ data: [], error: null, count: 0 }),
+    };
+    return builder;
+  };
+};
+
 export const supabase: SupabaseClientLike = hasSupabaseConfig
   ? (createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
@@ -126,13 +159,46 @@ export const supabase: SupabaseClientLike = hasSupabaseConfig
         detectSessionInUrl: false,
       },
     }) as unknown as SupabaseClientLike)
-  : { auth: createStubAuth() };
+  : { auth: createStubAuth(), from: createStubFrom() };
 
 export const hasStoredSession = async (): Promise<boolean> => {
   try {
-    const value = await storage.getItem(AUTH_STORAGE_KEY);
-    return value != null && value.length > 0;
+    const { data } = await supabase.auth.getSession();
+    return Boolean((data as { session: Session | null }).session);
   } catch {
+    return false;
+  }
+};
+
+/**
+ * Check whether a profile row exists for the given user in `user_profile`.
+ */
+export const checkUserProfileExists = async (
+  userId: string
+): Promise<boolean> => {
+  try {
+    console.log('[Auth] checkUserProfileExists called', { userId });
+    const { data, error, count } = await supabase
+      .from('user_profile')
+      .select('user_id', { count: 'exact' })
+      .eq('user_id', userId)
+      .limit(1);
+
+    if (error) {
+      console.warn('[Auth] user_profile check error', error);
+      return false;
+    }
+    const exists =
+      (Array.isArray(data) && data.length > 0) ||
+      (typeof count === 'number' && count > 0);
+    console.log('[Auth] user_profile exists', {
+      exists,
+      count,
+      rows: Array.isArray(data) ? data.length : undefined,
+    });
+    return exists;
+  } catch {
+    console.warn('[Auth] user_profile check exception');
     return false;
   }
 };

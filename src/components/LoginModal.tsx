@@ -93,11 +93,19 @@ const LoginModal: React.FC<LoginModalProps> = ({
       });
       if (error) throw error;
       if (data.session) {
+        console.log('[Auth] Login success: session acquired');
         setToast({
           isOpen: true,
           message: 'Signed in successfully',
           color: 'success',
         });
+        try {
+          const { data: sess } = await supabase.auth.getSession();
+          const currentUserId = sess.session?.user?.id;
+          console.log('[Auth] After login, current user id:', currentUserId);
+        } catch (e) {
+          console.warn('[Auth] getSession after login failed', e);
+        }
         if (onLoginSuccess) onLoginSuccess();
       } else {
         setToast({
@@ -143,8 +151,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
 
             {/* Content */}
             <div className="login-content">
-
-              <div style={{display: 'flex'}}>
+              <div style={{ display: 'flex' }}>
                 {/* Title */}
                 <h1 className="login-title">ROOMO</h1>
 
@@ -159,9 +166,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
                     <IonIcon slot="icon-only" icon={chevronBackOutline} />
                   </IonButton>
                 )}
-
               </div>
-
 
               {/* Main heading */}
               <h2 className="login-heading">Let's get you logged in</h2>
