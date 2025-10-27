@@ -1,4 +1,10 @@
-import { createClient } from '@supabase/supabase-js';
+import {
+  createClient,
+  type AuthChangeEvent,
+  type Session,
+  type AuthResponse,
+  type AuthError,
+} from '@supabase/supabase-js';
 import { Capacitor } from '@capacitor/core';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 
@@ -59,9 +65,59 @@ const storage: AsyncStorage = Capacitor.isNativePlatform()
 export const AUTH_STORAGE_KEY = 'roomo.supabase.auth';
 const hasSupabaseConfig = Boolean(supabaseUrl) && Boolean(supabaseAnonKey);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const supabase: any = hasSupabaseConfig
-  ? createClient(supabaseUrl, supabaseAnonKey, {
+type SupabaseAuthLike = {
+  onAuthStateChange: (
+    callback: (event: AuthChangeEvent, session: Session | null) => void
+  ) => { data: { subscription: { unsubscribe: () => void } } };
+  signOut: () => Promise<{ error: AuthError | null }>;
+  signUp: (params: {
+    email: string;
+    password: string;
+  }) => Promise<AuthResponse>;
+  signInWithPassword: (params: {
+    email: string;
+    password: string;
+  }) => Promise<AuthResponse>;
+  getSession: () => Promise<{
+    data: { session: Session | null };
+    error: AuthError | null;
+  }>;
+};
+
+export type SupabaseClientLike = {
+  auth: SupabaseAuthLike;
+};
+
+const createStubAuth = (): SupabaseAuthLike => {
+  return {
+    onAuthStateChange: () => ({
+      data: { subscription: { unsubscribe: () => {} } },
+    }),
+    signOut: async () => ({ error: null }),
+    signUp: async () => ({
+      data: { user: null, session: null },
+      error: {
+        name: 'AuthError',
+        message:
+          'Supabase credentials are not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.',
+        status: 400,
+      } as AuthError,
+    }),
+    signInWithPassword: async () => ({
+      data: { user: null, session: null },
+      error: {
+        name: 'AuthError',
+        message:
+          'Supabase credentials are not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.',
+        status: 400,
+      } as AuthError,
+    }),
+    getSession: async () => ({ data: { session: null }, error: null }),
+  };
+};
+
+export const supabase: SupabaseClientLike = hasSupabaseConfig
+  ? (createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
         storage,
         storageKey: AUTH_STORAGE_KEY,
@@ -69,16 +125,8 @@ export const supabase: any = hasSupabaseConfig
         persistSession: true,
         detectSessionInUrl: false,
       },
-    })
-  : {
-      auth: {
-        onAuthStateChange: () => {
-          return { data: { subscription: { unsubscribe: () => {} } } };
-        },
-        // no-op signOut to avoid runtime errors when env is missing
-        signOut: async () => {},
-      },
-    };
+    }) as unknown as SupabaseClientLike)
+  : { auth: createStubAuth() };
 
 export const hasStoredSession = async (): Promise<boolean> => {
   try {

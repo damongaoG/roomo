@@ -1,4 +1,8 @@
 import React, { useCallback, useState } from 'react';
+import type {
+  InputInputEventDetail,
+  RangeChangeEventDetail,
+} from '@ionic/core';
 import {
   IonPage,
   IonContent,
@@ -34,23 +38,25 @@ const LookerRegistration: React.FC = () => {
   const isNextEnabled =
     touched && weeklyBudget.maxBudgetPerWeek > weeklyBudget.minBudgetPerWeek;
 
-  const handleMinInput = useCallback((e: any) => {
-    const raw = (
-      e as CustomEvent<{ value?: string | number | null | undefined }>
-    ).detail?.value;
-    const text = raw == null ? '' : String(raw);
-    setMinBudgetText(text);
-    setTouched(true);
-  }, []);
+  const handleMinInput = useCallback(
+    (e: CustomEvent<InputInputEventDetail>) => {
+      const raw = e.detail?.value;
+      const text = raw == null ? '' : String(raw);
+      setMinBudgetText(text);
+      setTouched(true);
+    },
+    []
+  );
 
-  const handleMaxInput = useCallback((e: any) => {
-    const raw = (
-      e as CustomEvent<{ value?: string | number | null | undefined }>
-    ).detail?.value;
-    const text = raw == null ? '' : String(raw);
-    setMaxBudgetText(text);
-    setTouched(true);
-  }, []);
+  const handleMaxInput = useCallback(
+    (e: CustomEvent<InputInputEventDetail>) => {
+      const raw = e.detail?.value;
+      const text = raw == null ? '' : String(raw);
+      setMaxBudgetText(text);
+      setTouched(true);
+    },
+    []
+  );
 
   const commitMin = useCallback(() => {
     const parsed = parseAUDInput(minBudgetText);
@@ -74,25 +80,26 @@ const LookerRegistration: React.FC = () => {
     setMaxBudgetText(formatAUD(clamped));
   }, [maxBudgetText, weeklyBudget.minBudgetPerWeek]);
 
-  const handleRangeInput = useCallback((e: any) => {
-    const value = (
-      e as CustomEvent<{ value: number | { lower: number; upper: number } }>
-    ).detail.value;
-    if (
-      value &&
-      typeof value === 'object' &&
-      'lower' in value &&
-      'upper' in value
-    ) {
-      const next = value as { lower: number; upper: number };
-      setWeeklyBudget({
-        minBudgetPerWeek: next.lower,
-        maxBudgetPerWeek: next.upper,
-      });
-      setMinBudgetText(formatAUD(next.lower));
-      setMaxBudgetText(formatAUD(next.upper));
-    }
-  }, []);
+  const handleRangeInput = useCallback(
+    (e: CustomEvent<RangeChangeEventDetail>) => {
+      const value = e.detail.value;
+      if (
+        value &&
+        typeof value === 'object' &&
+        'lower' in value &&
+        'upper' in value
+      ) {
+        const next = value as { lower: number; upper: number };
+        setWeeklyBudget({
+          minBudgetPerWeek: next.lower,
+          maxBudgetPerWeek: next.upper,
+        });
+        setMinBudgetText(formatAUD(next.lower));
+        setMaxBudgetText(formatAUD(next.upper));
+      }
+    },
+    []
+  );
 
   const handleNext = () => {
     if (!isNextEnabled) return;
