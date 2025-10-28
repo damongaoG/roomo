@@ -15,6 +15,7 @@ interface AuthContextType {
   hasStoredSession: boolean;
   profileExists: boolean;
   loading: boolean;
+  userId: string | null;
 
   // Actions
   login: () => void;
@@ -40,6 +41,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [storedSession, setStoredSession] = useState(false);
   const [profileExists, setProfileExists] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
 
   // Initialize auth & onboarding
   useEffect(() => {
@@ -57,6 +59,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const session = (data as { session: Session | null }).session;
       console.log('[Auth] init: session present?', !!session);
       setIsAuthenticated(!!session);
+      setUserId(session?.user?.id ?? null);
 
       if (session?.user?.id) {
         console.log('[Auth] init: checking profile for user', session.user.id);
@@ -74,6 +77,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log('[Auth] onAuthStateChange: session present?', !!session);
         setIsAuthenticated(!!session);
         setStoredSession(!!session);
+        setUserId(session?.user?.id ?? null);
         if (session?.user?.id) {
           console.log(
             '[Auth] onAuthStateChange: checking profile for user',
@@ -117,6 +121,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         hasStoredSession: storedSession,
         profileExists,
         loading,
+        userId,
         login,
         logout,
       }}

@@ -1,15 +1,18 @@
 import {
-  createClient,
   type AuthChangeEvent,
-  type Session,
-  type AuthResponse,
   type AuthError,
+  type AuthResponse,
+  createClient,
+  type Session,
+  type User,
 } from '@supabase/supabase-js';
+import { Preferences } from '@capacitor/preferences';
 // import { Capacitor } from '@capacitor/core';
 // import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+export const SUPABASE_ANON_KEY = import.meta.env
+  .VITE_SUPABASE_ANON_KEY as string;
 
 // type AsyncStorage = {
 //   getItem: (key: string) => Promise<string | null>;
@@ -65,12 +68,12 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 //   : createWebStorageAdapter();
 
 export const AUTH_STORAGE_KEY = 'roomo.supabase.auth';
-const hasSupabaseConfig = Boolean(supabaseUrl) && Boolean(supabaseAnonKey);
+const hasSupabaseConfig = Boolean(SUPABASE_URL) && Boolean(SUPABASE_ANON_KEY);
 
 export const getSupabaseConfigStatus = () => ({
   hasSupabaseConfig,
-  supabaseUrlPresent: Boolean(supabaseUrl),
-  supabaseAnonKeyPresent: Boolean(supabaseAnonKey),
+  supabaseUrlPresent: Boolean(SUPABASE_URL),
+  supabaseAnonKeyPresent: Boolean(SUPABASE_ANON_KEY),
 });
 
 type SupabaseAuthLike = {
@@ -88,6 +91,10 @@ type SupabaseAuthLike = {
   }) => Promise<AuthResponse>;
   getSession: () => Promise<{
     data: { session: Session | null };
+    error: AuthError | null;
+  }>;
+  getUser: () => Promise<{
+    data: { user: User | null };
     error: AuthError | null;
   }>;
 };
@@ -152,6 +159,7 @@ const createStubAuth = (): SupabaseAuthLike => {
       } as AuthError,
     }),
     getSession: async () => ({ data: { session: null }, error: null }),
+    getUser: async () => ({ data: { user: null }, error: null }),
   };
 };
 
@@ -168,12 +176,36 @@ const createStubFrom = (): ((table: string) => PostgrestFromBuilder) => {
 };
 
 export const supabase: SupabaseClientLike = hasSupabaseConfig
-  ? (createClient(supabaseUrl, supabaseAnonKey, {
+  ? (createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: true,
+        storageKey: AUTH_STORAGE_KEY,
+        storage: {
+          getItem: async (key: string): Promise<string | null> => {
+            const { value } = await Preferences.get({ key });
+            return value ?? null;
+          },
+          setItem: async (key: string, value: string): Promise<void> => {
+            await Preferences.set({ key, value });
+          },
+          removeItem: async (key: string): Promise<void> => {
+            await Preferences.remove({ key });
+          },
+        },
       },
+      global: {
+        fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
+          try {
+            return await fetch(input, { ...init });
+          } catch (e) {
+            console.warn('[Net] fetch error', e);
+            throw e;
+          }
+        },
+      },
+      realtime: { params: { eventsPerSecond: 2 } },
     }) as unknown as SupabaseClientLike)
   : { auth: createStubAuth(), from: createStubFrom() };
 
