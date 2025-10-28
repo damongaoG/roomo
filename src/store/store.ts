@@ -9,10 +9,12 @@ import {
   REGISTER,
 } from 'redux-persist';
 import registrationReducer from './slices/registrationSlice';
+import sessionReducer from './slices/sessionSlice';
 
 export const store = configureStore({
   reducer: {
     registration: registrationReducer,
+    session: sessionReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

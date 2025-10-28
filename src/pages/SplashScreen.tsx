@@ -98,7 +98,7 @@ const SplashScreen: React.FC = () => {
           >
             <IonButton
               expand="block"
-              onClick={() => router.push('/onboarding', 'root', 'replace')}
+              onClick={() => router.push('/onboarding', 'forward')}
               className="login-button"
             >
               Let's get started

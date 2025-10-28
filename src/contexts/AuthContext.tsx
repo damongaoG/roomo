@@ -7,6 +7,13 @@ import React, {
 } from 'react';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { supabase, hasStoredSession } from '../service/supabaseClient';
+import { useAppDispatch, useAppSelector } from '../store';
+import {
+  setHasStoredSession,
+  setProfileExists,
+  selectHasStoredSession,
+  selectProfileExists,
+} from '../store/slices/sessionSlice';
 import { checkUserProfileExists } from '../service/supabaseClient';
 
 interface AuthContextType {
@@ -38,8 +45,9 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [storedSession, setStoredSession] = useState(false);
-  const [profileExists, setProfileExists] = useState(false);
+  const dispatch = useAppDispatch();
+  const storedSession = useAppSelector(selectHasStoredSession);
+  const profileExists = useAppSelector(selectProfileExists);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
 
@@ -47,10 +55,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const init = async () => {
       const exists = await hasStoredSession();
-      setStoredSession(exists);
+      dispatch(setHasStoredSession(exists));
       if (!exists) {
         setIsAuthenticated(false);
-        setProfileExists(false);
+        dispatch(setProfileExists(false));
         setLoading(false);
         return;
       }
@@ -64,9 +72,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (session?.user?.id) {
         console.log('[Auth] init: checking profile for user', session.user.id);
         const hasProfile = await checkUserProfileExists(session.user.id);
-        setProfileExists(hasProfile);
+        dispatch(setProfileExists(hasProfile));
       } else {
-        setProfileExists(false);
+        dispatch(setProfileExists(false));
       }
       setLoading(false);
     };
@@ -76,7 +84,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       async (_event: AuthChangeEvent, session: Session | null) => {
         console.log('[Auth] onAuthStateChange: session present?', !!session);
         setIsAuthenticated(!!session);
-        setStoredSession(!!session);
+        dispatch(setHasStoredSession(!!session));
         setUserId(session?.user?.id ?? null);
         if (session?.user?.id) {
           console.log(
@@ -84,9 +92,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             session.user.id
           );
           const hasProfile = await checkUserProfileExists(session.user.id);
-          setProfileExists(hasProfile);
+          dispatch(setProfileExists(hasProfile));
         } else {
-          setProfileExists(false);
+          dispatch(setProfileExists(false));
         }
         setLoading(false);
       }
@@ -101,7 +109,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = () => {
     setIsAuthenticated(true);
-    setStoredSession(true);
+    dispatch(setHasStoredSession(true));
   };
 
   const logout = async () => {
@@ -112,6 +120,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Ensure we do not swallow errors silently to satisfy linter and aid debugging
       console.warn('[Auth] signOut failed', error);
     }
+    dispatch(setHasStoredSession(false));
+    dispatch(setProfileExists(false));
   };
 
   return (

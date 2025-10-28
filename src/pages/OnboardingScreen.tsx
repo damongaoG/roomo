@@ -137,8 +137,7 @@ const OnboardingScreen: React.FC = () => {
   // Handle successful login
   const handleLoginSuccess = () => {
     setShowLoginModal(false);
-    // Navigate to the registration flow after successful login
-    router.push('/looker/registration', 'root', 'replace');
+    router.push('/home', 'root', 'replace');
   };
 
   return (

@@ -14,9 +14,6 @@ import { loadingController } from '@ionic/core';
 
 const SplashScreen = React.lazy(() => import('./pages/SplashScreen'));
 const OnboardingScreen = React.lazy(() => import('./pages/OnboardingScreen'));
-const LookerRegistration = React.lazy(
-  () => import('./pages/LookerRegistration')
-);
 const LookerMoveInArea = React.lazy(() => import('./pages/LookerMoveInArea'));
 const LookerMoveInDate = React.lazy(() => import('./pages/LookerMoveInDate'));
 
@@ -49,12 +46,19 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 import Page from './pages/Page';
+import { useAppSelector } from './store';
+import {
+  selectHasStoredSession,
+  selectProfileExists,
+} from './store/slices/sessionSlice';
+const Home = React.lazy(() => import('./pages/Home'));
 
 setupIonicReact();
 
 const RootRedirect: React.FC = () => {
-  const { isAuthenticated, hasStoredSession, profileExists, loading } =
-    useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  const hasStoredSession = useAppSelector(selectHasStoredSession);
+  const profileExists = useAppSelector(selectProfileExists);
   console.log('[Route] RootRedirect', {
     isAuthenticated,
     hasStoredSession,
@@ -63,12 +67,11 @@ const RootRedirect: React.FC = () => {
   });
   // If we already have a session, never show splash/onboarding; go to next step immediately.
   if (hasStoredSession) {
-    if (!profileExists) return <Redirect to="/folder/Inbox" />; // Page route
-    return <Redirect to="/looker/registration" />;
+    if (!profileExists) return <Redirect to="/folder/Inbox" />;
+    return <Redirect to="/home" />;
   }
-  // No session yet
   if (loading) return <SplashScreen />;
-  return <Redirect to="/onboarding" />;
+  return <Redirect to="/splash" />;
 };
 
 const RouteChangeDismissor: React.FC = () => {
@@ -80,7 +83,20 @@ const RouteChangeDismissor: React.FC = () => {
 };
 
 const AppContent: React.FC = () => {
-  const { loading, hasStoredSession, profileExists } = useAuth();
+  const { loading } = useAuth();
+  const hasStoredSession = useAppSelector(selectHasStoredSession);
+  const profileExists = useAppSelector(selectProfileExists);
+
+  const publicOnlyRedirect = () =>
+    hasStoredSession ? (
+      <Redirect to={profileExists ? '/home' : '/folder/Inbox'} />
+    ) : null;
+
+  const requireAuthRedirect = () =>
+    !hasStoredSession ? <Redirect to="/splash" /> : null;
+
+  const requireProfileRedirect = () =>
+    !profileExists ? <Redirect to="/folder/Inbox" /> : null;
   return (
     <IonReactRouter>
       <RouteChangeDismissor />
@@ -104,20 +120,13 @@ const AppContent: React.FC = () => {
             {/* Entry decides by auth state */}
             <Route path="/" exact={true} render={() => <RootRedirect />} />
 
-            {/* Splash with strict guard: if session exists, never show splash */}
+            {/* Public pages */}
             <Route
               path="/splash"
               exact={true}
               render={() => {
-                console.log('[Route] /splash', {
-                  loading,
-                  hasStoredSession,
-                  profileExists,
-                });
-                if (hasStoredSession && !profileExists)
-                  return <Redirect to="/folder/Inbox" />;
-                if (hasStoredSession && profileExists)
-                  return <Redirect to="/looker/registration" />;
+                const gate = publicOnlyRedirect();
+                if (gate) return gate;
                 return <SplashScreen />;
               }}
             />
@@ -125,48 +134,42 @@ const AppContent: React.FC = () => {
               path="/onboarding"
               exact={true}
               render={() => {
-                // Guard onboarding: if already logged in, send to proper next step
-                console.log('[Route] /onboarding', {
-                  loading,
-                  hasStoredSession,
-                  profileExists,
-                });
-                if (hasStoredSession && !profileExists)
-                  return <Redirect to="/folder/Inbox" />;
-                if (hasStoredSession && profileExists)
-                  return <Redirect to="/looker/registration" />;
+                const gate = publicOnlyRedirect();
+                if (gate) return gate;
                 return <OnboardingScreen />;
               }}
             />
-
-            {/* Looker registration flow */}
+            {/* Auth-only */}
             <Route
-              path="/looker/registration"
+              path="/folder/Inbox"
               exact={true}
               render={() => {
-                console.log('[Route] /looker/registration', {
-                  loading,
-                  hasStoredSession,
-                  profileExists,
-                });
-                if (loading) return <SplashScreen />;
-                if (hasStoredSession && !profileExists)
-                  return <Redirect to="/folder/Inbox" />;
-                return <LookerRegistration />;
+                const gate = requireAuthRedirect();
+                if (gate) return gate;
+                return <Page />;
+              }}
+            />
+
+            {/* Auth + Profile required */}
+            <Route
+              path="/home"
+              exact={true}
+              render={() => {
+                const a = requireAuthRedirect();
+                if (a) return a;
+                const b = requireProfileRedirect();
+                if (b) return b;
+                return <Home />;
               }}
             />
             <Route
               path="/looker/move-in-area"
               exact={true}
               render={() => {
-                console.log('[Route] /looker/move-in-area', {
-                  loading,
-                  hasStoredSession,
-                  profileExists,
-                });
-                if (loading) return <SplashScreen />;
-                if (hasStoredSession && !profileExists)
-                  return <Redirect to="/folder/Inbox" />;
+                const a = requireAuthRedirect();
+                if (a) return a;
+                const b = requireProfileRedirect();
+                if (b) return b;
                 return <LookerMoveInArea />;
               }}
             />
@@ -174,36 +177,58 @@ const AppContent: React.FC = () => {
               path="/looker/move-in-date"
               exact={true}
               render={() => {
-                console.log('[Route] /looker/move-in-date', {
-                  loading,
-                  hasStoredSession,
-                  profileExists,
-                });
-                if (loading) return <SplashScreen />;
-                if (hasStoredSession && !profileExists)
-                  return <Redirect to="/folder/Inbox" />;
+                const a = requireAuthRedirect();
+                if (a) return a;
+                const b = requireProfileRedirect();
+                if (b) return b;
                 return <LookerMoveInDate />;
               }}
             />
-
-            <Route path="/folder/:name" exact={true}>
-              <Page />
-            </Route>
+            {/* retain dynamic page when needed, require auth */}
+            <Route
+              path="/folder/:name"
+              exact={true}
+              render={() => {
+                const a = requireAuthRedirect();
+                if (a) return a;
+                return <Page />;
+              }}
+            />
 
             {/* Catch-all guard to prevent bypass */}
             <Route
-              render={() => {
+              path="*"
+              render={({ location }) => {
+                const pathname = location?.pathname ?? window.location.pathname;
                 console.log('[Route] * catch-all', {
                   loading,
                   hasStoredSession,
                   profileExists,
+                  pathname,
                 });
-                if (hasStoredSession && !profileExists)
+                if (loading) return null;
+
+                // Unauthed: allow only /splash and /onboarding here
+                if (!hasStoredSession) {
+                  if (pathname === '/splash' || pathname === '/onboarding') {
+                    return null;
+                  }
+                  return <Redirect to="/splash" />;
+                }
+
+                // Authed but no profile: allow only /folder/Inbox
+                if (hasStoredSession && !profileExists) {
+                  if (pathname === '/folder/Inbox') {
+                    return null;
+                  }
                   return <Redirect to="/folder/Inbox" />;
-                if (hasStoredSession && profileExists)
-                  return <Redirect to="/looker/registration" />;
-                if (loading) return <SplashScreen />;
-                return <Redirect to="/onboarding" />;
+                }
+
+                // Authed and profiled: block public pages, otherwise allow
+                if (pathname === '/splash' || pathname === '/onboarding') {
+                  return <Redirect to="/home" />;
+                }
+                return null;
               }}
             />
           </Suspense>
