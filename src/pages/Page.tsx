@@ -1,9 +1,13 @@
 import { IonContent, IonPage, IonButton, IonToast } from '@ionic/react';
 import './Page.css';
 import React, { useState } from 'react';
-import { useApiService } from '../service/api';
+import { useHistory } from 'react-router-dom';
+import { supabase, getSupabaseConfigStatus } from '../service/supabaseClient';
+
+type Role = 'looker' | 'lister';
 
 const Page: React.FC = () => {
+  const history = useHistory();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState<{
     isOpen: boolean;
@@ -11,33 +15,118 @@ const Page: React.FC = () => {
     color: 'success' | 'danger';
   }>({ isOpen: false, message: '', color: 'success' });
 
-  const { setUserRole } = useApiService();
+  const withTimeout = async <T,>(
+    promise: Promise<T>,
+    ms: number,
+    label: string
+  ): Promise<T> => {
+    return await new Promise<T>((resolve, reject) => {
+      const timer = setTimeout(() => {
+        reject(new Error(`${label} timeout after ${ms}ms`));
+      }, ms);
+      promise
+        .then(value => {
+          clearTimeout(timer);
+          resolve(value);
+        })
+        .catch(err => {
+          clearTimeout(timer);
+          reject(err);
+        });
+    });
+  };
 
-  const handleRoleSelection = async (role: 'looker' | 'lister') => {
-    if (isSubmitting) return;
+  const handleRoleSelection = async (role: Role) => {
+    console.log('[Role] click', { role, isSubmitting });
+    if (isSubmitting) {
+      console.log('[Role] blocked: already submitting');
+      return;
+    }
 
     setIsSubmitting(true);
 
     try {
-      const result = await setUserRole(role);
-
-      if (result.success && result.data) {
-        console.log('Role set successfully:', result.data);
-      } else {
+      console.log('[Role] started');
+      const { hasSupabaseConfig, supabaseUrlPresent, supabaseAnonKeyPresent } =
+        getSupabaseConfigStatus();
+      console.log('[Role] supabase config', {
+        hasSupabaseConfig,
+        supabaseUrlPresent,
+        supabaseAnonKeyPresent,
+      });
+      if (!hasSupabaseConfig) {
         setToast({
           isOpen: true,
-          message: result.error || 'Failed to set role',
+          message: 'Supabase not configured',
           color: 'danger',
         });
+        console.warn('[Role] missing supabase config');
+        return;
       }
+
+      console.log('[Role] fetching session...');
+      const { data: sessionData, error: sessionError } = await withTimeout(
+        supabase.auth.getSession(),
+        8000,
+        'getSession'
+      );
+      console.log('[Role] session result', {
+        sessionError,
+        session: sessionData?.session,
+      });
+      if (sessionError) {
+        setToast({
+          isOpen: true,
+          message: sessionError.message,
+          color: 'danger',
+        });
+        return;
+      }
+
+      const userId = sessionData.session?.user?.id as string | undefined;
+      console.log('[Role] userId', { userId });
+      if (!userId) {
+        setToast({
+          isOpen: true,
+          message: 'Not logged in or session invalid',
+          color: 'danger',
+        });
+        return;
+      }
+
+      const now = new Date().toISOString();
+      const payload = {
+        created_at: now,
+        updated_at: now,
+        user_id: userId,
+        role,
+      };
+
+      console.log('[Role] inserting profile...', payload);
+      const { data, error } = await withTimeout(
+        supabase.from('user_profile').insert([payload]).select(),
+        10000,
+        'insert user_profile'
+      );
+      console.log('[Role] insert result', { error, data });
+
+      if (error) {
+        setToast({ isOpen: true, message: error.message, color: 'danger' });
+        return;
+      }
+
+      console.log('Role set successfully:', data);
+      history.push('/looker/registration');
     } catch (error) {
       console.error('Error setting role:', error);
+      const message = error instanceof Error ? error.message : 'Unknown error';
       setToast({
         isOpen: true,
-        message: 'An unexpected error occurred',
+        message,
         color: 'danger',
       });
     } finally {
+      console.log('[Role] finalize: reset submitting');
       setIsSubmitting(false);
     }
   };

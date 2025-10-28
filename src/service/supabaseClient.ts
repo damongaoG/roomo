@@ -5,62 +5,64 @@ import {
   type AuthResponse,
   type AuthError,
 } from '@supabase/supabase-js';
-import { Capacitor } from '@capacitor/core';
-import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
+// import { Capacitor } from '@capacitor/core';
+// import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
-type AsyncStorage = {
-  getItem: (key: string) => Promise<string | null>;
-  setItem: (key: string, value: string) => Promise<void>;
-  removeItem: (key: string) => Promise<void>;
-};
+// type AsyncStorage = {
+//   getItem: (key: string) => Promise<string | null>;
+//   setItem: (key: string, value: string) => Promise<void>;
+//   removeItem: (key: string) => Promise<void>;
+// };
 
-const createSecureStorageAdapter = (): AsyncStorage => {
-  return {
-    getItem: async (key: string) => {
-      try {
-        const { value } = await SecureStoragePlugin.get({ key });
-        return value ?? null;
-      } catch {
-        return null;
-      }
-    },
-    setItem: async (key: string, value: string) => {
-      await SecureStoragePlugin.set({ key, value });
-    },
-    removeItem: async (key: string) => {
-      try {
-        await SecureStoragePlugin.remove({ key });
-      } catch {
-        // no-op if key does not exist
-      }
-    },
-  };
-};
+// const createSecureStorageAdapter = (): AsyncStorage => {
+//   return {
+//     getItem: async (key: string) => {
+//       try {
+//         const { value } = await SecureStoragePlugin.get({ key });
+//         return value ?? null;
+//       } catch {
+//         return null;
+//       }
+//     },
+//     setItem: async (key: string, value: string) => {
+//       await SecureStoragePlugin.set({ key, value });
+//     },
+//     removeItem: async (key: string) => {
+//       try {
+//         await SecureStoragePlugin.remove({ key });
+//       } catch {
+//         // no-op if key does not exist
+//       }
+//     },
+//   };
+// };
 
-const createWebStorageAdapter = (): AsyncStorage => {
-  return {
-    getItem: async (key: string) => {
-      try {
-        return window.localStorage.getItem(key);
-      } catch {
-        return null;
-      }
-    },
-    setItem: async (key: string, value: string) => {
-      window.localStorage.setItem(key, value);
-    },
-    removeItem: async (key: string) => {
-      window.localStorage.removeItem(key);
-    },
-  };
-};
+// const createWebStorageAdapter = (): AsyncStorage => {
+//   return {
+//     getItem: async (key: string) => {
+//       try {
+//         return window.localStorage.getItem(key);
+//       } catch {
+//         return null;
+//       }
+//     },
+//     setItem: async (key: string, value: string) => {
+//       window.localStorage.setItem(key, value);
+//     },
+//     removeItem: async (key: string) => {
+//       window.localStorage.removeItem(key);
+//     },
+//   };
+// };
 
-const storage: AsyncStorage = Capacitor.isNativePlatform()
-  ? createSecureStorageAdapter()
-  : createWebStorageAdapter();
+// const platform = Capacitor.getPlatform();
+// const usingNativeSecureStorage = platform === 'ios' || platform === 'android';
+// const storage: AsyncStorage = usingNativeSecureStorage
+//   ? createSecureStorageAdapter()
+//   : createWebStorageAdapter();
 
 export const AUTH_STORAGE_KEY = 'roomo.supabase.auth';
 const hasSupabaseConfig = Boolean(supabaseUrl) && Boolean(supabaseAnonKey);
@@ -96,18 +98,33 @@ type PostgrestQueryResult = {
   count: number | null;
 };
 
-type PostgrestFilterBuilder = {
+type PostgrestInsertSelectResult = {
+  data: unknown;
+  error: { message: string } | null;
+};
+
+type PostgrestInsertBuilder = {
+  select: (columns?: string) => Promise<PostgrestInsertSelectResult>;
+};
+
+type PostgrestSelectBuilder = {
   select: (
     columns?: string,
     options?: { count?: 'exact' | 'planned' | 'estimated'; head?: boolean }
-  ) => PostgrestFilterBuilder;
-  eq: (column: string, value: unknown) => PostgrestFilterBuilder;
+  ) => PostgrestSelectBuilder;
+  eq: (column: string, value: unknown) => PostgrestSelectBuilder;
   limit: (count: number) => Promise<PostgrestQueryResult>;
+};
+
+type PostgrestFromBuilder = PostgrestSelectBuilder & {
+  insert: (
+    values: Record<string, unknown> | Record<string, unknown>[]
+  ) => PostgrestInsertBuilder;
 };
 
 export type SupabaseClientLike = {
   auth: SupabaseAuthLike;
-  from: (table: string) => PostgrestFilterBuilder;
+  from: (table: string) => PostgrestFromBuilder;
 };
 
 const createStubAuth = (): SupabaseAuthLike => {
@@ -138,12 +155,13 @@ const createStubAuth = (): SupabaseAuthLike => {
   };
 };
 
-const createStubFrom = (): ((table: string) => PostgrestFilterBuilder) => {
+const createStubFrom = (): ((table: string) => PostgrestFromBuilder) => {
   return () => {
-    const builder: PostgrestFilterBuilder = {
+    const builder: PostgrestFromBuilder = {
       select: () => builder,
       eq: () => builder,
       limit: async () => ({ data: [], error: null, count: 0 }),
+      insert: () => ({ select: async () => ({ data: [], error: null }) }),
     };
     return builder;
   };
@@ -152,11 +170,9 @@ const createStubFrom = (): ((table: string) => PostgrestFilterBuilder) => {
 export const supabase: SupabaseClientLike = hasSupabaseConfig
   ? (createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
-        storage,
-        storageKey: AUTH_STORAGE_KEY,
         autoRefreshToken: true,
         persistSession: true,
-        detectSessionInUrl: false,
+        detectSessionInUrl: true,
       },
     }) as unknown as SupabaseClientLike)
   : { auth: createStubAuth(), from: createStubFrom() };
