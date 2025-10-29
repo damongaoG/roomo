@@ -174,7 +174,12 @@ const Page: React.FC = () => {
       }
 
       console.log('Role set successfully');
-      history.push('/looker/registration');
+      if (role === 'looker') {
+        // Navigate to registration while profileExists is still false
+        history.push('/looker/registration');
+      } else {
+        history.push('/home');
+      }
     } catch (error) {
       console.error('Error setting role:', error);
       const message = error instanceof Error ? error.message : 'Unknown error';

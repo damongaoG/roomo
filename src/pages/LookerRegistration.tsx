@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { flushSync } from 'react-dom';
 import type {
   InputInputEventDetail,
   RangeChangeEventDetail,
@@ -15,6 +16,7 @@ import { arrowForward, chevronBack } from 'ionicons/icons';
 import './LookerRegistration.css';
 import { formatAUD, parseAUDInput, clampNumber } from '../utils/currency';
 import { useAppDispatch } from '../store';
+import { setProfileExists } from '../store/slices/sessionSlice';
 import { setBudgetRange as setRegistrationBudgetRange } from '../store/slices/registrationSlice';
 import { useHistory } from 'react-router-dom';
 
@@ -109,6 +111,11 @@ const LookerRegistration: React.FC = () => {
         maxBudgetPerWeek: weeklyBudget.maxBudgetPerWeek,
       })
     );
+    // Ensure the profile flag is committed before navigating
+    flushSync(() => {
+      dispatch(setProfileExists(true));
+    });
+    console.log('[LookerRegistration] navigating to /looker/move-in-area');
     history.push('/looker/move-in-area');
   };
 

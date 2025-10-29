@@ -16,6 +16,9 @@ const SplashScreen = React.lazy(() => import('./pages/SplashScreen'));
 const OnboardingScreen = React.lazy(() => import('./pages/OnboardingScreen'));
 const LookerMoveInArea = React.lazy(() => import('./pages/LookerMoveInArea'));
 const LookerMoveInDate = React.lazy(() => import('./pages/LookerMoveInDate'));
+const LookerRegistration = React.lazy(
+  () => import('./pages/LookerRegistration')
+);
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -150,7 +153,18 @@ const AppContent: React.FC = () => {
               }}
             />
 
-            {/* Auth + Profile required */}
+            {/* Auth-only */}
+            <Route
+              path="/looker/registration"
+              exact={true}
+              render={() => {
+                const a = requireAuthRedirect();
+                if (a) return a;
+                // Only allow when profile does NOT exist yet
+                if (profileExists) return <Redirect to="/home" />;
+                return <LookerRegistration />;
+              }}
+            />
             <Route
               path="/home"
               exact={true}
@@ -168,8 +182,6 @@ const AppContent: React.FC = () => {
               render={() => {
                 const a = requireAuthRedirect();
                 if (a) return a;
-                const b = requireProfileRedirect();
-                if (b) return b;
                 return <LookerMoveInArea />;
               }}
             />
@@ -179,8 +191,6 @@ const AppContent: React.FC = () => {
               render={() => {
                 const a = requireAuthRedirect();
                 if (a) return a;
-                const b = requireProfileRedirect();
-                if (b) return b;
                 return <LookerMoveInDate />;
               }}
             />
@@ -216,9 +226,14 @@ const AppContent: React.FC = () => {
                   return <Redirect to="/splash" />;
                 }
 
-                // Authed but no profile: allow only /folder/Inbox
+                // Authed but no profile: allow onboarding flow pages
                 if (hasStoredSession && !profileExists) {
-                  if (pathname === '/folder/Inbox') {
+                  if (
+                    pathname === '/folder/Inbox' ||
+                    pathname === '/looker/registration' ||
+                    pathname === '/looker/move-in-area' ||
+                    pathname === '/looker/move-in-date'
+                  ) {
                     return null;
                   }
                   return <Redirect to="/folder/Inbox" />;
