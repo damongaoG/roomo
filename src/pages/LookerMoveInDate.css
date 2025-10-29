@@ -1,0 +1,46 @@
+.date-section {
+  padding: 18px 16px 0 16px;
+}
+
+.date-card {
+  background: #ffffff;
+  border: 1px solid #eff1f0;
+  border-radius: 12px;
+}
+
+.date-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 12px 16px;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.date-card-header .label {
+  color: #000;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 20px;
+  font-weight: 510;
+  letter-spacing: -0.1px;
+}
+
+.date-card-header .value {
+  color: #278eff;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.date-wheel {
+  padding: 8px 0 6px 0;
+}
+
+.date-wheel ion-datetime {
+  width: 100%;
+  --background: #ffffff;
+  --background-rgb: 255, 255, 255;
+}
+
+.date-wheel ion-datetime::part(time-wheel) {
+  background: #ffffff;
+}
