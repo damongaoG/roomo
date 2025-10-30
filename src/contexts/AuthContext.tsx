@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../store';
 import {
   setHasStoredSession,
   setProfileExists,
+  setAuthSession,
   selectHasStoredSession,
   selectProfileExists,
 } from '../store/slices/sessionSlice';
@@ -59,6 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (!exists) {
         setIsAuthenticated(false);
         dispatch(setProfileExists(false));
+        dispatch(setAuthSession(null));
         setLoading(false);
         return;
       }
@@ -68,6 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('[Auth] init: session present?', !!session);
       setIsAuthenticated(!!session);
       setUserId(session?.user?.id ?? null);
+      dispatch(setAuthSession(session ?? null));
 
       if (session?.user?.id) {
         console.log('[Auth] init: checking profile for user', session.user.id);
@@ -86,6 +89,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsAuthenticated(!!session);
         dispatch(setHasStoredSession(!!session));
         setUserId(session?.user?.id ?? null);
+        dispatch(setAuthSession(session ?? null));
         if (session?.user?.id) {
           console.log(
             '[Auth] onAuthStateChange: checking profile for user',
@@ -122,6 +126,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
     dispatch(setHasStoredSession(false));
     dispatch(setProfileExists(false));
+    dispatch(setAuthSession(null));
   };
 
   return (

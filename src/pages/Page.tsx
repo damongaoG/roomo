@@ -2,15 +2,13 @@ import { IonContent, IonPage, IonButton, IonToast } from '@ionic/react';
 import './Page.css';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import {
-  supabase,
-  getSupabaseConfigStatus,
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY,
-} from '../service/supabaseClient';
+import { supabase } from '../service/supabaseClient';
+import { postUserRole, type UserRole } from '../service/userProfileApi';
+import { useAppSelector } from '../store';
+import { selectAuthSession } from '../store/slices/sessionSlice';
 import { useAuth } from '../contexts/AuthContext';
 
-type Role = 'looker' | 'lister';
+type Role = UserRole;
 
 const Page: React.FC = () => {
   const history = useHistory();
@@ -21,6 +19,7 @@ const Page: React.FC = () => {
     color: 'success' | 'danger';
   }>({ isOpen: false, message: '', color: 'success' });
   const { userId: ctxUserId } = useAuth();
+  const authSession = useAppSelector(selectAuthSession);
 
   const withTimeout = async <T,>(
     promise: Promise<T>,
@@ -54,43 +53,14 @@ const Page: React.FC = () => {
 
     try {
       console.log('[Role] started');
-      const { hasSupabaseConfig, supabaseUrlPresent, supabaseAnonKeyPresent } =
-        getSupabaseConfigStatus();
-      console.log('[Role] supabase config', {
-        hasSupabaseConfig,
-        supabaseUrlPresent,
-        supabaseAnonKeyPresent,
+      const accessToken = authSession?.access_token ?? null;
+
+      let userId = ctxUserId ?? authSession?.user?.id ?? undefined;
+      console.log('[Role] resolved userId', {
+        userIdFromContext: ctxUserId,
+        userIdFromSession: authSession?.user?.id,
+        userId,
       });
-      if (!hasSupabaseConfig) {
-        setToast({
-          isOpen: true,
-          message: 'Supabase not configured',
-          color: 'danger',
-        });
-        console.warn('[Role] missing supabase config');
-        return;
-      }
-
-      try {
-        const health = await withTimeout(
-          fetch(`${SUPABASE_URL}/auth/v1/health`, { method: 'GET' }),
-          3000,
-          'auth health'
-        );
-        console.log('[Role] auth health status', health.status);
-      } catch {
-        console.warn('[Role] auth health failed');
-        setToast({
-          isOpen: true,
-          message:
-            'Network error or backend unreachable, please try again later',
-          color: 'danger',
-        });
-        return;
-      }
-
-      let userId = ctxUserId ?? undefined;
-      console.log('[Role] userId from context', { userId });
 
       if (!userId) {
         console.log('[Role] fallback to getUser...');
@@ -114,8 +84,8 @@ const Page: React.FC = () => {
         userId = userData.user?.id ?? undefined;
       }
 
-      console.log('[Role] final userId', { userId });
       if (!userId) {
+        console.warn('[Role] missing userId after all fallbacks');
         setToast({
           isOpen: true,
           message: 'Not logged in or session invalid',
@@ -124,56 +94,38 @@ const Page: React.FC = () => {
         return;
       }
 
-      const now = new Date().toISOString();
-      const payload = {
-        created_at: now,
-        updated_at: now,
-        user_id: userId,
-        role,
-      };
-
-      console.log('[Role] inserting profile...', payload);
-      try {
-        const { data, error } = await withTimeout(
-          supabase.from('user_profile').insert([payload]).select('user_id'),
-          8000,
-          'insert user_profile'
-        );
-        console.log('[Role] insert result (sdk)', { error, data });
-        if (error) {
-          throw error;
-        }
-      } catch {
-        console.warn('[Role] sdk insert fallback to REST');
-        const restUrl = `${SUPABASE_URL}/rest/v1/user_profile`;
-        console.log('[Role] rest insert url', restUrl);
-        const res = await withTimeout(
-          fetch(restUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              apikey: SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-              Prefer: 'return=minimal',
-            },
-            body: JSON.stringify(payload),
-          }),
-          8000,
-          'rest insert user_profile'
-        );
-        console.log('[Role] rest insert status', res.status);
-        if (!res.ok) {
-          const text = await res.text();
-          setToast({
-            isOpen: true,
-            message: `Insert failed: ${res.status} ${text}`,
-            color: 'danger',
-          });
-          return;
-        }
+      if (!accessToken) {
+        console.warn('[Role] missing access token');
+        setToast({
+          isOpen: true,
+          message: 'Unable to retrieve access credential. Please sign in again.',
+          color: 'danger',
+        });
+        return;
       }
 
-      console.log('Role set successfully');
+      console.log('[Role] calling backend API with payload', { user_id: userId, role });
+      const response = await withTimeout(
+        postUserRole({ userId, role, accessToken }),
+        8000,
+        'set user role'
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.warn('[Role] backend API failed', {
+          status: response.status,
+          errorText,
+        });
+        setToast({
+          isOpen: true,
+          message: 'Failed to set role',
+          color: 'danger',
+        });
+        return;
+      }
+
+      console.log('[Role] role set successfully via backend');
       if (role === 'looker') {
         // Navigate to registration while profileExists is still false
         history.push('/looker/registration');
