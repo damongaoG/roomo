@@ -1,6 +1,7 @@
 import React, {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -14,8 +15,11 @@ import {
   setAuthSession,
   selectHasStoredSession,
   selectProfileExists,
+  setUserRole,
+  selectUserRole,
 } from '../store/slices/sessionSlice';
-import { checkUserProfileExists } from '../service/supabaseClient';
+import { getCurrentUserProfile } from '../service/userProfileApi';
+import type { UserRole } from '../service/userProfileApi';
 
 interface AuthContextType {
   // Derived booleans
@@ -24,6 +28,7 @@ interface AuthContextType {
   profileExists: boolean;
   loading: boolean;
   userId: string | null;
+  userRole: UserRole | null;
 
   // Actions
   login: () => void;
@@ -49,8 +54,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const storedSession = useAppSelector(selectHasStoredSession);
   const profileExists = useAppSelector(selectProfileExists);
+  const userRole = useAppSelector(selectUserRole);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+
+  const syncProfileState = useCallback(
+    async (session: Session | null) => {
+      if (!session?.access_token) {
+        dispatch(setProfileExists(false));
+        dispatch(setUserRole(null));
+        return;
+      }
+
+      try {
+        const { data } = await getCurrentUserProfile(session.access_token);
+        const hasProfile = Boolean(data);
+        dispatch(setProfileExists(hasProfile));
+        dispatch(setUserRole(data?.role ?? null));
+      } catch (error) {
+        console.warn('[Auth] Failed to sync user profile', error);
+        dispatch(setProfileExists(false));
+        dispatch(setUserRole(null));
+      }
+    },
+    [dispatch]
+  );
 
   // Initialize auth & onboarding
   useEffect(() => {
@@ -61,6 +89,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsAuthenticated(false);
         dispatch(setProfileExists(false));
         dispatch(setAuthSession(null));
+        dispatch(setUserRole(null));
         setLoading(false);
         return;
       }
@@ -73,13 +102,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       dispatch(setAuthSession(session ?? null));
 
       if (session?.user?.id) {
-        console.log('[Auth] init: checking profile for user', session.user.id);
-        const hasProfile = await checkUserProfileExists(session.user.id);
-        dispatch(setProfileExists(hasProfile));
+        console.log('[Auth] init: session detected for user', session.user.id);
       } else {
         dispatch(setProfileExists(false));
+        dispatch(setUserRole(null));
       }
-      setLoading(false);
     };
     init();
 
@@ -92,13 +119,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         dispatch(setAuthSession(session ?? null));
         if (session?.user?.id) {
           console.log(
-            '[Auth] onAuthStateChange: checking profile for user',
+            '[Auth] onAuthStateChange: syncing profile for user',
             session.user.id
           );
-          const hasProfile = await checkUserProfileExists(session.user.id);
-          dispatch(setProfileExists(hasProfile));
+          await syncProfileState(session);
         } else {
           dispatch(setProfileExists(false));
+          dispatch(setUserRole(null));
         }
         setLoading(false);
       }
@@ -107,7 +134,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, []);
+  }, [dispatch, syncProfileState]);
 
   // Profile fetching happens in onAuthStateChange when session is present
 
@@ -127,6 +154,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch(setHasStoredSession(false));
     dispatch(setProfileExists(false));
     dispatch(setAuthSession(null));
+    dispatch(setUserRole(null));
   };
 
   return (
@@ -137,6 +165,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         profileExists,
         loading,
         userId,
+        userRole,
         login,
         logout,
       }}

@@ -217,36 +217,3 @@ export const hasStoredSession = async (): Promise<boolean> => {
     return false;
   }
 };
-
-/**
- * Check whether a profile row exists for the given user in `user_profile`.
- */
-export const checkUserProfileExists = async (
-  userId: string
-): Promise<boolean> => {
-  try {
-    console.log('[Auth] checkUserProfileExists called', { userId });
-    const { data, error, count } = await supabase
-      .from('user_profile')
-      .select('user_id', { count: 'exact' })
-      .eq('user_id', userId)
-      .limit(1);
-
-    if (error) {
-      console.warn('[Auth] user_profile check error', error);
-      return false;
-    }
-    const exists =
-      (Array.isArray(data) && data.length > 0) ||
-      (typeof count === 'number' && count > 0);
-    console.log('[Auth] user_profile exists', {
-      exists,
-      count,
-      rows: Array.isArray(data) ? data.length : undefined,
-    });
-    return exists;
-  } catch {
-    console.warn('[Auth] user_profile check exception');
-    return false;
-  }
-};

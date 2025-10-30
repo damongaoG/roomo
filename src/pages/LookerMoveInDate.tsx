@@ -8,10 +8,12 @@ import {
 } from '@ionic/react';
 import { arrowForward, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import { useAppDispatch } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { setMoveindate } from '../store/slices/registrationSlice';
 import './LookerRegistration.css';
 import './LookerMoveInDate.css';
+import { supabase } from '../service/supabaseClient';
+import { useAuth } from '../contexts/AuthContext';
 
 const formatDisplayDate = (iso: string): string => {
   try {
@@ -29,7 +31,10 @@ const formatDisplayDate = (iso: string): string => {
 const LookerMoveInDate: React.FC = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
+  const registration = useAppSelector(state => state.registration);
+  const { userId } = useAuth();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleBack = useCallback(() => {
     history.goBack();
@@ -52,12 +57,41 @@ const LookerMoveInDate: React.FC = () => {
     return { minDateStr: minDate, maxDateStr: maxDate };
   }, []);
 
-  const handleNext = useCallback(() => {
-    if (!isNextEnabled) return;
+  const handleNext = useCallback(async () => {
+    if (!isNextEnabled || submitting) return;
+
+    const dateOnly = selectedDate ? selectedDate.slice(0, 10) : null;
     // Save to registrationSlice
-    dispatch(setMoveindate(selectedDate));
-    history.push('/');
-  }, [dispatch, history, isNextEnabled, selectedDate]);
+    dispatch(setMoveindate(dateOnly));
+
+    setSubmitting(true);
+    const payload = {
+      min_budget_per_week: registration.minBudgetPerWeek ?? null,
+      max_budget_per_week: registration.maxBudgetPerWeek ?? null,
+      suburb: registration.suburb || null,
+      move_in_date: dateOnly,
+      user_id: userId ?? null,
+    } as Record<string, unknown>;
+
+    const { data, error } = await supabase
+      .from('search_preferences')
+      .insert([payload])
+      .select();
+
+    if (error) {
+      // Minimal error handling; could be enhanced with UI feedback
+      console.warn('[LookerMoveInDate] insert error', error);
+      setSubmitting(false);
+      return;
+    }
+
+    // Optional: log returned row(s)
+    if (data) {
+      // console.log('[LookerMoveInDate] insert success', data);
+    }
+
+    history.push('/home');
+  }, [dispatch, history, isNextEnabled, registration.maxBudgetPerWeek, registration.minBudgetPerWeek, registration.suburb, selectedDate, submitting, userId]);
 
   return (
     <IonPage>
@@ -139,7 +173,7 @@ const LookerMoveInDate: React.FC = () => {
             expand="block"
             fill="solid"
             className={`next-button${isNextEnabled ? ' enabled' : ''}`}
-            disabled={!isNextEnabled}
+            disabled={!isNextEnabled || submitting}
             onClick={handleNext}
           >
             Next
