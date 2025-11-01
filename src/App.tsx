@@ -4,6 +4,7 @@ import {
   IonSplitPane,
   setupIonicReact,
   IonSpinner,
+  IonLoading,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, useHistory, useLocation } from 'react-router-dom';
@@ -100,6 +101,26 @@ const AppContent: React.FC = () => {
       <RouteChangeDismissor />
       <RoutesWithGuards />
     </IonReactRouter>
+  );
+};
+
+const AppShell: React.FC = () => {
+  const { profileSyncing } = useAuth();
+
+  return (
+    <>
+      <IonLoading
+        isOpen={profileSyncing}
+        message="Loading..."
+        spinner="crescent"
+        translucent={false}
+        backdropDismiss={false}
+        keyboardClose={false}
+      />
+      <div style={{ display: profileSyncing ? 'none' : undefined }}>
+        <AppContent />
+      </div>
+    </>
   );
 };
 
@@ -406,7 +427,7 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <AuthProvider>
-        <AppContent />
+        <AppShell />
       </AuthProvider>
     </IonApp>
   );
