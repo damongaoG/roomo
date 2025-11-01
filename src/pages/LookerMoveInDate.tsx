@@ -5,15 +5,21 @@ import {
   IonDatetime,
   IonIcon,
   IonPage,
+  useIonToast,
 } from '@ionic/react';
 import { arrowForward, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store';
 import { setMoveindate } from '../store/slices/registrationSlice';
+import { setSearchPreferences } from '../store/slices/sessionSlice';
 import './LookerRegistration.css';
 import './LookerMoveInDate.css';
-import { supabase } from '../service/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
+import type { SearchPreferences } from '../service/userProfileApi';
+import {
+  postSearchPreferences,
+  type SearchPreferencesPayload,
+} from '../service/searchPreferencesApi';
 
 const formatDisplayDate = (iso: string): string => {
   try {
@@ -32,9 +38,13 @@ const LookerMoveInDate: React.FC = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const registration = useAppSelector(state => state.registration);
+  const authSession = useAppSelector(state => state.session.authSession);
   const { userId } = useAuth();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [presentToast] = useIonToast();
+
+  const accessToken = authSession?.access_token ?? null;
 
   const handleBack = useCallback(() => {
     history.goBack();
@@ -65,36 +75,60 @@ const LookerMoveInDate: React.FC = () => {
     dispatch(setMoveindate(dateOnly));
 
     setSubmitting(true);
-    const payload = {
+    const payload: SearchPreferencesPayload = {
       min_budget_per_week: registration.minBudgetPerWeek ?? null,
       max_budget_per_week: registration.maxBudgetPerWeek ?? null,
       suburb: registration.suburb || null,
       move_in_date: dateOnly,
       user_id: userId ?? null,
-    } as Record<string, unknown>;
+    };
 
-    const { data, error } = await supabase
-      .from('search_preferences')
-      .insert([payload])
-      .select();
-
-    if (error) {
-      // Minimal error handling; could be enhanced with UI feedback
-      console.warn('[LookerMoveInDate] insert error', error);
+    if (!accessToken) {
+      presentToast({
+        message: 'Unable to save without authentication. Please log in again.',
+        duration: 2500,
+        color: 'warning',
+      });
       setSubmitting(false);
       return;
     }
 
-    // Optional: log returned row(s)
-    if (data) {
-      // console.log('[LookerMoveInDate] insert success', data);
-    }
+    const buildFallbackPreference = (): SearchPreferences | null => {
+      if (!userId) return null;
+      const timestamp = new Date().toISOString();
+      return {
+        created_at: timestamp,
+        updated_at: timestamp,
+        user_id: userId,
+        min_budget_per_week: registration.minBudgetPerWeek ?? null,
+        max_budget_per_week: registration.maxBudgetPerWeek ?? null,
+        suburb: registration.suburb || null,
+        move_in_date: dateOnly,
+      };
+    };
 
-    history.push('/home');
+    try {
+      const apiPreferences = await postSearchPreferences(payload, accessToken);
+      const nextPreferences = apiPreferences ?? buildFallbackPreference();
+
+      dispatch(setSearchPreferences(nextPreferences));
+      history.push('/home');
+    } catch (error) {
+      console.warn('[LookerMoveInDate] save preferences error', error);
+      presentToast({
+        message: 'Failed to save search preferences. Please try again later.',
+        duration: 2500,
+        color: 'danger',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   }, [
+    accessToken,
     dispatch,
     history,
     isNextEnabled,
+    presentToast,
     registration.maxBudgetPerWeek,
     registration.minBudgetPerWeek,
     registration.suburb,

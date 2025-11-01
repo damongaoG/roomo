@@ -1,7 +1,12 @@
 export type UserRole = 'looker' | 'lister';
 
-const USER_PROFILE_API_URL =
-  'https://room-backend-node-neq2.vercel.app/api/user-profile';
+const ROOM_BACKEND_URL = (
+  (import.meta.env.VITE_ROOM_BACKEND_URL as string | undefined) ?? ''
+).replace(/\/+$/, '');
+
+const USER_PROFILE_API_URL = ROOM_BACKEND_URL
+  ? `${ROOM_BACKEND_URL}/api/user-profile`
+  : '/api/user-profile';
 
 export interface UserProfile {
   id: string;
@@ -12,12 +17,12 @@ export interface UserProfile {
 }
 
 export interface SearchPreferences {
-  created_at: string;
+  created_at?: string;
   max_budget_per_week: number | null;
   min_budget_per_week: number | null;
   move_in_date: string | null;
   suburb: string | null;
-  updated_at: string;
+  updated_at?: string;
   user_id: string;
 }
 
