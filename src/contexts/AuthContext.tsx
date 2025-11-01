@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
@@ -17,6 +18,7 @@ import {
   selectProfileExists,
   setUserRole,
   selectUserRole,
+  setSearchPreferences,
 } from '../store/slices/sessionSlice';
 import { getCurrentUserProfile } from '../service/userProfileApi';
 import type { UserRole } from '../service/userProfileApi';
@@ -57,24 +59,50 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const userRole = useAppSelector(selectUserRole);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const lastSyncedTokenRef = useRef<string | null>(null);
 
   const syncProfileState = useCallback(
     async (session: Session | null) => {
-      if (!session?.access_token) {
+      const accessToken = session?.access_token ?? null;
+
+      if (!accessToken) {
+        console.log('[Auth] syncProfileState skipped: no access token');
+        lastSyncedTokenRef.current = null;
         dispatch(setProfileExists(false));
         dispatch(setUserRole(null));
+        dispatch(setSearchPreferences(null));
         return;
       }
 
+      if (lastSyncedTokenRef.current === accessToken) {
+        console.log(
+          '[Auth] syncProfileState skipped: already synced for token'
+        );
+        return;
+      }
+
+      console.log('[Auth] syncProfileState fetching user profile');
+
       try {
-        const { data } = await getCurrentUserProfile(session.access_token);
-        const hasProfile = Boolean(data);
+        const { data } = await getCurrentUserProfile(accessToken);
+        const userProfile = data?.user_profile ?? null;
+        const searchPreferences = data?.search_preferences ?? null;
+        const hasProfile = Boolean(userProfile);
+        console.log('[Auth] syncProfileState result', {
+          hasProfile,
+          role: userProfile?.role ?? null,
+          hasSearchPreferences: searchPreferences != null,
+        });
         dispatch(setProfileExists(hasProfile));
-        dispatch(setUserRole(data?.role ?? null));
+        dispatch(setUserRole(userProfile?.role ?? null));
+        dispatch(setSearchPreferences(searchPreferences));
+        lastSyncedTokenRef.current = accessToken;
       } catch (error) {
         console.warn('[Auth] Failed to sync user profile', error);
         dispatch(setProfileExists(false));
         dispatch(setUserRole(null));
+        dispatch(setSearchPreferences(null));
+        lastSyncedTokenRef.current = null;
       }
     },
     [dispatch]
@@ -90,6 +118,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         dispatch(setProfileExists(false));
         dispatch(setAuthSession(null));
         dispatch(setUserRole(null));
+        dispatch(setSearchPreferences(null));
+        lastSyncedTokenRef.current = null;
         setLoading(false);
         return;
       }
@@ -103,9 +133,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (session?.user?.id) {
         console.log('[Auth] init: session detected for user', session.user.id);
+        await syncProfileState(session);
       } else {
         dispatch(setProfileExists(false));
         dispatch(setUserRole(null));
+        dispatch(setSearchPreferences(null));
+        lastSyncedTokenRef.current = null;
       }
     };
     init();
@@ -126,6 +159,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } else {
           dispatch(setProfileExists(false));
           dispatch(setUserRole(null));
+          dispatch(setSearchPreferences(null));
+          lastSyncedTokenRef.current = null;
         }
         setLoading(false);
       }
@@ -155,6 +190,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch(setProfileExists(false));
     dispatch(setAuthSession(null));
     dispatch(setUserRole(null));
+    dispatch(setSearchPreferences(null));
+    lastSyncedTokenRef.current = null;
   };
 
   return (

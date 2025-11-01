@@ -98,13 +98,17 @@ const Page: React.FC = () => {
         console.warn('[Role] missing access token');
         setToast({
           isOpen: true,
-          message: 'Unable to retrieve access credential. Please sign in again.',
+          message:
+            'Unable to retrieve access credential. Please sign in again.',
           color: 'danger',
         });
         return;
       }
 
-      console.log('[Role] calling backend API with payload', { user_id: userId, role });
+      console.log('[Role] calling backend API with payload', {
+        user_id: userId,
+        role,
+      });
       const response = await withTimeout(
         postUserRole({ userId, role, accessToken }),
         8000,

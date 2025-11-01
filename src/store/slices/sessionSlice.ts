@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { Session } from '@supabase/supabase-js';
-import type { UserRole } from '../../service/userProfileApi';
+import type { SearchPreferences, UserRole } from '../../service/userProfileApi';
 
 export interface SessionState {
   hasStoredSession: boolean;
   profileExists: boolean;
   authSession: Session | null;
   role: UserRole | null;
+  searchPreferences: SearchPreferences | null;
 }
 
 const initialState: SessionState = {
@@ -14,6 +15,7 @@ const initialState: SessionState = {
   profileExists: false,
   authSession: null,
   role: null,
+  searchPreferences: null,
 };
 
 const sessionSlice = createSlice({
@@ -32,12 +34,19 @@ const sessionSlice = createSlice({
     setUserRole(state, action: PayloadAction<UserRole | null>) {
       state.role = action.payload;
     },
+    setSearchPreferences(
+      state,
+      action: PayloadAction<SearchPreferences | null>
+    ) {
+      state.searchPreferences = action.payload;
+    },
   },
   selectors: {
     selectHasStoredSession: sliceState => sliceState.hasStoredSession,
     selectProfileExists: sliceState => sliceState.profileExists,
     selectAuthSession: sliceState => sliceState.authSession,
     selectUserRole: sliceState => sliceState.role,
+    selectSearchPreferences: sliceState => sliceState.searchPreferences,
   },
 });
 
@@ -46,12 +55,14 @@ export const {
   setProfileExists,
   setAuthSession,
   setUserRole,
+  setSearchPreferences,
 } = sessionSlice.actions;
 export const {
   selectHasStoredSession,
   selectProfileExists,
   selectAuthSession,
   selectUserRole,
+  selectSearchPreferences,
 } = sessionSlice.selectors;
 
 export default sessionSlice.reducer;

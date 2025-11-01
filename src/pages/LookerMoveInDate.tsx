@@ -91,7 +91,17 @@ const LookerMoveInDate: React.FC = () => {
     }
 
     history.push('/home');
-  }, [dispatch, history, isNextEnabled, registration.maxBudgetPerWeek, registration.minBudgetPerWeek, registration.suburb, selectedDate, submitting, userId]);
+  }, [
+    dispatch,
+    history,
+    isNextEnabled,
+    registration.maxBudgetPerWeek,
+    registration.minBudgetPerWeek,
+    registration.suburb,
+    selectedDate,
+    submitting,
+    userId,
+  ]);
 
   return (
     <IonPage>

@@ -11,8 +11,23 @@ export interface UserProfile {
   updated_at: string;
 }
 
+export interface SearchPreferences {
+  created_at: string;
+  max_budget_per_week: number | null;
+  min_budget_per_week: number | null;
+  move_in_date: string | null;
+  suburb: string | null;
+  updated_at: string;
+  user_id: string;
+}
+
+export interface UserProfilePayload {
+  user_profile: UserProfile | null;
+  search_preferences: SearchPreferences | null;
+}
+
 export interface UserProfileResponse {
-  data: UserProfile | null;
+  data: UserProfilePayload | null;
 }
 
 interface PostUserRoleParams {
@@ -57,10 +72,21 @@ export const getCurrentUserProfile = async (
     return { data: null };
   }
 
-  const payload = (await response.json()) as UserProfileResponse;
-  if (!('data' in payload)) {
+  const payload = (await response.json()) as Partial<UserProfileResponse>;
+  if (!payload || typeof payload !== 'object' || !('data' in payload)) {
     return { data: null };
   }
 
-  return payload;
+  if (!payload.data) {
+    return { data: null };
+  }
+
+  const { user_profile, search_preferences } = payload.data;
+
+  return {
+    data: {
+      user_profile: user_profile ?? null,
+      search_preferences: search_preferences ?? null,
+    },
+  };
 };
