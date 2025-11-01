@@ -18,6 +18,8 @@ const OnboardingScreen = React.lazy(() => import('./pages/OnboardingScreen'));
 const LookerRegistration = React.lazy(
   () => import('./pages/LookerRegistration')
 );
+const LookerMoveInArea = React.lazy(() => import('./pages/LookerMoveInArea'));
+const LookerMoveInDate = React.lazy(() => import('./pages/LookerMoveInDate'));
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -331,10 +333,7 @@ const RoutesWithGuards: React.FC = () => {
               if (a) return a;
               if (!profileExists) return <Redirect to="/folder/Inbox" />;
               if (isLooker && !hasSearchPreferences) {
-                console.log(
-                  '[Route] /looker/move-in-area redirecting to registration'
-                );
-                return <Redirect to="/looker/registration" />;
+                return <LookerMoveInArea />;
               }
               return <Redirect to="/home" />;
             }}
@@ -347,10 +346,7 @@ const RoutesWithGuards: React.FC = () => {
               if (a) return a;
               if (!profileExists) return <Redirect to="/folder/Inbox" />;
               if (isLooker && !hasSearchPreferences) {
-                console.log(
-                  '[Route] /looker/move-in-date redirecting to registration'
-                );
-                return <Redirect to="/looker/registration" />;
+                return <LookerMoveInDate />;
               }
               return <Redirect to="/home" />;
             }}
@@ -401,11 +397,8 @@ const RoutesWithGuards: React.FC = () => {
               }
 
               if (requiresLookerOnboarding) {
-                if (pathname === '/looker/registration') {
-                  return null;
-                }
                 if (lookerOnboardingRoutes.has(pathname)) {
-                  return <Redirect to="/looker/registration" />;
+                  return null;
                 }
                 return <Redirect to="/looker/registration" />;
               }
