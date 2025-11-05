@@ -331,7 +331,9 @@ const RoutesWithGuards: React.FC = () => {
             render={() => {
               const a = requireAuthRedirect();
               if (a) return a;
-              if (!profileExists) return <Redirect to="/folder/Inbox" />;
+              if (!profileExists) {
+                return <LookerMoveInArea />;
+              }
               if (isLooker && !hasSearchPreferences) {
                 return <LookerMoveInArea />;
               }
@@ -344,7 +346,9 @@ const RoutesWithGuards: React.FC = () => {
             render={() => {
               const a = requireAuthRedirect();
               if (a) return a;
-              if (!profileExists) return <Redirect to="/folder/Inbox" />;
+              if (!profileExists) {
+                return <LookerMoveInDate />;
+              }
               if (isLooker && !hasSearchPreferences) {
                 return <LookerMoveInDate />;
               }

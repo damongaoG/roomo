@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { IonPage, IonContent, IonButton, IonIcon } from '@ionic/react';
 import { arrowForward, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import './LookerRegistration.css';
 import './LookerMoveInArea.css';
-import { useAppDispatch } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { setSuburb } from '../store/slices/registrationSlice';
 
 const LOCATIONS = [
@@ -25,7 +25,18 @@ type Location = (typeof LOCATIONS)[number];
 const LookerMoveInArea: React.FC = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
+  const registration = useAppSelector(state => state.registration);
   const [selected, setSelected] = useState<Location | null>(null);
+
+  useEffect(() => {
+    const hasBudgetRange = 
+    registration.minBudgetPerWeek != null &&
+    registration.maxBudgetPerWeek != null;
+
+    if (!hasBudgetRange) {
+      history.replace('/looker/registration');
+    }
+  }, [history, registration.maxBudgetPerWeek, registration.minBudgetPerWeek]);
 
   const handleSelect = useCallback((loc: Location) => {
     setSelected(prev => (prev === loc ? null : loc));

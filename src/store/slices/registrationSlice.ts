@@ -35,8 +35,15 @@ const registrationSlice = createSlice({
       state.moveindate = action.payload;
     },
   },
+  selectors: {
+    selectHasBudgetRange: sliceState => 
+      sliceState.minBudgetPerWeek != null && sliceState.maxBudgetPerWeek != null,
+    selectHasSuburbSelection: sliceState => sliceState.suburb.trim().length > 0,
+  },
 });
 
 export const { setBudgetRange, setSuburb, setMoveindate } =
   registrationSlice.actions;
+  export const { selectHasBudgetRange, selectHasSuburbSelection } = 
+  registrationSlice.selectors;
 export default registrationSlice.reducer;

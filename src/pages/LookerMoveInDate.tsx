@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   IonButton,
   IonContent,
@@ -43,6 +43,26 @@ const LookerMoveInDate: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [presentToast] = useIonToast();
+  useEffect(() => {
+    const hasBudgetRange = 
+    registration.minBudgetPerWeek != null &&
+    registration.maxBudgetPerWeek != null;
+
+    if (!hasBudgetRange) {
+      history.replace('/looker/registration');
+      return;
+    }
+
+    if (!registration.suburb) {
+      history.replace('/looker/move-in-area');
+    }
+  }, [
+    history,
+    registration.maxBudgetPerWeek,
+    registration.minBudgetPerWeek,
+    registration.suburb,
+  ]);
+
 
   const accessToken = authSession?.access_token ?? null;
 
