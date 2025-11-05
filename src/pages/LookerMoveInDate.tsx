@@ -139,7 +139,39 @@ const LookerMoveInDate: React.FC = () => {
 
   return (
     <IonPage>
-      <IonContent fullscreen className="looker-page">
+      <IonContent
+        fullscreen
+        className={`looker-page${submitting ? ' submitting' : ''}`}
+        aria-busy={submitting}
+      >
+        {submitting && (
+          <div className="submission-overlay" role="status" aria-live="polite">
+            <div className="submission-frame">
+              <h2 className="submission-logo">ROOMO</h2>
+              <div className="submission-message">
+                <div className="submission-avatar">
+                  <img
+                    src="/assets/images/logos/jenny-logo.png"
+                    alt="Jenny"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div className="chat-bubble submission-bubble">
+                  <span>On-boarding complete 🤗 Hang tight...</span>
+                  <img
+                    src="/assets/images/icons/chat-tail.svg"
+                    alt=""
+                    aria-hidden="true"
+                    className="chat-tail"
+                    decoding="async"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Top brand + back */}
         <div className="looker-brand">
           <IonButton
@@ -166,6 +198,14 @@ const LookerMoveInDate: React.FC = () => {
             </div>
             <div className="chat-bubble">
               <span>{'Your move in date can be an approximate for now'}</span>
+              <img
+                src="/assets/images/icons/chat-tail.svg"
+                alt=""
+                aria-hidden="true"
+                className="chat-tail"
+                decoding="async"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>

@@ -146,6 +146,14 @@ const LookerRegistration: React.FC = () => {
               <span>
                 I can always change your budget preferences at a later date.
               </span>
+              <img
+                src="/assets/images/icons/chat-tail.svg"
+                alt=""
+                aria-hidden="true"
+                className="chat-tail"
+                decoding="async"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>

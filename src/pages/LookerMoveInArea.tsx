@@ -76,6 +76,14 @@ const LookerMoveInArea: React.FC = () => {
                   "If you select 'All of Melbourne' we can always narrow it down to a specific suburb later on."
                 }
               </span>
+              <img
+                src="/assets/images/icons/chat-tail.svg"
+                alt=""
+                aria-hidden="true"
+                className="chat-tail"
+                decoding="async"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>

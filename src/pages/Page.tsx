@@ -1,5 +1,6 @@
 import { IonContent, IonPage, IonButton, IonToast } from '@ionic/react';
 import './Page.css';
+import './LookerRegistration.css';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { supabase } from '../service/supabaseClient';
@@ -165,6 +166,14 @@ const Page: React.FC = () => {
             </div>
             <div className="chat-bubble">
               <span>Hi I'm Jenny 👋 nice to meet you</span>
+              <img
+                src="/assets/images/icons/chat-tail.svg"
+                alt=""
+                aria-hidden="true"
+                className="chat-tail"
+                decoding="async"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>

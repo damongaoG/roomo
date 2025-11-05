@@ -91,19 +91,35 @@
 }
 
 .chat-bubble {
+  position: relative;
+  display: inline-block;
   border-radius: 20px;
   padding: 14px 16px;
   max-width: 312px;
   border: 1px solid #278eff;
   background: #278eff;
+  box-shadow: 0 8px 20px rgba(39, 142, 255, 0.18);
 }
 
 .chat-bubble span {
+  position: relative;
   color: #fbfbfb;
   font-family: 'SF Pro', sans-serif;
   font-size: 16px;
   letter-spacing: -0.08px;
   line-height: 1.2;
+  display: inline-block;
+  z-index: 2;
+}
+
+.chat-tail {
+  position: absolute;
+  left: -9px;
+  bottom: 0;
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .main-question {

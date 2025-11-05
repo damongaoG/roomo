@@ -69,44 +69,13 @@
 }
 
 /* Chat Bubble */
-.chat-bubble {
-  border-radius: 20px;
-  padding: 16px 20px;
+.roomo-page .chat-bubble {
   margin-top: 8px;
   max-width: 280px;
-  position: relative;
-  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.2);
-
-  border: 1px solid #278eff;
-  background: #278eff;
 }
 
-.chat-bubble::before {
-  content: '';
-  position: absolute;
-  left: -8px;
-  top: 12px;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 8px 8px 8px 0;
-  border-color: transparent #278eff transparent transparent;
-
-  fill: #278eff;
-  stroke-width: 1px;
-  stroke: #278eff;
-}
-
-.chat-bubble span {
-  display: block;
-
-  color: #fbfbfb;
-  font-family: 'SF Pro', sans-serif;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 184%; /* 29.44px */
-  letter-spacing: -0.08px;
+.roomo-page .chat-bubble span {
+  line-height: 1.5;
 }
 
 /* Main Question */
