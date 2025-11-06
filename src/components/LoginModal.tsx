@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { InputChangeEventDetail } from '@ionic/core';
+import type { InputInputEventDetail } from '@ionic/core';
 import {
   IonButton,
   IonContent,
@@ -244,7 +244,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
                       autocomplete="email"
                       inputmode="email"
                       autocapitalize="off"
-                      onIonChange={(e: CustomEvent<InputChangeEventDetail>) =>
+                      onIonInput={(e: CustomEvent<InputInputEventDetail>) =>
                         setEmail(e.detail.value || '')
                       }
                     />
@@ -256,7 +256,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
                       value={password}
                       autocomplete="current-password"
                       autocapitalize="off"
-                      onIonChange={(e: CustomEvent<InputChangeEventDetail>) =>
+                      onIonInput={(e: CustomEvent<InputInputEventDetail>) =>
                         setPassword(e.detail.value || '')
                       }
                     />
