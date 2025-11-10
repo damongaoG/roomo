@@ -18,6 +18,9 @@ const OnboardingScreen = React.lazy(() => import('./pages/OnboardingScreen'));
 const LookerRegistration = React.lazy(
   () => import('./pages/LookerRegistration')
 );
+const ListerRegistration = React.lazy(
+  () => import('./pages/ListerRegistration')
+);
 const LookerMoveInArea = React.lazy(() => import('./pages/LookerMoveInArea'));
 const LookerMoveInDate = React.lazy(() => import('./pages/LookerMoveInDate'));
 
@@ -326,6 +329,23 @@ const RoutesWithGuards: React.FC = () => {
             }}
           />
           <Route
+          path="/lister/registration"
+          exact={true}
+          render={() => {
+            const a = requireAuthRedirect();
+            if (a) return a;
+            if (!profileExists) {
+              return <ListerRegistration />;
+            }
+            if (userRole === 'lister') {
+              return <ListerRegistration />;
+            }
+            return (
+              <Redirect to={profileExists ? '/home' : '/folder/Inbox'} />
+            );
+          }}
+          />
+          <Route
             path="/looker/move-in-area"
             exact={true}
             render={() => {
@@ -393,6 +413,7 @@ const RoutesWithGuards: React.FC = () => {
               if (hasStoredSession && !profileExists) {
                 if (
                   pathname === '/folder/Inbox' ||
+                  pathname === '/lister/registration' ||
                   lookerOnboardingRoutes.has(pathname)
                 ) {
                   return null;

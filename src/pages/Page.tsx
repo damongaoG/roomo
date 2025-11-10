@@ -5,14 +5,15 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { supabase } from '../service/supabaseClient';
 import { postUserRole, type UserRole } from '../service/userProfileApi';
-import { useAppSelector } from '../store';
-import { selectAuthSession } from '../store/slices/sessionSlice';
+import { useAppDispatch, useAppSelector } from '../store';
+import { selectAuthSession, setUserRole as setUserRoleAction } from '../store/slices/sessionSlice';
 import { useAuth } from '../contexts/AuthContext';
 
 type Role = UserRole;
 
 const Page: React.FC = () => {
   const history = useHistory();
+  const dispatch = useAppDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState<{
     isOpen: boolean;
@@ -131,9 +132,12 @@ const Page: React.FC = () => {
       }
 
       console.log('[Role] role set successfully via backend');
+      dispatch(setUserRoleAction(role));
       if (role === 'looker') {
         // Navigate to registration while profileExists is still false
         history.push('/looker/registration');
+      } else if (role === 'lister') {
+        history.push('/lister/registration');
       } else {
         history.push('/home');
       }
