@@ -19,7 +19,7 @@ import {
   logoGoogle,
   mailOutline,
 } from 'ionicons/icons';
-import { supabase } from '../service/supabaseClient';
+import { supabase } from '../../service/supabaseClient';
 import './LoginModal.css';
 
 interface LoginModalProps {

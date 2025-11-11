@@ -8,7 +8,7 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, useHistory, useLocation } from 'react-router-dom';
-import Menu from './components/Menu';
+import { Menu } from '@components';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import React, { Suspense, useEffect, useMemo } from 'react';
 import { loadingController } from '@ionic/core';

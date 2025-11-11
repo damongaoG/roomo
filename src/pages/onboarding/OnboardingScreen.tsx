@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IonButton, IonContent, IonPage, useIonRouter } from '@ionic/react';
-import LoginModal from '../../components/LoginModal';
+import { LoginModal } from '@components';
 import './OnboardingScreen.css';
 
 // Interface for feature items
