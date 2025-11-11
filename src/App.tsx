@@ -13,16 +13,24 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import React, { Suspense, useEffect, useMemo } from 'react';
 import { loadingController } from '@ionic/core';
 
-const SplashScreen = React.lazy(() => import('./pages/SplashScreen'));
-const OnboardingScreen = React.lazy(() => import('./pages/OnboardingScreen'));
+const SplashScreen = React.lazy(
+  () => import('./pages/onboarding/SplashScreen')
+);
+const OnboardingScreen = React.lazy(
+  () => import('./pages/onboarding/OnboardingScreen')
+);
 const LookerRegistration = React.lazy(
-  () => import('./pages/LookerRegistration')
+  () => import('./pages/looker/registration/LookerRegistration')
 );
 const ListerRegistration = React.lazy(
-  () => import('./pages/ListerRegistration')
+  () => import('./pages/lister/registration/ListerRegistration')
 );
-const LookerMoveInArea = React.lazy(() => import('./pages/LookerMoveInArea'));
-const LookerMoveInDate = React.lazy(() => import('./pages/LookerMoveInDate'));
+const LookerMoveInArea = React.lazy(
+  () => import('./pages/looker/move-in-area/LookerMoveInArea')
+);
+const LookerMoveInDate = React.lazy(
+  () => import('./pages/looker/move-in-date/LookerMoveInDate')
+);
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -52,7 +60,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import Page from './pages/Page';
+import Page from './pages/role-selection/Page';
 import { useAppSelector } from './store';
 import {
   selectHasStoredSession,
@@ -61,7 +69,7 @@ import {
   selectSearchPreferences,
   selectPropertyInformation,
 } from './store/slices/sessionSlice';
-const Home = React.lazy(() => import('./pages/Home'));
+const Home = React.lazy(() => import('./pages/home/Home'));
 
 setupIonicReact();
 

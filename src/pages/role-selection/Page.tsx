@@ -1,16 +1,16 @@
 import { IonContent, IonPage, IonButton, IonToast } from '@ionic/react';
 import './Page.css';
-import './LookerRegistration.css';
+import '../looker/shared/LookerRegistration.css';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { supabase } from '../service/supabaseClient';
-import { postUserRole, type UserRole } from '../service/userProfileApi';
-import { useAppDispatch, useAppSelector } from '../store';
+import { supabase } from '../../service/supabaseClient';
+import { postUserRole, type UserRole } from '../../service/userProfileApi';
+import { useAppDispatch, useAppSelector } from '../../store';
 import {
   selectAuthSession,
   setUserRole as setUserRoleAction,
-} from '../store/slices/sessionSlice';
-import { useAuth } from '../contexts/AuthContext';
+} from '../../store/slices/sessionSlice';
+import { useAuth } from '../../contexts/AuthContext';
 
 type Role = UserRole;
 

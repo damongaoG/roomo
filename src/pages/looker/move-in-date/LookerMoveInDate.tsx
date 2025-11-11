@@ -9,17 +9,17 @@ import {
 } from '@ionic/react';
 import { arrowForward, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store';
-import { setMoveindate } from '../store/slices/registrationSlice';
-import { setSearchPreferences } from '../store/slices/sessionSlice';
-import './LookerRegistration.css';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { setMoveindate } from '../../../store/slices/registrationSlice';
+import { setSearchPreferences } from '../../../store/slices/sessionSlice';
+import '../shared/LookerRegistration.css';
 import './LookerMoveInDate.css';
-import { useAuth } from '../contexts/AuthContext';
-import type { SearchPreferences } from '../service/userProfileApi';
+import { useAuth } from '../../../contexts/AuthContext';
+import type { SearchPreferences } from '../../../service/userProfileApi';
 import {
   postSearchPreferences,
   type SearchPreferencesPayload,
-} from '../service/searchPreferencesApi';
+} from '../../../service/searchPreferencesApi';
 
 const formatDisplayDate = (iso: string): string => {
   try {

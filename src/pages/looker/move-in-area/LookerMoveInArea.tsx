@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { IonPage, IonContent, IonButton, IonIcon } from '@ionic/react';
 import { arrowForward, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import './LookerRegistration.css';
+import '../shared/LookerRegistration.css';
 import './LookerMoveInArea.css';
-import { useAppDispatch, useAppSelector } from '../store';
-import { setSuburb } from '../store/slices/registrationSlice';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { setSuburb } from '../../../store/slices/registrationSlice';
 
 const LOCATIONS = [
   'All of Melbourne',

@@ -13,11 +13,11 @@ import {
   IonInput,
 } from '@ionic/react';
 import { arrowForward, chevronBack } from 'ionicons/icons';
-import './LookerRegistration.css';
-import { formatAUD, parseAUDInput, clampNumber } from '../utils/currency';
-import { useAppDispatch } from '../store';
-import { setProfileExists, setUserRole } from '../store/slices/sessionSlice';
-import { setBudgetRange as setRegistrationBudgetRange } from '../store/slices/registrationSlice';
+import '../shared/LookerRegistration.css';
+import { formatAUD, parseAUDInput, clampNumber } from '../../../utils/currency';
+import { useAppDispatch } from '../../../store';
+import { setProfileExists, setUserRole } from '../../../store/slices/sessionSlice';
+import { setBudgetRange as setRegistrationBudgetRange } from '../../../store/slices/registrationSlice';
 import { useHistory } from 'react-router-dom';
 
 const RANGE_MIN = 0;
