@@ -16,7 +16,10 @@ import { arrowForward, chevronBack } from 'ionicons/icons';
 import '../shared/LookerRegistration.css';
 import { formatAUD, parseAUDInput, clampNumber } from '../../../utils/currency';
 import { useAppDispatch } from '../../../store';
-import { setProfileExists, setUserRole } from '../../../store/slices/sessionSlice';
+import {
+  setProfileExists,
+  setUserRole,
+} from '../../../store/slices/sessionSlice';
 import { setBudgetRange as setRegistrationBudgetRange } from '../../../store/slices/registrationSlice';
 import { useHistory } from 'react-router-dom';
 

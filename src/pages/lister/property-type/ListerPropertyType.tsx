@@ -1,43 +1,25 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { IonButton, IonContent, IonIcon, IonPage } from '@ionic/react';
 import { arrowForward, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../../store';
-import {
-  AccommodationTypeOption,
-  selectAccommodationType,
-  setAccommodationType,
-} from '../../../store/slices/registrationSlice';
-import './ListerRegistration.css';
+import '../registration/ListerRegistration.css';
+import './ListerPropertyType.css';
 
-const optionCopy: Record<AccommodationTypeOption, string> = {
-  'share-house': 'Room(s) in an exciting share-house',
-  'whole-property': 'Whole property for rent',
-  homestay: 'Homestay',
-  'student-accommodation': 'Student accommodation',
+type PropertyTypeOption = 'house' | 'apartment';
+
+const propertyTypeCopy: Record<PropertyTypeOption, string> = {
+  house: 'House',
+  apartment: 'Apartment',
 };
 
-const ListerRegistration: React.FC = () => {
+const ListerPropertyType: React.FC = () => {
   const history = useHistory();
-  const options = useMemo(
-    () => Object.keys(optionCopy) as AccommodationTypeOption[],
-    []
-  );
-  const dispatch = useAppDispatch();
-  const storedAccommodationType = useAppSelector(selectAccommodationType);
   const [selectedOption, setSelectedOption] =
-    useState<AccommodationTypeOption | null>(storedAccommodationType);
-
-  const handleNext = () => {
-    if (!selectedOption) return;
-    dispatch(setAccommodationType(selectedOption));
-    console.log('[ListerRegistration] next clicked', { selectedOption });
-    history.push('/lister/property-type');
-  };
+    useState<PropertyTypeOption | null>(null);
 
   return (
     <IonPage>
-      <IonContent fullscreen className="lister-page">
+      <IonContent fullscreen className="lister-page property-type-page">
         <div className="lister-brand">
           <IonButton
             aria-label="Back"
@@ -73,23 +55,25 @@ const ListerRegistration: React.FC = () => {
         </div>
 
         <div className="lister-question">
-          <h2>What type of accommodation are you offering?</h2>
+          <h2>Type of property</h2>
         </div>
 
-        <div className="options-grid" role="list">
-          {options.map(option => (
-            <IonButton
-              key={option}
-              fill="clear"
-              className={`option-button${
-                selectedOption === option ? ' selected' : ''
-              }`}
-              onClick={() => setSelectedOption(option)}
-              role="listitem"
-            >
-              {optionCopy[option]}
-            </IonButton>
-          ))}
+        <div className="property-type-options" role="list">
+          {(Object.keys(propertyTypeCopy) as PropertyTypeOption[]).map(
+            option => (
+              <IonButton
+                key={option}
+                fill="clear"
+                className={`option-button${
+                  selectedOption === option ? ' selected' : ''
+                }`}
+                onClick={() => setSelectedOption(option)}
+                role="listitem"
+              >
+                {propertyTypeCopy[option]}
+              </IonButton>
+            )
+          )}
         </div>
 
         <div className="bottom-actions">
@@ -98,7 +82,6 @@ const ListerRegistration: React.FC = () => {
             fill="solid"
             className={`next-button${selectedOption ? ' enabled' : ''}`}
             disabled={!selectedOption}
-            onClick={handleNext}
           >
             Next
             <IonIcon icon={arrowForward} slot="end" />
@@ -109,4 +92,4 @@ const ListerRegistration: React.FC = () => {
   );
 };
 
-export default ListerRegistration;
+export default ListerPropertyType;

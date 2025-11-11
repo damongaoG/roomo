@@ -182,8 +182,8 @@
 }
 
 .option-button.selected {
-  --background: #278eff;
-  --color: #fbfbfb;
+  --background: #000;
+  --color: #fff;
   border-color: transparent;
   box-shadow: 0 12px 26px rgba(39, 142, 255, 0.25);
 }

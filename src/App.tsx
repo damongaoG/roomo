@@ -25,6 +25,9 @@ const LookerRegistration = React.lazy(
 const ListerRegistration = React.lazy(
   () => import('./pages/lister/registration/ListerRegistration')
 );
+const ListerPropertyType = React.lazy(
+  () => import('./pages/lister/property-type/ListerPropertyType')
+);
 const LookerMoveInArea = React.lazy(
   () => import('./pages/looker/move-in-area/LookerMoveInArea')
 );
@@ -172,6 +175,10 @@ const RoutesWithGuards: React.FC = () => {
       ]),
     []
   );
+  const listerOnboardingRoutes = useMemo(
+    () => new Set(['/lister/registration', '/lister/property-type']),
+    []
+  );
 
   const publicOnlyRedirect = () => {
     if (!hasStoredSession) return null;
@@ -238,7 +245,7 @@ const RoutesWithGuards: React.FC = () => {
       return;
     }
     if (requiresListerOnboarding) {
-      if (pathname !== '/lister/registration') {
+      if (!listerOnboardingRoutes.has(pathname)) {
         console.log('[Route] Enforcing lister registration', { pathname });
         history.replace('/lister/registration');
       }
@@ -262,6 +269,7 @@ const RoutesWithGuards: React.FC = () => {
     isLister,
     hasPropertyInformation,
     requiresListerOnboarding,
+    listerOnboardingRoutes,
   ]);
 
   return (
@@ -392,6 +400,23 @@ const RoutesWithGuards: React.FC = () => {
             }}
           />
           <Route
+            path="/lister/property-type"
+            exact={true}
+            render={() => {
+              const a = requireAuthRedirect();
+              if (a) return a;
+              if (!profileExists) {
+                return <ListerPropertyType />;
+              }
+              if (userRole === 'lister' && !hasPropertyInformation) {
+                return <ListerPropertyType />;
+              }
+              return (
+                <Redirect to={profileExists ? '/home' : '/folder/Inbox'} />
+              );
+            }}
+          />
+          <Route
             path="/looker/move-in-area"
             exact={true}
             render={() => {
@@ -461,6 +486,7 @@ const RoutesWithGuards: React.FC = () => {
                 if (
                   pathname === '/folder/Inbox' ||
                   pathname === '/lister/registration' ||
+                  pathname === '/lister/property-type' ||
                   lookerOnboardingRoutes.has(pathname)
                 ) {
                   return null;
@@ -476,7 +502,7 @@ const RoutesWithGuards: React.FC = () => {
               }
 
               if (requiresListerOnboarding) {
-                if (pathname === '/lister/registration') {
+                if (listerOnboardingRoutes.has(pathname)) {
                   return null;
                 }
                 return <Redirect to="/lister/registration" />;
