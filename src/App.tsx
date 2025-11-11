@@ -59,6 +59,7 @@ import {
   selectProfileExists,
   selectUserRole,
   selectSearchPreferences,
+  selectPropertyInformation,
 } from './store/slices/sessionSlice';
 const Home = React.lazy(() => import('./pages/Home'));
 
@@ -72,12 +73,16 @@ const RootRedirect: React.FC = () => {
   const searchPreferences = useAppSelector(selectSearchPreferences);
   const hasSearchPreferences = searchPreferences != null;
   const isLooker = userRole === 'looker';
+  const propertyInformation = useAppSelector(selectPropertyInformation);
+  const isLister = userRole === 'lister';
+  const hasPropertyInformation = propertyInformation != null;
   console.log('[Route] RootRedirect', {
     isAuthenticated,
     hasStoredSession,
     profileExists,
     userRole,
     hasSearchPreferences,
+    hasPropertyInformation,
     loading,
   });
   // If we already have a session, never show splash/onboarding; go to next step immediately.
@@ -85,6 +90,9 @@ const RootRedirect: React.FC = () => {
     if (!profileExists) return <Redirect to="/folder/Inbox" />;
     if (isLooker && !hasSearchPreferences) {
       return <Redirect to="/looker/registration" />;
+    }
+    if (isLister && !hasPropertyInformation) {
+      return <Redirect to="/lister/registration" />;
     }
     return <Redirect to="/home" />;
   }
@@ -137,8 +145,13 @@ const RoutesWithGuards: React.FC = () => {
   const searchPreferences = useAppSelector(selectSearchPreferences);
   const hasSearchPreferences = searchPreferences != null;
   const isLooker = userRole === 'looker';
+  const isLister = userRole === 'lister';
+  const propertyInformation = useAppSelector(selectPropertyInformation);
+  const hasPropertyInformation = propertyInformation != null;
   const requiresLookerOnboarding =
     hasStoredSession && profileExists && isLooker && !hasSearchPreferences;
+  const requiresListerOnboarding =
+    hasStoredSession && profileExists && isLister && !hasPropertyInformation;
   const history = useHistory();
   const location = useLocation();
 
@@ -156,6 +169,7 @@ const RoutesWithGuards: React.FC = () => {
     if (!hasStoredSession) return null;
     if (!profileExists) return <Redirect to="/folder/Inbox" />;
     if (requiresLookerOnboarding) return <Redirect to="/looker/registration" />;
+    if (requiresListerOnboarding) return <Redirect to="/lister/registration" />;
     return <Redirect to="/home" />;
   };
 
@@ -165,6 +179,7 @@ const RoutesWithGuards: React.FC = () => {
   const requireProfileRedirect = () => {
     if (!profileExists) return <Redirect to="/folder/Inbox" />;
     if (requiresLookerOnboarding) return <Redirect to="/looker/registration" />;
+    if (requiresListerOnboarding) return <Redirect to="/lister/registration" />;
     return null;
   };
 
@@ -175,7 +190,9 @@ const RoutesWithGuards: React.FC = () => {
       profileExists,
       userRole,
       hasSearchPreferences,
+      hasPropertyInformation,
       requiresLookerOnboarding,
+      requiresListerOnboarding,
     });
   }, [
     loading,
@@ -184,6 +201,8 @@ const RoutesWithGuards: React.FC = () => {
     userRole,
     hasSearchPreferences,
     requiresLookerOnboarding,
+    hasPropertyInformation,
+    requiresListerOnboarding,
   ]);
 
   useEffect(() => {
@@ -195,7 +214,10 @@ const RoutesWithGuards: React.FC = () => {
       profileExists,
       isLooker,
       hasSearchPreferences,
+      isLister,
+      hasPropertyInformation,
       requiresLookerOnboarding,
+      requiresListerOnboarding,
     });
     if (loading) return;
     if (!hasStoredSession) return;
@@ -204,6 +226,13 @@ const RoutesWithGuards: React.FC = () => {
       if (!lookerOnboardingRoutes.has(pathname)) {
         console.log('[Route] Enforcing looker registration', { pathname });
         history.replace('/looker/registration');
+      }
+      return;
+    }
+    if (requiresListerOnboarding) {
+      if (pathname !== '/lister/registration') {
+        console.log('[Route] Enforcing lister registration', { pathname });
+        history.replace('/lister/registration');
       }
       return;
     }
@@ -222,6 +251,9 @@ const RoutesWithGuards: React.FC = () => {
     hasSearchPreferences,
     userRole,
     lookerOnboardingRoutes,
+    isLister,
+    hasPropertyInformation,
+    requiresListerOnboarding,
   ]);
 
   return (
@@ -278,10 +310,16 @@ const RoutesWithGuards: React.FC = () => {
                     isLooker,
                     hasSearchPreferences,
                     requiresLookerOnboarding,
+                    isLister,
+                    hasPropertyInformation,
+                    requiresListerOnboarding,
                   }
                 );
                 if (requiresLookerOnboarding) {
                   return <Redirect to="/looker/registration" />;
+                }
+                if (requiresListerOnboarding) {
+                  return <Redirect to="/lister/registration" />;
                 }
                 return <Redirect to="/home" />;
               }
@@ -329,21 +367,21 @@ const RoutesWithGuards: React.FC = () => {
             }}
           />
           <Route
-          path="/lister/registration"
-          exact={true}
-          render={() => {
-            const a = requireAuthRedirect();
-            if (a) return a;
-            if (!profileExists) {
-              return <ListerRegistration />;
-            }
-            if (userRole === 'lister') {
-              return <ListerRegistration />;
-            }
-            return (
-              <Redirect to={profileExists ? '/home' : '/folder/Inbox'} />
-            );
-          }}
+            path="/lister/registration"
+            exact={true}
+            render={() => {
+              const a = requireAuthRedirect();
+              if (a) return a;
+              if (!profileExists) {
+                return <ListerRegistration />;
+              }
+              if (userRole === 'lister' && !hasPropertyInformation) {
+                return <ListerRegistration />;
+              }
+              return (
+                <Redirect to={profileExists ? '/home' : '/folder/Inbox'} />
+              );
+            }}
           />
           <Route
             path="/looker/move-in-area"
@@ -397,6 +435,7 @@ const RoutesWithGuards: React.FC = () => {
                 profileExists,
                 userRole,
                 hasSearchPreferences,
+                hasPropertyInformation,
                 pathname,
               });
               if (loading) return null;
@@ -426,6 +465,13 @@ const RoutesWithGuards: React.FC = () => {
                   return null;
                 }
                 return <Redirect to="/looker/registration" />;
+              }
+
+              if (requiresListerOnboarding) {
+                if (pathname === '/lister/registration') {
+                  return null;
+                }
+                return <Redirect to="/lister/registration" />;
               }
 
               // Authed and profiled: block public pages, otherwise allow

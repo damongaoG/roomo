@@ -6,7 +6,10 @@ import { useHistory } from 'react-router-dom';
 import { supabase } from '../service/supabaseClient';
 import { postUserRole, type UserRole } from '../service/userProfileApi';
 import { useAppDispatch, useAppSelector } from '../store';
-import { selectAuthSession, setUserRole as setUserRoleAction } from '../store/slices/sessionSlice';
+import {
+  selectAuthSession,
+  setUserRole as setUserRoleAction,
+} from '../store/slices/sessionSlice';
 import { useAuth } from '../contexts/AuthContext';
 
 type Role = UserRole;

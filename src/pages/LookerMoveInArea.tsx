@@ -29,9 +29,9 @@ const LookerMoveInArea: React.FC = () => {
   const [selected, setSelected] = useState<Location | null>(null);
 
   useEffect(() => {
-    const hasBudgetRange = 
-    registration.minBudgetPerWeek != null &&
-    registration.maxBudgetPerWeek != null;
+    const hasBudgetRange =
+      registration.minBudgetPerWeek != null &&
+      registration.maxBudgetPerWeek != null;
 
     if (!hasBudgetRange) {
       history.replace('/looker/registration');

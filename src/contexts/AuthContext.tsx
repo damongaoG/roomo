@@ -19,6 +19,7 @@ import {
   setUserRole,
   selectUserRole,
   setSearchPreferences,
+  setPropertyInformation,
 } from '../store/slices/sessionSlice';
 import { getCurrentUserProfile } from '../service/userProfileApi';
 import type { UserRole } from '../service/userProfileApi';
@@ -74,6 +75,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         dispatch(setProfileExists(false));
         dispatch(setUserRole(null));
         dispatch(setSearchPreferences(null));
+        dispatch(setPropertyInformation(null));
         return;
       }
 
@@ -92,21 +94,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const { data } = await getCurrentUserProfile(accessToken);
         const userProfile = data?.user_profile ?? null;
         const searchPreferences = data?.search_preferences ?? null;
+        const propertyInformation = data?.property_information ?? null;
         const hasProfile = Boolean(userProfile);
         console.log('[Auth] syncProfileState result', {
           hasProfile,
           role: userProfile?.role ?? null,
           hasSearchPreferences: searchPreferences != null,
+          hasPropertyInformation: propertyInformation != null,
         });
         dispatch(setProfileExists(hasProfile));
         dispatch(setUserRole(userProfile?.role ?? null));
         dispatch(setSearchPreferences(searchPreferences));
+        dispatch(setPropertyInformation(propertyInformation));
         lastSyncedTokenRef.current = accessToken;
       } catch (error) {
         console.warn('[Auth] Failed to sync user profile', error);
         dispatch(setProfileExists(false));
         dispatch(setUserRole(null));
         dispatch(setSearchPreferences(null));
+        dispatch(setPropertyInformation(null));
         lastSyncedTokenRef.current = null;
       } finally {
         setProfileSyncing(false);
@@ -146,6 +152,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         dispatch(setProfileExists(false));
         dispatch(setUserRole(null));
         dispatch(setSearchPreferences(null));
+        dispatch(setPropertyInformation(null));
         lastSyncedTokenRef.current = null;
         setProfileSyncing(false);
       }
@@ -169,6 +176,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           dispatch(setProfileExists(false));
           dispatch(setUserRole(null));
           dispatch(setSearchPreferences(null));
+          dispatch(setPropertyInformation(null));
           lastSyncedTokenRef.current = null;
           setProfileSyncing(false);
         }
@@ -201,6 +209,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch(setAuthSession(null));
     dispatch(setUserRole(null));
     dispatch(setSearchPreferences(null));
+    dispatch(setPropertyInformation(null));
     lastSyncedTokenRef.current = null;
     setProfileSyncing(false);
   };

@@ -16,6 +16,30 @@ export interface UserProfile {
   updated_at: string;
 }
 
+export interface PropertyInformation {
+  id: number;
+  accommodation_type: string | null;
+  property_type: string | null;
+  bedrooms_number: number | null;
+  bathrooms_number: number | null;
+  parking: string | null;
+  accessibility_features: string | null;
+  number_of_people_living: number | null;
+  room_name: string | null;
+  room_type: string | null;
+  room_furnishings: string | null;
+  bathroom: string | null;
+  bed_size: string | null;
+  room_furnishings_features: string | null;
+  weekly_rent: number | null;
+  bills_included: string | null;
+  suburb: string | null;
+  room_available_date: string | null;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+}
+
 export interface SearchPreferences {
   created_at?: string;
   max_budget_per_week: number | null;
@@ -29,6 +53,7 @@ export interface SearchPreferences {
 export interface UserProfilePayload {
   user_profile: UserProfile | null;
   search_preferences: SearchPreferences | null;
+  property_information: PropertyInformation | null;
 }
 
 export interface UserProfileResponse {
@@ -86,12 +111,14 @@ export const getCurrentUserProfile = async (
     return { data: null };
   }
 
-  const { user_profile, search_preferences } = payload.data;
+  const { user_profile, search_preferences, property_information } =
+    payload.data;
 
   return {
     data: {
       user_profile: user_profile ?? null,
       search_preferences: search_preferences ?? null,
+      property_information: property_information ?? null,
     },
   };
 };

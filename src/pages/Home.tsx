@@ -13,35 +13,34 @@ const Home: React.FC = () => {
     <IonPage className="home-page">
       <IonHeader className="home-header" translucent={false}>
         <IonToolbar className="home-toolbar">
-          <div style={{"display": "flex", "paddingTop": "3rem"}}>
-             <button type="button" className="icon-button" aria-label="打开菜单">
-            <img src="/assets/images/icons/menu-02.svg" alt="" />
-          </button>
-
-          <div className="chat-tabs" role="tablist" aria-label="聊天筛选">
-            <button
-              type="button"
-              role="tab"
-              aria-selected="true"
-              className="chat-tab chat-tab--active"
-            >
-              Jenny chat
+          <div style={{ display: 'flex', paddingTop: '3rem' }}>
+            <button type="button" className="icon-button" aria-label="打开菜单">
+              <img src="/assets/images/icons/menu-02.svg" alt="" />
             </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected="false"
-              className="chat-tab"
-            >
-              Matches
+
+            <div className="chat-tabs" role="tablist" aria-label="聊天筛选">
+              <button
+                type="button"
+                role="tab"
+                aria-selected="true"
+                className="chat-tab chat-tab--active"
+              >
+                Jenny chat
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected="false"
+                className="chat-tab"
+              >
+                Matches
+              </button>
+            </div>
+
+            <button type="button" className="icon-button" aria-label="查看消息">
+              <img src="/assets/images/icons/Inbox.svg" alt="" />
             </button>
           </div>
-
-          <button type="button" className="icon-button" aria-label="查看消息">
-            <img src="/assets/images/icons/Inbox.svg" alt="" />
-          </button>
-          </div>
-         
         </IonToolbar>
       </IonHeader>
 

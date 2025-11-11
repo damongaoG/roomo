@@ -1,19 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import {
-  IonButton,
-  IonContent,
-  IonIcon,
-  IonPage,
-} from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonPage } from '@ionic/react';
 import { arrowForward, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import './ListerRegistration.css';
 
 type AccommodationOption =
-| 'share-house'
-| 'whole-property'
-| 'homestay'
-| 'student-accommodation';
+  | 'share-house'
+  | 'whole-property'
+  | 'homestay'
+  | 'student-accommodation';
 
 const optionCopy: Record<AccommodationOption, string> = {
   'share-house': 'Room(s) in an exciting share-house',
@@ -25,11 +20,11 @@ const optionCopy: Record<AccommodationOption, string> = {
 const ListerRegistration: React.FC = () => {
   const history = useHistory();
   const options = useMemo(
-    () => (Object.keys(optionCopy) as AccommodationOption[]),
+    () => Object.keys(optionCopy) as AccommodationOption[],
     []
   );
-  const [selectedOption, setSelectedOption] = 
-  useState<AccommodationOption | null>(null);
+  const [selectedOption, setSelectedOption] =
+    useState<AccommodationOption | null>(null);
 
   const handleNext = () => {
     if (!selectedOption) return;
@@ -41,10 +36,10 @@ const ListerRegistration: React.FC = () => {
       <IonContent fullscreen className="lister-page">
         <div className="lister-brand">
           <IonButton
-          aria-label="Back"
-          className="back-btn"
-          fill="clear"
-          onClick={() => history.goBack()}
+            aria-label="Back"
+            className="back-btn"
+            fill="clear"
+            onClick={() => history.goBack()}
           >
             <IonIcon icon={chevronBack} />
           </IonButton>
@@ -52,7 +47,6 @@ const ListerRegistration: React.FC = () => {
         </div>
 
         <div className="lister-chat">
-
           <div className="jenny-chat">
             <div className="jenny-avatar">
               <img
@@ -81,13 +75,13 @@ const ListerRegistration: React.FC = () => {
         <div className="options-grid" role="list">
           {options.map(option => (
             <IonButton
-            key={option}
-            fill="clear"
-            className={`option-button${
-              selectedOption === option ? ' selected' : ''
-            }`}
-            onClick={() => setSelectedOption(option)}
-            role="listitem"
+              key={option}
+              fill="clear"
+              className={`option-button${
+                selectedOption === option ? ' selected' : ''
+              }`}
+              onClick={() => setSelectedOption(option)}
+              role="listitem"
             >
               {optionCopy[option]}
             </IonButton>
@@ -96,11 +90,11 @@ const ListerRegistration: React.FC = () => {
 
         <div className="bottom-actions">
           <IonButton
-          expand="block"
-          fill="solid"
-          className={`next-button${selectedOption ? ' enabled' : ''}`}
-          disabled={!selectedOption}
-          onClick={handleNext}
+            expand="block"
+            fill="solid"
+            className={`next-button${selectedOption ? ' enabled' : ''}`}
+            disabled={!selectedOption}
+            onClick={handleNext}
           >
             Next
             <IonIcon icon={arrowForward} slot="end" />
@@ -112,4 +106,3 @@ const ListerRegistration: React.FC = () => {
 };
 
 export default ListerRegistration;
-

@@ -44,9 +44,9 @@ const LookerMoveInDate: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [presentToast] = useIonToast();
   useEffect(() => {
-    const hasBudgetRange = 
-    registration.minBudgetPerWeek != null &&
-    registration.maxBudgetPerWeek != null;
+    const hasBudgetRange =
+      registration.minBudgetPerWeek != null &&
+      registration.maxBudgetPerWeek != null;
 
     if (!hasBudgetRange) {
       history.replace('/looker/registration');
@@ -62,7 +62,6 @@ const LookerMoveInDate: React.FC = () => {
     registration.minBudgetPerWeek,
     registration.suburb,
   ]);
-
 
   const accessToken = authSession?.access_token ?? null;
 

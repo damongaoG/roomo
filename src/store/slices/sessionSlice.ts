@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { Session } from '@supabase/supabase-js';
-import type { SearchPreferences, UserRole } from '../../service/userProfileApi';
+import type {
+  PropertyInformation,
+  SearchPreferences,
+  UserRole,
+} from '../../service/userProfileApi';
 
 export interface SessionState {
   hasStoredSession: boolean;
@@ -8,6 +12,7 @@ export interface SessionState {
   authSession: Session | null;
   role: UserRole | null;
   searchPreferences: SearchPreferences | null;
+  propertyInformation: PropertyInformation | null;
 }
 
 const initialState: SessionState = {
@@ -16,6 +21,7 @@ const initialState: SessionState = {
   authSession: null,
   role: null,
   searchPreferences: null,
+  propertyInformation: null,
 };
 
 const sessionSlice = createSlice({
@@ -40,6 +46,12 @@ const sessionSlice = createSlice({
     ) {
       state.searchPreferences = action.payload;
     },
+    setPropertyInformation(
+      state,
+      action: PayloadAction<PropertyInformation | null>
+    ) {
+      state.propertyInformation = action.payload;
+    },
   },
   selectors: {
     selectHasStoredSession: sliceState => sliceState.hasStoredSession,
@@ -47,6 +59,7 @@ const sessionSlice = createSlice({
     selectAuthSession: sliceState => sliceState.authSession,
     selectUserRole: sliceState => sliceState.role,
     selectSearchPreferences: sliceState => sliceState.searchPreferences,
+    selectPropertyInformation: sliceState => sliceState.propertyInformation,
   },
 });
 
@@ -56,6 +69,7 @@ export const {
   setAuthSession,
   setUserRole,
   setSearchPreferences,
+  setPropertyInformation,
 } = sessionSlice.actions;
 export const {
   selectHasStoredSession,
@@ -63,6 +77,7 @@ export const {
   selectAuthSession,
   selectUserRole,
   selectSearchPreferences,
+  selectPropertyInformation,
 } = sessionSlice.selectors;
 
 export default sessionSlice.reducer;
