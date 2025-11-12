@@ -1,0 +1,90 @@
+.property-details-page .lister-question {
+  padding-top: 20px;
+}
+
+.property-details-section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 28px 20px 120px;
+}
+
+.property-details-section section h3 {
+  margin: 0 0 16px;
+  color: #101828;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 18px;
+  font-weight: 520;
+  letter-spacing: -0.09px;
+}
+
+.circle-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.circle-option {
+  --background: #fff;
+  --background-hover: #f6f8fc;
+  --background-activated: #e9ecf3;
+  --border-radius: 999px;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --color: #0f172a;
+  --box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+  min-width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+  text-transform: none;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 18px;
+  font-weight: 520;
+  letter-spacing: -0.09px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.circle-option.selected {
+  --background: #000;
+  --color: #fff;
+  border-color: transparent;
+  box-shadow: 0 14px 30px rgba(39, 142, 255, 0.28);
+}
+
+.parking-options .circle-option {
+  min-width: 92px;
+}
+
+.circle-option.parking {
+  min-width: 108px;
+}
+
+.property-details-page .bottom-actions {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+@media (max-width: 480px) {
+  .property-details-section {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .circle-option {
+    min-width: 56px;
+    height: 56px;
+    font-size: 16px;
+  }
+
+  .parking-options .circle-option {
+    min-width: 96px;
+    font-size: 15px;
+  }
+}

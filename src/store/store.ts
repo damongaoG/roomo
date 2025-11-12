@@ -10,11 +10,13 @@ import {
 } from 'redux-persist';
 import registrationReducer from './slices/registrationSlice';
 import sessionReducer from './slices/sessionSlice';
+import listerPropertyReducer from './slices/listerPropertySlice';
 
 export const store = configureStore({
   reducer: {
     registration: registrationReducer,
     session: sessionReducer,
+    listerProperty: listerPropertyReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

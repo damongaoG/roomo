@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { IonButton, IonContent, IonIcon, IonPage } from '@ionic/react';
 import { arrowForward, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import '../registration/ListerRegistration.css';
 import './ListerPropertyType.css';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import {
+  selectPropertyType,
+  setPropertyType,
+} from '../../../store/slices/listerPropertySlice';
 
 type PropertyTypeOption = 'house' | 'apartment';
 
@@ -14,8 +19,22 @@ const propertyTypeCopy: Record<PropertyTypeOption, string> = {
 
 const ListerPropertyType: React.FC = () => {
   const history = useHistory();
+  const dispatch = useAppDispatch();
+  const storedPropertyType = useAppSelector(selectPropertyType);
+  const initialOption = useMemo<PropertyTypeOption | null>(() => {
+    if (storedPropertyType === 'house' || storedPropertyType === 'apartment') {
+      return storedPropertyType;
+    }
+    return null;
+  }, [storedPropertyType]);
   const [selectedOption, setSelectedOption] =
-    useState<PropertyTypeOption | null>(null);
+    useState<PropertyTypeOption | null>(initialOption);
+
+  const handleNext = () => {
+    if (!selectedOption) return;
+    dispatch(setPropertyType(selectedOption));
+    history.push('/lister/property-details');
+  };
 
   return (
     <IonPage>
@@ -82,6 +101,7 @@ const ListerPropertyType: React.FC = () => {
             fill="solid"
             className={`next-button${selectedOption ? ' enabled' : ''}`}
             disabled={!selectedOption}
+            onClick={handleNext}
           >
             Next
             <IonIcon icon={arrowForward} slot="end" />

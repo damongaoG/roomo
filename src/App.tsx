@@ -28,6 +28,9 @@ const ListerRegistration = React.lazy(
 const ListerPropertyType = React.lazy(
   () => import('./pages/lister/property-type/ListerPropertyType')
 );
+const ListerPropertyDetails = React.lazy(
+  () => import('./pages/lister/property-details/ListerPropertyDetails')
+);
 const LookerMoveInArea = React.lazy(
   () => import('./pages/looker/move-in-area/LookerMoveInArea')
 );
@@ -176,7 +179,12 @@ const RoutesWithGuards: React.FC = () => {
     []
   );
   const listerOnboardingRoutes = useMemo(
-    () => new Set(['/lister/registration', '/lister/property-type']),
+    () =>
+      new Set([
+        '/lister/registration',
+        '/lister/property-type',
+        '/lister/property-details',
+      ]),
     []
   );
 
@@ -410,6 +418,23 @@ const RoutesWithGuards: React.FC = () => {
               }
               if (userRole === 'lister' && !hasPropertyInformation) {
                 return <ListerPropertyType />;
+              }
+              return (
+                <Redirect to={profileExists ? '/home' : '/folder/Inbox'} />
+              );
+            }}
+          />
+          <Route
+            path="/lister/property-details"
+            exact={true}
+            render={() => {
+              const a = requireAuthRedirect();
+              if (a) return a;
+              if (!profileExists) {
+                return <ListerPropertyDetails />;
+              }
+              if (userRole === 'lister' && !hasPropertyInformation) {
+                return <ListerPropertyDetails />;
               }
               return (
                 <Redirect to={profileExists ? '/home' : '/folder/Inbox'} />
