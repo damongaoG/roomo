@@ -8,6 +8,7 @@ export interface ListerPropertyState {
   bathrooms_number: number | null;
   parking: ParkingOption | null;
   number_of_people_living: number | null;
+  accessibility_features: string[];
 }
 
 const initialState: ListerPropertyState = {
@@ -16,6 +17,7 @@ const initialState: ListerPropertyState = {
   bathrooms_number: null,
   parking: null,
   number_of_people_living: null,
+  accessibility_features: [],
 };
 
 const listerPropertySlice = createSlice({
@@ -37,6 +39,9 @@ const listerPropertySlice = createSlice({
     setNumberOfPeopleLiving(state, action: PayloadAction<number | null>) {
       state.number_of_people_living = action.payload;
     },
+    setAccessibilityFeatures(state, action: PayloadAction<string[]>) {
+      state.accessibility_features = action.payload;
+        },
     resetListerProperty(state) {
       Object.assign(state, initialState);
     },
@@ -48,6 +53,8 @@ const listerPropertySlice = createSlice({
     selectParking: sliceState => sliceState.parking,
     selectNumberOfPeopleLiving: sliceState =>
       sliceState.number_of_people_living,
+    selectAccessibilityFeatures: sliceState => 
+      sliceState.accessibility_features,
   },
 });
 
@@ -57,6 +64,7 @@ export const {
   setBathroomsNumber,
   setParking,
   setNumberOfPeopleLiving,
+  setAccessibilityFeatures,
   resetListerProperty,
 } = listerPropertySlice.actions;
 
@@ -66,6 +74,7 @@ export const {
   selectBathroomsNumber,
   selectParking,
   selectNumberOfPeopleLiving,
+  selectAccessibilityFeatures,
 } = listerPropertySlice.selectors;
 
 export default listerPropertySlice.reducer;

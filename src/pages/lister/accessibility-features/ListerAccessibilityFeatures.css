@@ -1,0 +1,81 @@
+.accessibility-features-page .lister-question {
+  padding-top: 12px;
+}
+
+.accessibility-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 28px 20px 0;
+}
+
+.pill-option {
+  --background: #fff;
+  --background-hover: #f4f6fb;
+  --background-activated: #e8ecf5;
+  --border-radius: 999px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  --color: #101828;
+  --box-shadow: 0 10px 28px rgba(39, 142, 255, 0.1);
+  border-radius: 999px;
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  box-shadow: 0 10px 28px rgba(39, 142, 255, 0.1);
+  text-transform: none;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 16px;
+  font-weight: 510;
+  letter-spacing: -0.08px;
+  line-height: 1;
+  height: auto;
+}
+
+.pill-option.selected {
+  --background: #000;
+  --color: #fbfbfb;
+  border-color: transparent;
+  box-shadow: 0 12px 30px rgba(39, 142, 255, 0.2);
+}
+
+.accessibility-skip {
+  display: flex;
+  justify-content: flex-end;
+  padding: 24px 24px 0;
+}
+
+.accessibility-skip button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #111;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.075px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.accessibility-skip button:focus-visible {
+  outline: 2px solid #278eff;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.accessibility-features-page .bottom-actions {
+  padding: 0 16px;
+}
+
+@media (max-width: 480px) {
+  .accessibility-options {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .accessibility-skip {
+    padding-right: 20px;
+  }
+}
+

@@ -125,7 +125,7 @@ const ListerPropertyDetails: React.FC = () => {
       bathroomsNumber,
       parking,
     });
-    history.push('/lister/household-size');
+    history.push('/lister/accessibility-features');
   };
 
   return (
