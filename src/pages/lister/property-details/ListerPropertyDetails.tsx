@@ -21,7 +21,8 @@ const bedroomOptions = [
   { label: '2', value: 2 },
   { label: '3', value: 3 },
   { label: '4', value: 4 },
-  { label: '5+', value: 5 },
+  { label: '5', value: 5 },
+  { label: '5+', value: 6 },
 ] as const;
 
 const bathroomOptions = [
@@ -29,7 +30,8 @@ const bathroomOptions = [
   { label: '2', value: 2 },
   { label: '3', value: 3 },
   { label: '4', value: 4 },
-  { label: '5+', value: 5 },
+  { label: '5', value: 5 },
+  { label: '5+', value: 6 },
 ] as const;
 
 const parkingOptions: { label: string; value: ParkingOption }[] = [
@@ -109,12 +111,21 @@ const ListerPropertyDetails: React.FC = () => {
 
   const handleNext = () => {
     if (!isNextEnabled) return;
-    // TODO
+    if (bedroomsNumber != null) {
+      dispatch(setBedroomsNumber(bedroomsNumber));
+    }
+    if (bathroomsNumber != null) {
+      dispatch(setBathroomsNumber(bathroomsNumber));
+    }
+    if (parking != null) {
+      dispatch(setParking(parking));
+    }
     console.log('[ListerPropertyDetails] Next clicked', {
       bedroomsNumber,
       bathroomsNumber,
       parking,
     });
+    history.push('/lister/household-size');
   };
 
   return (
