@@ -23,8 +23,8 @@ const ListerAccessibilityFeatures: React.FC = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const savedFeatures = useAppSelector(selectAccessibilityFeatures);
-  const [selectedFeatures, setSelectedFeatures] = useState<string[]>(() => 
-    savedFeatures ?? []
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>(
+    () => savedFeatures ?? []
   );
 
   useEffect(() => {
@@ -34,8 +34,8 @@ const ListerAccessibilityFeatures: React.FC = () => {
   const options = useMemo(() => [...ACCESSIBILITY_FEATURE_OPTIONS], []);
 
   const toggleFeature = useCallback((value: string) => {
-    setSelectedFeatures(prev => 
-        prev.includes(value)
+    setSelectedFeatures(prev =>
+      prev.includes(value)
         ? prev.filter(item => item !== value)
         : [...prev, value]
     );
@@ -55,32 +55,32 @@ const ListerAccessibilityFeatures: React.FC = () => {
 
   return (
     <IonPage>
-        <IonContent
+      <IonContent
         fullscreen
         className="lister-page accessibility-features-page"
-        >
-            <div className="lister-brand">
-                <IonButton
-                aria-label="Back"
-                className="back-btn"
-                fill="clear"
-                onClick={() => history.goBack()}
-                >
-                    <IonIcon icon={chevronBack} />
-                </IonButton>
-                <h1>ROOMO</h1>
-            </div>
+      >
+        <div className="lister-brand">
+          <IonButton
+            aria-label="Back"
+            className="back-btn"
+            fill="clear"
+            onClick={() => history.goBack()}
+          >
+            <IonIcon icon={chevronBack} />
+          </IonButton>
+          <h1>ROOMO</h1>
+        </div>
 
-            <div className="lister-chat">
-                <div className="jenny-chat">
-                    <div className="jenny-avatar">
-                        <img
-                         src="/assets/images/icons/jeny_blink.png"
+        <div className="lister-chat">
+          <div className="jenny-chat">
+            <div className="jenny-avatar">
+              <img
+                src="/assets/images/icons/jeny_blink.png"
                 alt="Jenny avatar"
-                />
-                    </div>
-                <div className="chat-bubble">
-                <span>
+              />
+            </div>
+            <div className="chat-bubble">
+              <span>
                 If we’ve missed an accessibility feature, please let Jenny know
                 later on in the chat.
               </span>
@@ -92,52 +92,51 @@ const ListerAccessibilityFeatures: React.FC = () => {
                 decoding="async"
                 loading="lazy"
               />
-                </div>
             </div>
-            </div>
+          </div>
+        </div>
 
-            <div className="lister-question">
-            <h2>Do you have any accessibility features?</h2>
-            </div>
-            
-            <div className="accessibility-options">
-                {options.map(option => {
-                    const isSelected = selectedFeatures.includes(option);
-                    return (
-                        <IonButton
-                        key={option}
-                        fill="clear"
-                        className={`pill-option${isSelected ? ' selected' : ''}`}
-                        onClick={() => toggleFeature(option)}
-                        >
-                            {option}
-                        </IonButton>
-                    );
-                })}
-            </div>
+        <div className="lister-question">
+          <h2>Do you have any accessibility features?</h2>
+        </div>
 
-            <div className="accessibility-skip">
-                <button type="button" onClick={handleSkip}>
-                    Skip
-                </button>
-            </div>
+        <div className="accessibility-options">
+          {options.map(option => {
+            const isSelected = selectedFeatures.includes(option);
+            return (
+              <IonButton
+                key={option}
+                fill="clear"
+                className={`pill-option${isSelected ? ' selected' : ''}`}
+                onClick={() => toggleFeature(option)}
+              >
+                {option}
+              </IonButton>
+            );
+          })}
+        </div>
 
-            <div className="bottom-actions">
-                <IonButton
-                expand="block"
-                fill="solid"
-                className={`next-button${isNextEnabled ? ' enabled' : ''}`}
-                disabled={!isNextEnabled}
-                onClick={handleNext}
-                >
-                    Next
-                    <IonIcon icon={arrowForward} slot="end" />
-                </IonButton>
-            </div>
-        </IonContent>
+        <div className="accessibility-skip">
+          <button type="button" onClick={handleSkip}>
+            Skip
+          </button>
+        </div>
+
+        <div className="bottom-actions">
+          <IonButton
+            expand="block"
+            fill="solid"
+            className={`next-button${isNextEnabled ? ' enabled' : ''}`}
+            disabled={!isNextEnabled}
+            onClick={handleNext}
+          >
+            Next
+            <IonIcon icon={arrowForward} slot="end" />
+          </IonButton>
+        </div>
+      </IonContent>
     </IonPage>
   );
 };
 
 export default ListerAccessibilityFeatures;
-

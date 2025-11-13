@@ -33,9 +33,13 @@ const ListerHouseholdSize: React.FC = () => {
 
   const handleNext = () => {
     if (!isNextEnabled) return;
+    if (selectedPeople != null) {
+      dispatch(setNumberOfPeopleLiving(selectedPeople));
+    }
     console.log('[ListerHouseholdSize] Next clicked', {
       number_of_people_living: selectedPeople,
     });
+    history.push('/lister/room-details');
   };
 
   return (

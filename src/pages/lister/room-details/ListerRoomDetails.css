@@ -1,0 +1,101 @@
+.room-details-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-top: 2rem;
+}
+
+.room-details-form section h3 {
+  margin: 0 0 12px;
+  color: #0f172a;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 16px;
+  font-weight: 520;
+  letter-spacing: -0.08px;
+}
+
+.room-name-field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.room-name-label {
+  color: #0f172a;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 15px;
+  font-weight: 520;
+  letter-spacing: -0.075px;
+}
+
+.room-name-input {
+  width: 100%;
+  border-radius: 20px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+  padding: 18px 20px;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 16px;
+  letter-spacing: -0.08px;
+  color: #0f172a;
+  background: #fff;
+  outline: none;
+}
+
+.room-name-input::placeholder {
+  color: rgba(15, 23, 42, 0.35);
+}
+
+.room-name-input:focus {
+  border-color: #278eff;
+  box-shadow: 0 18px 32px rgba(39, 142, 255, 0.2);
+}
+
+.pill-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pill-option {
+  --background: #fff;
+  --background-hover: #f6f8fc;
+  --background-activated: #e9ecf3;
+  --border-radius: 28px;
+  --padding-start: 24px;
+  --padding-end: 24px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  --color: #0f172a;
+  --box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+  text-transform: none;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 15px;
+  font-weight: 520;
+  letter-spacing: -0.075px;
+  height: 48px;
+  line-height: 1;
+}
+
+.pill-option.selected {
+  --background: #000;
+  --color: #fff;
+  border-color: transparent;
+  box-shadow: 0 14px 30px rgba(39, 142, 255, 0.28);
+}
+
+@media (max-width: 480px) {
+  .room-details-form {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .pill-option {
+    --padding-start: 20px;
+    --padding-end: 20px;
+    font-size: 14px;
+  }
+}
