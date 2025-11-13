@@ -41,6 +41,9 @@ const ListerHouseholdSize = React.lazy(
 const ListerRoomDetails = React.lazy(
   () => import('./pages/lister/room-details/ListerRoomDetails')
 );
+const ListerRoomFeatures = React.lazy(
+  () => import('./pages/lister/room-features/ListerRoomFeatures')
+);
 const LookerMoveInArea = React.lazy(
   () => import('./pages/looker/move-in-area/LookerMoveInArea')
 );
@@ -197,6 +200,7 @@ const RoutesWithGuards: React.FC = () => {
         '/lister/accessibility-features',
         '/lister/household-size',
         '/lister/room-details',
+        '/lister/room-features',
       ]),
     []
   );
@@ -499,6 +503,23 @@ const RoutesWithGuards: React.FC = () => {
               }
               if (userRole === 'lister' && !hasPropertyInformation) {
                 return <ListerRoomDetails />;
+              }
+              return (
+                <Redirect to={profileExists ? '/home' : '/folder/Inbox'} />
+              );
+            }}
+          />
+          <Route
+            path="/lister/room-features"
+            exact={true}
+            render={() => {
+              const a = requireAuthRedirect();
+              if (a) return a;
+              if (!profileExists) {
+                return <ListerRoomFeatures />;
+              }
+              if (userRole === 'lister' && !hasPropertyInformation) {
+                return <ListerRoomFeatures />;
               }
               return (
                 <Redirect to={profileExists ? '/home' : '/folder/Inbox'} />

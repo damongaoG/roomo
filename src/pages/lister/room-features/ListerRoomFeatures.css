@@ -1,0 +1,82 @@
+.room-features-heading {
+  padding: 12px 20px 0;
+}
+
+.room-features-heading h2 {
+  margin: 0;
+  color: #000;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 32px;
+  font-weight: 520;
+  letter-spacing: -0.16px;
+  line-height: 1.1;
+}
+
+.room-features-content {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  padding: 28px 20px 0;
+}
+
+.room-features-content section h3 {
+  margin: 0;
+  color: #101828;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 16px;
+  font-weight: 520;
+  letter-spacing: -0.08px;
+}
+
+.feature-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.feature-chip {
+  --background: #fff;
+  --background-hover: #f3f5fa;
+  --background-activated: #e9edf5;
+  --border-radius: 999px;
+  --padding-start: 24px;
+  --padding-end: 24px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  --color: #101828;
+  --box-shadow: 0 12px 24px rgba(16, 24, 40, 0.08);
+  border-radius: 999px;
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  box-shadow: 0 12px 24px rgba(16, 24, 40, 0.08);
+  text-transform: none;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 16px;
+  font-weight: 520;
+  letter-spacing: -0.08px;
+  line-height: 1;
+  height: 48px;
+}
+
+.feature-chip.selected {
+  --background: #000;
+  --color: #fbfbfb;
+  border-color: transparent;
+  box-shadow: 0 14px 30px rgba(39, 142, 255, 0.28);
+}
+
+.room-features-page .bottom-actions {
+  padding: 0 16px;
+}
+
+@media (max-width: 480px) {
+  .room-features-heading {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .room-features-content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

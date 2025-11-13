@@ -2,6 +2,23 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type ParkingOption = 'yes' | 'no' | 'on-street';
 
+export type RoomType = 'private' | 'shared';
+export type RoomFurnishingOption = 'flexible' | 'furnished' | 'unfurnished';
+export type RoomBathroomOption = 'own' | 'shared' | 'en-suite';
+export type RoomBedSizeOption = 'single' | 'double' | 'queen' | 'king' | 'none';
+export type RoomFeatureOption =
+  | 'lamp'
+  | 'couch'
+  | 'kitchenette'
+  | 'rug'
+  | 'plants'
+  | 'doorLocks'
+  | 'chair'
+  | 'tv'
+  | 'drawers'
+  | 'bedSideTable'
+  | 'wardrobe';
+
 export interface ListerPropertyState {
   property_type: string | null;
   bedrooms_number: number | null;
@@ -13,11 +30,9 @@ export interface ListerPropertyState {
   room_type: RoomType | null;
   room_furnishing: RoomFurnishingOption | null;
   room_bathroom: RoomBathroomOption | null;
+  room_bed_size: RoomBedSizeOption | null;
+  room_features: RoomFeatureOption[];
 }
-
-export type RoomType = 'private' | 'shared';
-export type RoomFurnishingOption = 'flexible' | 'furnished' | 'unfurnished';
-export type RoomBathroomOption = 'own' | 'shared' | 'en-suite';
 
 const initialState: ListerPropertyState = {
   property_type: null,
@@ -30,6 +45,8 @@ const initialState: ListerPropertyState = {
   room_type: null,
   room_furnishing: null,
   room_bathroom: null,
+  room_bed_size: null,
+  room_features: [],
 };
 
 const listerPropertySlice = createSlice({
@@ -69,6 +86,22 @@ const listerPropertySlice = createSlice({
     setRoomBathroom(state, action: PayloadAction<RoomBathroomOption | null>) {
       state.room_bathroom = action.payload;
     },
+    setRoomBedSize(state, action: PayloadAction<RoomBedSizeOption | null>) {
+      state.room_bed_size = action.payload;
+    },
+    toggleRoomFeature(state, action: PayloadAction<RoomFeatureOption>) {
+      const feature = action.payload;
+      if (state.room_features.includes(feature)) {
+        state.room_features = state.room_features.filter(
+          item => item !== feature
+        );
+      } else {
+        state.room_features.push(feature);
+      }
+    },
+    setRoomFeatures(state, action: PayloadAction<RoomFeatureOption[]>) {
+      state.room_features = action.payload;
+    },
     resetListerProperty(state) {
       Object.assign(state, initialState);
     },
@@ -86,6 +119,8 @@ const listerPropertySlice = createSlice({
     selectRoomType: sliceState => sliceState.room_type,
     selectRoomFurnishing: sliceState => sliceState.room_furnishing,
     selectRoomBathroom: sliceState => sliceState.room_bathroom,
+    selectRoomBedSize: sliceState => sliceState.room_bed_size,
+    selectRoomFeatures: sliceState => sliceState.room_features,
   },
 });
 
@@ -100,6 +135,9 @@ export const {
   setRoomType,
   setRoomFurnishing,
   setRoomBathroom,
+  setRoomBedSize,
+  toggleRoomFeature,
+  setRoomFeatures,
   resetListerProperty,
 } = listerPropertySlice.actions;
 
@@ -114,6 +152,8 @@ export const {
   selectRoomType,
   selectRoomFurnishing,
   selectRoomBathroom,
+  selectRoomBedSize,
+  selectRoomFeatures,
 } = listerPropertySlice.selectors;
 
 export default listerPropertySlice.reducer;

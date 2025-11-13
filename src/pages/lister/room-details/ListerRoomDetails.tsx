@@ -124,6 +124,7 @@ const ListerRoomDetails: React.FC = () => {
       roomFurnishing,
       roomBathroom,
     });
+    history.push('/lister/room-features');
   };
 
   return (
