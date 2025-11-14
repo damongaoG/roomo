@@ -199,8 +199,7 @@ const ListerRoomDetails: React.FC = () => {
             <div className="pill-options">{roomBathroomButtons}</div>
           </section>
         </div>
-
-        <div className="bottom-actions">
+        <div className="room-bottom-actions">
           <IonButton
             expand="block"
             fill="solid"

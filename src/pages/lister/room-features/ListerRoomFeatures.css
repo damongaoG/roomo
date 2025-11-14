@@ -16,7 +16,7 @@
   display: flex;
   flex-direction: column;
   gap: 36px;
-  padding: 28px 20px 0;
+  padding: 28px 20px 24px;
 }
 
 .room-features-content section h3 {
@@ -65,8 +65,8 @@
   box-shadow: 0 14px 30px rgba(39, 142, 255, 0.28);
 }
 
-.room-features-page .bottom-actions {
-  padding: 0 16px;
+.room-features-bottom-actions {
+  padding: 2rem 16px calc(24px + env(safe-area-inset-bottom));
 }
 
 @media (max-width: 480px) {

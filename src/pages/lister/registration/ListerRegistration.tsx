@@ -1,5 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { IonButton, IonContent, IonIcon, IonPage } from '@ionic/react';
+import {
+  IonButton,
+  IonContent,
+  IonFooter,
+  IonIcon,
+  IonPage,
+} from '@ionic/react';
 import { arrowForward, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../store';
@@ -91,20 +97,19 @@ const ListerRegistration: React.FC = () => {
             </IonButton>
           ))}
         </div>
-
-        <div className="bottom-actions">
-          <IonButton
-            expand="block"
-            fill="solid"
-            className={`next-button${selectedOption ? ' enabled' : ''}`}
-            disabled={!selectedOption}
-            onClick={handleNext}
-          >
-            Next
-            <IonIcon icon={arrowForward} slot="end" />
-          </IonButton>
-        </div>
       </IonContent>
+      <IonFooter className="bottom-actions lister-bottom-actions">
+        <IonButton
+          expand="block"
+          fill="solid"
+          className={`next-button${selectedOption ? ' enabled' : ''}`}
+          disabled={!selectedOption}
+          onClick={handleNext}
+        >
+          Next
+          <IonIcon icon={arrowForward} slot="end" />
+        </IonButton>
+      </IonFooter>
     </IonPage>
   );
 };

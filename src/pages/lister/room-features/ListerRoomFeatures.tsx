@@ -176,8 +176,7 @@ const ListerRoomFeatures: React.FC = () => {
             </div>
           </section>
         </div>
-
-        <div className="bottom-actions">
+        <div className="room-features-bottom-actions">
           <IonButton
             expand="block"
             fill="solid"

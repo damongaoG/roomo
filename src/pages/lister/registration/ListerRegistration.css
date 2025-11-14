@@ -1,6 +1,9 @@
 .lister-page {
   --background: #f2f4f8;
-  --lister-safe-area-top: var(--ion-safe-area-top, env(safe-area-inset-top, 0px));
+  --lister-safe-area-top: var(
+    --ion-safe-area-top,
+    env(safe-area-inset-top, 0px)
+  );
   --lister-safe-area-left: var(
     --ion-safe-area-left,
     env(safe-area-inset-left, 0px)
@@ -204,12 +207,9 @@
   box-shadow: 0 12px 26px rgba(39, 142, 255, 0.25);
 }
 
-.bottom-actions {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(24px + env(safe-area-inset-bottom));
-  padding: 0 16px;
+.lister-bottom-actions {
+  --background: transparent;
+  padding: 2rem 16px calc(24px + env(safe-area-inset-bottom));
 }
 
 .next-button {

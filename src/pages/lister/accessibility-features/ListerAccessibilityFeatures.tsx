@@ -1,5 +1,11 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { IonButton, IonContent, IonIcon, IonPage } from '@ionic/react';
+import {
+  IonButton,
+  IonContent,
+  IonFooter,
+  IonIcon,
+  IonPage,
+} from '@ionic/react';
 import { arrowForward, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import '../registration/ListerRegistration.css';
@@ -115,26 +121,24 @@ const ListerAccessibilityFeatures: React.FC = () => {
             );
           })}
         </div>
-
+      </IonContent>
+      <IonFooter className="bottom-actions lister-bottom-actions">
         <div className="accessibility-skip">
           <button type="button" onClick={handleSkip}>
             Skip
           </button>
         </div>
-
-        <div className="bottom-actions">
-          <IonButton
-            expand="block"
-            fill="solid"
-            className={`next-button${isNextEnabled ? ' enabled' : ''}`}
-            disabled={!isNextEnabled}
-            onClick={handleNext}
-          >
-            Next
-            <IonIcon icon={arrowForward} slot="end" />
-          </IonButton>
-        </div>
-      </IonContent>
+        <IonButton
+          expand="block"
+          fill="solid"
+          className={`next-button${isNextEnabled ? ' enabled' : ''}`}
+          disabled={!isNextEnabled}
+          onClick={handleNext}
+        >
+          Next
+          <IonIcon icon={arrowForward} slot="end" />
+        </IonButton>
+      </IonFooter>
     </IonPage>
   );
 };

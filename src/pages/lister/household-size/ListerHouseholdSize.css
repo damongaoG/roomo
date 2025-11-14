@@ -48,7 +48,7 @@
   box-shadow: 0 14px 30px rgba(39, 142, 255, 0.28);
 }
 
-.household-size-page .bottom-actions {
+.household-size-page + .lister-bottom-actions {
   padding: 0 20px;
 }
 

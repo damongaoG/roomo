@@ -20,7 +20,7 @@
   letter-spacing: -0.1px;
 }
 
-.property-type-page .bottom-actions {
+.property-type-page + .lister-bottom-actions {
   padding-left: 20px;
   padding-right: 20px;
 }

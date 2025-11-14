@@ -87,6 +87,10 @@
   box-shadow: 0 14px 30px rgba(39, 142, 255, 0.28);
 }
 
+.room-bottom-actions {
+  padding: 2rem 20px calc(24px + env(safe-area-inset-bottom));
+}
+
 @media (max-width: 480px) {
   .room-details-form {
     padding-left: 16px;

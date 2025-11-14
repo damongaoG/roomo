@@ -187,8 +187,7 @@ const ListerPropertyDetails: React.FC = () => {
             </div>
           </section>
         </div>
-
-        <div className="bottom-actions">
+        <div className="property-bottom-actions">
           <IonButton
             expand="block"
             fill="solid"

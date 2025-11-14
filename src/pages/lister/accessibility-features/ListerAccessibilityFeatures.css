@@ -42,7 +42,8 @@
 .accessibility-skip {
   display: flex;
   justify-content: flex-end;
-  padding: 24px 24px 0;
+  position: relative;
+  bottom: 63px;
 }
 
 .accessibility-skip button {
@@ -64,7 +65,7 @@
   border-radius: 4px;
 }
 
-.accessibility-features-page .bottom-actions {
+.accessibility-features-page + .lister-bottom-actions {
   padding: 0 16px;
 }
 
