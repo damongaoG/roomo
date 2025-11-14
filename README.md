@@ -149,3 +149,6 @@ npx cap sync
 - Use `npx cap doctor` to check for common issues.
 
 ---
+
+cd /Users/chujiangao/Desktop/projects/roomo
+./scripts/cap-ios.sh
