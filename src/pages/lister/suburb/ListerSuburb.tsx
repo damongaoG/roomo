@@ -9,11 +9,14 @@ import {
 } from '@ionic/react';
 import { arrowForward, chevronBack, searchOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
+import { useAppDispatch } from '../../../store';
+import { setSuburb as setRegistrationSuburb } from '../../../store/slices/registrationSlice';
 import '../registration/ListerRegistration.css';
 import './ListerSuburb.css';
 
 const ListerSuburb: React.FC = () => {
   const history = useHistory();
+  const dispatch = useAppDispatch();
   const [suburb, setSuburb] = useState('');
 
   const handleBack = useCallback(() => {
@@ -31,8 +34,11 @@ const ListerSuburb: React.FC = () => {
 
   const handleNext = useCallback(() => {
     if (!isNextEnabled) return;
-    console.log('[ListerSuburb] Next clicked', { suburb: suburb.trim() });
-  }, [isNextEnabled, suburb]);
+    const trimmedSuburb = suburb.trim();
+    dispatch(setRegistrationSuburb(trimmedSuburb));
+    console.log('[ListerSuburb] Next clicked', { suburb: trimmedSuburb });
+    history.push('/lister/available-date');
+  }, [dispatch, history, isNextEnabled, suburb]);
 
   return (
     <IonPage>

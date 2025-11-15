@@ -50,6 +50,9 @@ const ListerRoomPricing = React.lazy(
 const ListerSuburb = React.lazy(
   () => import('./pages/lister/suburb/ListerSuburb')
 );
+const ListerAvailableDate = React.lazy(
+  () => import('./pages/lister/available-date/ListerAvailableDate')
+);
 const LookerMoveInArea = React.lazy(
   () => import('./pages/looker/move-in-area/LookerMoveInArea')
 );
@@ -209,6 +212,7 @@ const RoutesWithGuards: React.FC = () => {
         '/lister/room-features',
         '/lister/room-pricing',
         '/lister/suburb',
+        '/lister/available-date',
       ]),
     []
   );
@@ -569,6 +573,23 @@ const RoutesWithGuards: React.FC = () => {
             }}
           />
           <Route
+            path="/lister/available-date"
+            exact={true}
+            render={() => {
+              const a = requireAuthRedirect();
+              if (a) return a;
+              if (!profileExists) {
+                return <ListerAvailableDate />;
+              }
+              if (userRole === 'lister' && !hasPropertyInformation) {
+                return <ListerAvailableDate />;
+              }
+              return (
+                <Redirect to={profileExists ? '/home' : '/folder/Inbox'} />
+              );
+            }}
+          />
+          <Route
             path="/looker/move-in-area"
             exact={true}
             render={() => {
@@ -646,6 +667,7 @@ const RoutesWithGuards: React.FC = () => {
                   pathname === '/lister/room-features' ||
                   pathname === '/lister/room-pricing' ||
                   pathname === '/lister/suburb' ||
+                  pathname === '/lister/available-date' ||
                   lookerOnboardingRoutes.has(pathname)
                 ) {
                   return null;

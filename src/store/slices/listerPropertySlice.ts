@@ -34,6 +34,7 @@ export interface ListerPropertyState {
   room_features: RoomFeatureOption[];
   weekly_rent_per_week: number | null;
   bills_included_in_rent: boolean | null;
+  available_from_date: string | null;
 }
 
 const initialState: ListerPropertyState = {
@@ -51,6 +52,7 @@ const initialState: ListerPropertyState = {
   room_features: [],
   weekly_rent_per_week: null,
   bills_included_in_rent: null,
+  available_from_date: null,
 };
 
 const listerPropertySlice = createSlice({
@@ -112,6 +114,9 @@ const listerPropertySlice = createSlice({
     setBillsIncludedInRent(state, action: PayloadAction<boolean | null>) {
       state.bills_included_in_rent = action.payload;
     },
+    setAvailableFromDate(state, action: PayloadAction<string | null>) {
+      state.available_from_date = action.payload;
+    },
     resetListerProperty(state) {
       Object.assign(state, initialState);
     },
@@ -133,6 +138,7 @@ const listerPropertySlice = createSlice({
     selectRoomFeatures: sliceState => sliceState.room_features,
     selectWeeklyRentPerWeek: sliceState => sliceState.weekly_rent_per_week,
     selectBillsIncludedInRent: sliceState => sliceState.bills_included_in_rent,
+    selectAvailableFromDate: sliceState => sliceState.available_from_date,
   },
 });
 
@@ -152,6 +158,7 @@ export const {
   setRoomFeatures,
   setWeeklyRentPerWeek,
   setBillsIncludedInRent,
+  setAvailableFromDate,
   resetListerProperty,
 } = listerPropertySlice.actions;
 
@@ -170,6 +177,7 @@ export const {
   selectRoomFeatures,
   selectWeeklyRentPerWeek,
   selectBillsIncludedInRent,
+  selectAvailableFromDate,
 } = listerPropertySlice.selectors;
 
 export default listerPropertySlice.reducer;
