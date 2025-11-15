@@ -32,6 +32,8 @@ export interface ListerPropertyState {
   room_bathroom: RoomBathroomOption | null;
   room_bed_size: RoomBedSizeOption | null;
   room_features: RoomFeatureOption[];
+  weekly_rent_per_week: number | null;
+  bills_included_in_rent: boolean | null;
 }
 
 const initialState: ListerPropertyState = {
@@ -47,6 +49,8 @@ const initialState: ListerPropertyState = {
   room_bathroom: null,
   room_bed_size: null,
   room_features: [],
+  weekly_rent_per_week: null,
+  bills_included_in_rent: null,
 };
 
 const listerPropertySlice = createSlice({
@@ -102,6 +106,12 @@ const listerPropertySlice = createSlice({
     setRoomFeatures(state, action: PayloadAction<RoomFeatureOption[]>) {
       state.room_features = action.payload;
     },
+    setWeeklyRentPerWeek(state, action: PayloadAction<number | null>) {
+      state.weekly_rent_per_week = action.payload;
+    },
+    setBillsIncludedInRent(state, action: PayloadAction<boolean | null>) {
+      state.bills_included_in_rent = action.payload;
+    },
     resetListerProperty(state) {
       Object.assign(state, initialState);
     },
@@ -121,6 +131,8 @@ const listerPropertySlice = createSlice({
     selectRoomBathroom: sliceState => sliceState.room_bathroom,
     selectRoomBedSize: sliceState => sliceState.room_bed_size,
     selectRoomFeatures: sliceState => sliceState.room_features,
+    selectWeeklyRentPerWeek: sliceState => sliceState.weekly_rent_per_week,
+    selectBillsIncludedInRent: sliceState => sliceState.bills_included_in_rent,
   },
 });
 
@@ -138,6 +150,8 @@ export const {
   setRoomBedSize,
   toggleRoomFeature,
   setRoomFeatures,
+  setWeeklyRentPerWeek,
+  setBillsIncludedInRent,
   resetListerProperty,
 } = listerPropertySlice.actions;
 
@@ -154,6 +168,8 @@ export const {
   selectRoomBathroom,
   selectRoomBedSize,
   selectRoomFeatures,
+  selectWeeklyRentPerWeek,
+  selectBillsIncludedInRent,
 } = listerPropertySlice.selectors;
 
 export default listerPropertySlice.reducer;

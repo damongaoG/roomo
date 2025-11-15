@@ -94,7 +94,7 @@ const ListerRoomFeatures: React.FC = () => {
       bedSize: roomBedSize,
       roomFeatures: normalizedFeatures,
     });
-    history.push('/lister/property-type');
+    history.push('/lister/room-pricing');
   };
 
   return (

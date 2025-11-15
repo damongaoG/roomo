@@ -1,0 +1,121 @@
+.room-pricing-page {
+  --background: #f2f4f8;
+}
+
+.room-pricing-heading {
+  padding: 12px 20px 0;
+}
+
+.room-pricing-heading h2 {
+  margin: 0;
+  color: #000;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.14px;
+  line-height: 1.15;
+}
+
+.room-pricing-content {
+  padding: 32px 20px 0;
+}
+
+.room-pricing-slider {
+  padding: 0 4px;
+}
+
+.room-pricing-slider ion-range {
+  --bar-background: #bfbfbf;
+  --bar-background-active: #000000;
+  --bar-height: 8px;
+  --bar-border-radius: 999px;
+  --knob-size: 24px;
+}
+
+.room-pricing-price-card {
+  margin-top: 24px;
+  display: inline-flex;
+  align-items: center;
+  padding-left: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  width: 138px;
+  height: 42px;
+  border-radius: 11px;
+  border: 1px solid #fbfbfb;
+  background: #fbfbfb;
+}
+
+.room-pricing-price-card .price-text {
+  color: #000;
+  font-family: 'SF Pro';
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%; /* 18px */
+  letter-spacing: -0.075px;
+}
+
+.room-pricing-bond-note {
+  margin: 20px 0 0;
+  color: #707070;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.room-pricing-bills-section {
+  margin-top: 32px;
+}
+
+.room-pricing-bills-section h3 {
+  margin: 0 0 16px;
+  color: #000;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.bills-pill-group {
+  display: flex;
+  gap: 16px;
+}
+
+.bills-pill {
+  --background: #ffffff;
+  --background-hover: #f6f6f6;
+  --background-activated: #e9e9e9;
+  --border-radius: 52px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  --color: #000;
+  text-transform: none;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.08px;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.bills-pill.selected {
+  --background: #000000;
+  --color: #ffffff;
+}
+
+.room-pricing-bottom-actions {
+  padding: 3rem 16px calc(24px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 480px) {
+  .room-pricing-content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .room-pricing-heading {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
