@@ -47,6 +47,9 @@ const ListerRoomFeatures = React.lazy(
 const ListerRoomPricing = React.lazy(
   () => import('./pages/lister/room-pricing/ListerRoomPricing')
 );
+const ListerSuburb = React.lazy(
+  () => import('./pages/lister/suburb/ListerSuburb')
+);
 const LookerMoveInArea = React.lazy(
   () => import('./pages/looker/move-in-area/LookerMoveInArea')
 );
@@ -205,6 +208,7 @@ const RoutesWithGuards: React.FC = () => {
         '/lister/room-details',
         '/lister/room-features',
         '/lister/room-pricing',
+        '/lister/suburb',
       ]),
     []
   );
@@ -548,6 +552,23 @@ const RoutesWithGuards: React.FC = () => {
             }}
           />
           <Route
+            path="/lister/suburb"
+            exact={true}
+            render={() => {
+              const a = requireAuthRedirect();
+              if (a) return a;
+              if (!profileExists) {
+                return <ListerSuburb />;
+              }
+              if (userRole === 'lister' && !hasPropertyInformation) {
+                return <ListerSuburb />;
+              }
+              return (
+                <Redirect to={profileExists ? '/home' : '/folder/Inbox'} />
+              );
+            }}
+          />
+          <Route
             path="/looker/move-in-area"
             exact={true}
             render={() => {
@@ -618,7 +639,13 @@ const RoutesWithGuards: React.FC = () => {
                   pathname === '/folder/Inbox' ||
                   pathname === '/lister/registration' ||
                   pathname === '/lister/property-type' ||
+                  pathname === '/lister/property-details' ||
+                  pathname === '/lister/accessibility-features' ||
+                  pathname === '/lister/household-size' ||
+                  pathname === '/lister/room-details' ||
+                  pathname === '/lister/room-features' ||
                   pathname === '/lister/room-pricing' ||
+                  pathname === '/lister/suburb' ||
                   lookerOnboardingRoutes.has(pathname)
                 ) {
                   return null;

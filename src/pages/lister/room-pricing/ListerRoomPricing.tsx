@@ -107,7 +107,7 @@ const ListerRoomPricing: React.FC = () => {
       weekly_rent_per_week: weeklyRent,
       bills_included_in_rent: billsIncluded,
     });
-    history.push('/lister/property-type');
+    history.push('/lister/suburb');
   };
 
   return (

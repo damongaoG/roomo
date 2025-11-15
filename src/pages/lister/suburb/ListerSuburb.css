@@ -1,0 +1,71 @@
+.suburb-page {
+  --background: #f2f4f8;
+}
+
+.suburb-question {
+  padding: 12px 20px 0;
+}
+
+.suburb-question h2 {
+  margin: 0;
+  color: #000;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.14px;
+  line-height: 1.15;
+}
+
+.suburb-input-section {
+  padding: 32px 20px 0;
+}
+
+.suburb-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 54px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: #fbfbfb;
+  padding: 0 18px;
+  box-sizing: border-box;
+}
+
+.suburb-search-icon {
+  font-size: 20px;
+  color: #000;
+}
+
+.suburb-input {
+  --background: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --color: #000;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 16px;
+}
+
+.suburb-input::part(native) {
+  padding-inline-start: 0;
+  padding-inline-end: 0;
+}
+
+.suburb-bottom-actions {
+  padding: 3rem 16px calc(24px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 480px) {
+  .suburb-question {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .suburb-input-section {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
